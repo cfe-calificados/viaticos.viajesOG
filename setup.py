@@ -46,6 +46,8 @@ setup(
         'plone.api>=1.8.4',
         'plone.restapi',
         'plone.app.dexterity',
+        # My own requirements
+        #'collective.wtf==1.0b9',
     ],
     extras_require={
         'test': [
