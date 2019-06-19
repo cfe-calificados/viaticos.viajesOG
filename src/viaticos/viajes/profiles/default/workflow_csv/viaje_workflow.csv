@@ -13,7 +13,7 @@ Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor
 View,				N,	 N,	    N,	 	   N, 	   N,	    Y,	   N,	   N,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-    
+Delete objects    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
 Id:,pendiente
@@ -25,7 +25,7 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   Y,	   N,		N
-
+Delete objects    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
 Id:,esperando
@@ -37,7 +37,7 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-
+Delete objects    		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   Y,	   N,		N  
 
 [State]
 Id:,final
@@ -57,6 +57,7 @@ Title:,Confirmar
 Description:,Confirmar informacion del viaje. 
 Target state:,pendiente
 Guard permission:,Request review
+Script after:,viaticos.viajes.Extensions.mailer.test_user
 
 [Transition]
 Id:,enviar
@@ -64,21 +65,23 @@ Title:,Enviar
 Description:,Enviar a la compania
 Target state:,esperando
 Guard permission:,Review portal content
-Script after:,viaticos.viajes.Extensions.test_tmp.test
+Script after:,viaticos.viajes.Extensions.mailer.test
 
 [Transition]
 Id:,registrar
 Title:,Registrar
 Description:,Registrar solicitud de gastos
 Target state:,final
+Guard expression:,python: object.aerolinea != None and object.tarifa != None and object.hora_regreso != None and object.hora_salida != None and object.hotel_nombre != None and object.hotel_domicilio != None
 Guard permission:,Review portal content
+Script before:,viaticos.viajes.Extensions.triggers.create_comprobacion 
 
 [Transition]
 Id:,fallo_borrador
 Title:,No aprobado
 Description:,De vuelta al creador para correccion
 Target state:,borrador
-Guard permission:,Request review
+Guard permission:,"Request review, Review portal content"
 
 [Transition]
 Id:,fallo_tramite

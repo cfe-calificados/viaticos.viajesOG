@@ -18,4 +18,22 @@
       directory="static"
       />
 
+  <!-- Vista resumen de solicitud de gastos -->
+  <browser:page
+     name="resumen_gasto"
+     for="*"
+     layer="zope.interface.Interface"
+     class=".views.VistaViaje"
+     template="templates/viajeview.pt"
+     permission="zope2.View"
+     />
+
+  <!-- Form test -->
+  <browser:page
+     for="Products.CMFCore.interfaces.ISiteRoot"
+     name="ticket-form"
+     permission="zope2.View"
+     class=".form.TicketForm"
+     />
+  
 </configure>

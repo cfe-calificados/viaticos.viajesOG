@@ -10,6 +10,9 @@ from z3c.form.browser.checkbox import CheckBoxFieldWidget
 from zope import schema
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
+#for default purposes
+from zope.interface import provider
+from zope.schema.interfaces import IContextAwareDefaultFactory
 
 OpcionesRequerimientos = SimpleVocabulary(
     [SimpleTerm(value=u'boleto_avion', title=_(u'Boleto de avión')),
@@ -45,12 +48,12 @@ class IViaje(model.Schema):
         title=_(u'Título'),
     )
 
-    directives.widget(motivo=RadioFieldWidget)
+    #directives.widget(motivo=RadioFieldWidget)
     motivo = schema.Choice(
-        title = _(u'Motivo(s)'),
+        title = _(u'Motivo'),
         vocabulary = OpcionesMotivo,
-        required = True
-    )
+        required = True        
+    )    
 
     objetivo = RichText(
         title=_(u'Objetivo'),
@@ -58,10 +61,18 @@ class IViaje(model.Schema):
     )
 
     directives.widget(req=CheckBoxFieldWidget)
+    """
     req = schema.Choice(
         title = _(u'Requerimientos'),
         vocabulary = OpcionesRequerimientos,
         required = True
+    )
+    """
+
+    req = schema.List(title=_(u'Requerimientos'),
+                               description=u"",
+                               required=True,
+                               value_type=schema.Choice(source=OpcionesRequerimientos),
     )
 
         
@@ -87,7 +98,7 @@ class IViaje(model.Schema):
 
     cp = schema.TextLine(
         title = _(u'Código postal destino'),
-        required = True
+        required = False
     )
 
     notas_avion = schema.Text(
@@ -100,4 +111,56 @@ class IViaje(model.Schema):
         required = False
     )
 
+    ### datos boleto avion
+    
+    directives.read_permission(tarifa='zope2.DeleteObjects')
+    directives.write_permission(tarifa='zope2.DeleteObjects')
+    tarifa = schema.Float(
+        title = _(u'Tarifa'),
+        required = False,
+        #defaultFactory=get_context_tarifa
+    )
+
+    directives.read_permission(aerolinea='zope2.DeleteObjects')
+    directives.write_permission(aerolinea='zope2.DeleteObjects')
+    aerolinea = schema.TextLine(
+        title = _(u'Aerolínea'),
+        required = False,
+        #defaultFactory=get_context_aero
+    )
+
+    directives.read_permission(hora_salida='zope2.DeleteObjects')
+    directives.write_permission(hora_salida='zope2.DeleteObjects')
+    hora_salida = schema.Datetime(
+        title = _(u'Hora salida'),
+        required = False,
+        #defaultFactory=get_context_horas
+    )
+
+    directives.read_permission(hora_regreso='zope2.DeleteObjects')
+    directives.write_permission(hora_regreso='zope2.DeleteObjects')
+    hora_regreso =  schema.Datetime(
+        title = _(u'Hora regreso'),
+        required = False,
+        #defaultFactory=get_context_horar
+    )
+
+    directives.read_permission(hotel_nombre='zope2.DeleteObjects')
+    directives.write_permission(hotel_nombre='zope2.DeleteObjects')
+    hotel_nombre =  schema.TextLine(
+        title = _(u'Nombre del hotel'),
+        required = False,
+        #defaultFactory=get_context_hotel
+    )
+
+    directives.read_permission(hotel_domicilio='zope2.DeleteObjects')
+    directives.write_permission(hotel_domicilio='zope2.DeleteObjects')
+    hotel_domicilio =  schema.Text(
+        title = _(u'Domicilio del hotel'),
+        required = False,
+        #defaultFactory=get_context_domic
+    )
+           
+    #import pdb; pdb.set_trace()
+    
     

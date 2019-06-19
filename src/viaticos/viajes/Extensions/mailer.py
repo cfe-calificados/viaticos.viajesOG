@@ -5,8 +5,7 @@ from plone import api
 
 def test(self, state_change):
     os.system("ls")
-    print("hola, este es un test")
-    return False
+    print("hola, este es un test para enviar correo a la compañía")
     #import pdb; pdb.set_trace()
 
 def build_body(brain, users):
@@ -24,7 +23,7 @@ def build_body(brain, users):
     
 def test_user(self, state_change):
     print("borrador cambio")
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     uf = state_change.getPortal().acl_users
     body_builded = build_body(state_change.object,uf)
     readers = [x for x in uf.getUsers() if x.has_role("Reader")]

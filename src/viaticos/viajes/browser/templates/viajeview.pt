@@ -1,0 +1,184 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="viaticos.viajes">
+  <metal:block fill-slot="javascript_head_slot">
+    <script type="text/javascript">
+      function show_hide_form() {
+          console.log("wtaf")
+          $(".hidden_form").show();
+          $(".ticket").hide();
+      }
+    </script>
+  </metal:block>
+  
+  <metal:block fill-slot="style_slot">
+    <style media="all" type="text/css">
+
+      /* Create two equal columns that floats next to each other */
+      .columne {
+      float: left;
+      width: 50%;
+      padding: 10px;      
+      }
+
+      /* Clear floats after the columns */
+      .rowe:after {
+      content: "";
+      display: table;
+      clear: both;
+      }
+      
+      .showtime {
+      font-family: "Helvetica Neue", "Arial", sans-serif;
+      text-decoration: none;
+      /*padding: 6px 12px;*/
+      background: #0083BE;
+      color: #fff;
+      font-weight: bold;
+      position: relative;
+      display: inline-block;
+      /*margin: 10px 10px 10px 0;*/
+      }
+      .showtime:hover {
+      background: #44c0ff;
+      color: #fff;
+      }
+      /* fake the cut out with a masked circle*/
+      .showtime:before {
+      content: "";
+      width: 0px;
+      height: 0px;
+      position: absolute !important;
+      z-index: 100;
+      top: 8px;
+      left: -10px;
+      border: 11px solid #fff;
+      border-radius: 12px;
+      }
+      .showtime:after {
+      content: "";
+      width: 0px;
+      height: 0px;
+      position: absolute !important;
+      z-index: 100;
+      top: 8px;
+      right: -10px;
+      border: 11px solid #fff;
+      border-radius: 12px;
+      }
+
+    </style>
+  </metal:block>
+
+  <body>
+    <metal:content-core fill-slot="content-core">
+      <!--INFO SOBRE ESTADO DEL REGISTRO -->
+      <div tal:condition="python:view.is_transact_state()">
+	<dl tal:condition="python:view.values_setted()" class="portalMessage info">
+	  <dt>Aviso</dt>
+	  <dd>La información de la agencia ya está registrada. Proceder a registrar la solicitud si no requiere de cambios.</dd>
+	</dl>
+
+	<dl tal:condition="python:not view.values_setted()" class="portalMessage error">
+	  <dt>Nota</dt>
+	  <dd>Para registrar la solicitud de gastos, es necesario capturar información de la agencia de viajes.</dd>
+	</dl>
+      </div>
+      
+      <div class="rowe">
+	<div class="columne">
+	  <h3>Motivo</h3>
+	  <div tal:content="structure view/w/motivo/render">
+            Motivo
+	  </div>
+
+	  <h3>Objetivo</h3>
+	  <div tal:condition="context/objetivo" tal:content="structure view/w/objetivo/render">
+            Objetivo
+	  </div>
+	  <h3>Requerimientos</h3>
+	  <div tal:content="structure view/w/req/render">
+            Requerimientos
+	  </div>
+	  <h3>Fecha Salida</h3>
+	  <p>
+	    <span tal:content="structure view/w/fecha_salida/render">
+              Talk
+            </span>
+	  </p>
+	  <h3>Fecha Regreso</h3>
+	  <p>
+	    <span tal:content="structure view/w/fecha_regreso/render">
+            </span>
+	  </p>
+	  <h3>Ciudad</h3>
+	  <div tal:content="structure view/w/ciudad/render">
+	  </div>
+	  <h3>País</h3>
+	  <div tal:content="structure view/w/pais/render">
+	  </div>
+	  <h3>Código Postal</h3>
+	  <div tal:content="structure view/w/cp/render">
+	  </div>      
+	  <div tal:condition="context/notas_avion">
+	    <h3>Notas de avión</h3>
+            <p tal:content="structure view/w/notas_avion/render"></p>
+	  </div>      
+	  <div tal:condition="context/notas_hospedaje">
+	    <h3>Notas de hospedaje</h3>
+	    <p tal:content="structure view/w/notas_hospedaje/render"></p>
+	  </div>
+
+	</div>
+	
+	<div onclick="show_hide_form()" class="showtime columne ticket" tal:condition="python: view.values_setted()">
+	  <div tal:condition="context/tarifa">
+	    <h3>Tarifa</h3>
+	    <p tal:content="structure view/w/tarifa/render"></p>
+	  </div>	  
+	  <div tal:condition="context/aerolinea">
+	    <h3>Clave aerolínea</h3>
+	    <p tal:content="structure view/w/aerolinea/render"></p>
+	  </div>
+	  <div tal:condition="context/hora_salida">
+	    <h3>Salida</h3>
+	    <p tal:content="structure view/w/hora_salida/render"></p>
+	  </div>
+	  <div tal:condition="context/hora_regreso">
+	    <h3>Regreso</h3>
+	    <p tal:content="structure view/w/hora_regreso/render"></p>
+	  </div>
+	  <div tal:condition="context/hotel_nombre">
+	    <h3>Hotel</h3>
+	    <p tal:content="structure view/w/hotel_nombre/render"></p>
+	  </div>
+	  <div tal:condition="context/hotel_domicilio">
+	    <h3>Dirección hotel</h3>
+	    <p tal:content="structure view/w/hotel_domicilio/render"></p>
+	  </div>
+	  
+	</div>
+
+
+      </div>
+
+      <!-- Formulario captura de boletos -->
+      <hr>
+      <!--input tal:condition="python: view.values_setted()" onclick="show_hide_form()" type="button" value="Cambiar boleto" id="bselect"></input--> 
+      <input tal:condition="python: not view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Registrar boleto" id="bselect"></input> <br>
+      
+      <div class="hidden_form" hidden tal:condition="python: view.is_transact_state()">
+	<div tal:define="form python:view.render_ticket_form()"> 
+          <tal:with-form-as-view define="view nocall:form">
+            <metal:block use-macro="form/@@ploneform-macros/form" />
+          </tal:with-form-as-view>
+	</div>
+      </div>
+
+      
+      
+      
+
+    </metal:content-core>
+  </body>
+</html>
