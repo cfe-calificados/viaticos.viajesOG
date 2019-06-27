@@ -1,25 +1,25 @@
 <?xml version="1.0"?>
-<object name="viaje" meta_type="Dexterity FTI" i18n:domain="plone"
+<object name="comprobacion" meta_type="Dexterity FTI" i18n:domain="plone"
    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
- <property name="title" i18n:translate="">Solicitud de gastos</property>
- <property name="description" i18n:translate="">Agrega datos sobre tu próxima salida</property>
+ <property name="title" i18n:translate="">Comprobación de gastos</property>
+ <property name="description" i18n:translate="">Proporciona datos para comprobar alguno de tus gastos</property>
  <property name="icon_expr">string:${portal_url}/document_icon.png</property>
- <property name="factory">viaje</property>
- <property name="add_view_expr">string:${folder_url}/++add++viaje</property>
+ <property name="factory">comprobacion</property>
+ <property name="add_view_expr">string:${folder_url}/++add++comprobacion</property>
  <property name="link_target"></property>
  <property name="immediate_view">view</property>
  <property name="global_allow">True</property>
  <property name="filter_content_types">True</property>
  <property name="allowed_content_types"/>
  <property name="allow_discussion">False</property>
- <property name="default_view">resumen_gasto</property>
+ <property name="default_view">view</property>
  <property name="view_methods">
    <element value="view"/>
  </property>
  <property name="default_view_fallback">False</property>
  <property name="add_permission">cmf.AddPortalContent</property>
  <property name="klass">plone.dexterity.content.Item</property>
-  <property name="schema">viaticos.viajes.content.viaje.IViaje</property>
+  <property name="schema">viaticos.viajes.content.comprobacion.IComprobacion</property>
  <!-- property name="klass">plone.dexterity.content.Item</property -->
  <property name="behaviors">
   <!-- element value="plone.app.dexterity.behaviors.metadata.IDublinCore"/-->

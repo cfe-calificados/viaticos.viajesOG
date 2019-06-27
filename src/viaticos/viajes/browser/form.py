@@ -20,6 +20,7 @@ from zope.schema.interfaces import IContextAwareDefaultFactory
 @provider(IContextAwareDefaultFactory)
 def get_context_tarifa(context):
     out = 0.0
+    #import pdb; pdb.set_trace()
     try:
         out = context.tarifa
     except:
@@ -77,7 +78,7 @@ class ITicketForm(form.Schema):
 
     #import pdb; pdb.set_trace()
     tarifa = schema.Float(
-        title=u"Tarifa",
+        title=_(u'Tarifa'),
         required = True,
         min=0.0,        
         defaultFactory=get_context_tarifa
@@ -145,7 +146,7 @@ class TicketForm(form.SchemaForm):
         # Set status on this form page
         # (this status message is not bind to the session and does not go thru redirects)
         self.status = "¡Información de agencia registrada exitosamente!"
-        
+        self.request.response.redirect(self.context.absolute_url())
         #import pdb; pdb.set_trace()
 
     @button.buttonAndHandler(u"Cancelar")

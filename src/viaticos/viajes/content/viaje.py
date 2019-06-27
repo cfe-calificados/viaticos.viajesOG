@@ -13,6 +13,9 @@ from zope.schema.vocabulary import SimpleVocabulary
 #for default purposes
 from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
+#for access and view purposes
+from z3c.form.interfaces import IAddForm
+from z3c.form.interfaces import IEditForm
 
 OpcionesRequerimientos = SimpleVocabulary(
     [SimpleTerm(value=u'boleto_avion', title=_(u'Boleto de avión')),
@@ -113,48 +116,60 @@ class IViaje(model.Schema):
 
     ### datos boleto avion
     
-    directives.read_permission(tarifa='zope2.DeleteObjects')
-    directives.write_permission(tarifa='zope2.DeleteObjects')
+    #directives.read_permission(tarifa='zope2.DeleteObjects')
+    #directives.write_permission(tarifa='zope2.DeleteObjects')
+    directives.omitted(IAddForm, 'tarifa')
+    directives.omitted(IEditForm, 'tarifa')    
     tarifa = schema.Float(
         title = _(u'Tarifa'),
         required = False,
         #defaultFactory=get_context_tarifa
     )
 
-    directives.read_permission(aerolinea='zope2.DeleteObjects')
-    directives.write_permission(aerolinea='zope2.DeleteObjects')
+    #directives.read_permission(aerolinea='zope2.DeleteObjects')
+    #directives.write_permission(aerolinea='zope2.DeleteObjects')
+    directives.omitted(IAddForm, 'aerolinea')
+    directives.omitted(IEditForm, 'aerolinea')    
     aerolinea = schema.TextLine(
         title = _(u'Aerolínea'),
         required = False,
         #defaultFactory=get_context_aero
     )
 
-    directives.read_permission(hora_salida='zope2.DeleteObjects')
-    directives.write_permission(hora_salida='zope2.DeleteObjects')
+    #directives.read_permission(hora_salida='zope2.DeleteObjects')
+    #directives.write_permission(hora_salida='zope2.DeleteObjects')
+    directives.omitted(IAddForm, 'hora_salida')
+    directives.omitted(IEditForm, 'hora_salida')
     hora_salida = schema.Datetime(
         title = _(u'Hora salida'),
         required = False,
         #defaultFactory=get_context_horas
     )
 
-    directives.read_permission(hora_regreso='zope2.DeleteObjects')
-    directives.write_permission(hora_regreso='zope2.DeleteObjects')
+    #directives.read_permission(hora_regreso='zope2.DeleteObjects')
+    #directives.write_permission(hora_regreso='zope2.DeleteObjects')
+    directives.omitted(IAddForm, 'hora_regreso')
+    directives.omitted(IEditForm, 'hora_regreso')
     hora_regreso =  schema.Datetime(
         title = _(u'Hora regreso'),
         required = False,
         #defaultFactory=get_context_horar
     )
 
-    directives.read_permission(hotel_nombre='zope2.DeleteObjects')
-    directives.write_permission(hotel_nombre='zope2.DeleteObjects')
+    #directives.read_permission(hotel_nombre='zope2.DeleteObjects')
+    #directives.write_permission(hotel_nombre='zope2.DeleteObjects')
+    directives.omitted(IAddForm, 'hotel_nombre')
+    directives.omitted(IEditForm, 'hotel_nombre')
     hotel_nombre =  schema.TextLine(
         title = _(u'Nombre del hotel'),
         required = False,
         #defaultFactory=get_context_hotel
     )
 
-    directives.read_permission(hotel_domicilio='zope2.DeleteObjects')
-    directives.write_permission(hotel_domicilio='zope2.DeleteObjects')
+    #directives.read_permission(hotel_domicilio='zope2.DeleteObjects')
+    #directives.write_permission(hotel_domicilio='zope2.DeleteObjects')
+    directives.omitted(IAddForm, 'hotel_domicilio')
+    directives.omitted(IEditForm, 'hotel_domicilio')
     hotel_domicilio =  schema.Text(
         title = _(u'Domicilio del hotel'),
         required = False,

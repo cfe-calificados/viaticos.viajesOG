@@ -7,6 +7,8 @@
           console.log("wtaf")
           $(".hidden_form").show();
           $(".ticket").hide();
+          $(".btn-bottom").hide();
+          $(".btn-edit").hide();
       }
     </script>
   </metal:block>
@@ -39,10 +41,10 @@
       display: inline-block;
       /*margin: 10px 10px 10px 0;*/
       }
-      .showtime:hover {
+      /*.showtime:hover {
       background: #44c0ff;
       color: #fff;
-      }
+      }*/
       /* fake the cut out with a masked circle*/
       .showtime:before {
       content: "";
@@ -65,6 +67,25 @@
       right: -10px;
       border: 11px solid #fff;
       border-radius: 12px;
+      }
+
+      .ticket:nth-child(n){
+      padding-left: 5em;
+      }
+
+      .div-btn {
+      position:relative;
+      }
+      .btn-bottom {
+      position:absolute;
+      bottom:0;
+      right:0;
+      }
+      .btn-edit {
+      position:absolute;
+      bottom:0;
+      right:0;
+      color:#3d3f42;
       }
 
     </style>
@@ -131,7 +152,7 @@
 
 	</div>
 	
-	<div onclick="show_hide_form()" class="showtime columne ticket" tal:condition="python: view.values_setted()">
+	<div class="showtime columne ticket" tal:condition="python: view.values_setted()">
 	  <div tal:condition="context/tarifa">
 	    <h3>Tarifa</h3>
 	    <p tal:content="structure view/w/tarifa/render"></p>
@@ -156,24 +177,35 @@
 	    <h3>Dirección hotel</h3>
 	    <p tal:content="structure view/w/hotel_domicilio/render"></p>
 	  </div>
-	  
+	  <input class="btn-edit" tal:condition="python: view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Editar información" id="bselect"></input> <br>
 	</div>
 
+	<div class="columne hidden_form" hidden tal:condition="python: view.is_transact_state()">
+	  <div tal:define="form python:view.render_ticket_form()"> 
+            <tal:with-form-as-view define="view nocall:form">
+              <metal:block use-macro="form/@@ploneform-macros/form" />
+            </tal:with-form-as-view>
+	  </div>
+	</div>
+
+	
+	<!--input class="columne btn-column" tal:condition="python: not view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Registrar boleto" id="bselect"></input> <br-->
 
       </div>
 
       <!-- Formulario captura de boletos -->
       <hr>
-      <!--input tal:condition="python: view.values_setted()" onclick="show_hide_form()" type="button" value="Cambiar boleto" id="bselect"></input--> 
-      <input tal:condition="python: not view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Registrar boleto" id="bselect"></input> <br>
-      
-      <div class="hidden_form" hidden tal:condition="python: view.is_transact_state()">
+      <!--input tal:condition="python: view.values_setted()" onclick="show_hide_form()" type="button" value="Cambiar boleto" id="bselect"></input-->
+      <div class="div-btn">
+	<input class="btn-bottom" tal:condition="python: not view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Registrar boleto" id="bselect"></input> <br>
+      </div>
+      <!-- div class="hidden_form" hidden tal:condition="python: view.is_transact_state()">
 	<div tal:define="form python:view.render_ticket_form()"> 
           <tal:with-form-as-view define="view nocall:form">
             <metal:block use-macro="form/@@ploneform-macros/form" />
           </tal:with-form-as-view>
 	</div>
-      </div>
+      </div-->
 
       
       

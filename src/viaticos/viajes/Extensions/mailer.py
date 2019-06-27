@@ -10,14 +10,14 @@ def test(self, state_change):
 
 def build_body(brain, users):
     owner = users.getUserById(brain.owner_info()['id'])
-    out = "El usuario "+owner.getProperty("fullname")+" acaba de registrar una nueva solicitud de gastos:\n\n"
-    out += u"\nTítulo: "+brain.title
-    out += u"\nMotivo: "+brain.motivo
+    out = u"El usuario "+owner.getProperty("fullname").encode('utf-8').decode('utf-8')+" acaba de registrar una nueva solicitud de gastos:\n\n"
+    out += u"\nTítulo: "+brain.title.encode('utf-8').decode('utf-8')
+    out += u"\nMotivo: "+brain.motivo.encode('utf-8').decode('utf-8')
     out += u"\nRequerimientos: "
     out += u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d %B %Y")
     out += u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d %B %Y")
-    out += u"\nPaís destino: "+brain.pais
-    out += u"\nCiudad destino: "+brain.ciudad+" CP: "+brain.cp
+    out += u"\nPaís destino: "+brain.pais.encode('utf-8').decode('utf-8')
+    out += u"\nCiudad destino: "+brain.ciudad.encode('utf-8').decode('utf-8')+" CP: "+brain.cp.encode('utf-8').decode('utf-8')
     return out
     
     

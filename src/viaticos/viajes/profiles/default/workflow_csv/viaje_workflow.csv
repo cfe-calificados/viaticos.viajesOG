@@ -13,7 +13,7 @@ Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor
 View,				N,	 N,	    N,	 	   N, 	   N,	    Y,	   N,	   N,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-Delete objects    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N  
 
 [State]
 Id:,pendiente
@@ -25,7 +25,7 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   Y,	   N,		N
-Delete objects    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
+Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
 Id:,esperando
@@ -37,7 +37,7 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-Delete objects    		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   Y,	   N,		N  
+Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   Y,	   N,		N  
 
 [State]
 Id:,final

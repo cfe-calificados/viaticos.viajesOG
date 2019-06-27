@@ -5,7 +5,12 @@ from datetime import datetime
 
 def create_comprobacion(self, state_change):
     portal = api.portal.get()
-    obj = None#api.content.create(safe_id=True,type="viaje", title="Hola", motivo="contacto", req=["boleto_avion"], fecha_salida=datetime(2019,1,1), fecha_regreso=datetime(2019,1,2), pais="MExico", ciudad="Ciudad", cp="2222", container=portal.viaticos)
+    trip = state_change.object
+    obj = None    
+    try:
+        obj = api.content.create(safe_id=True,type="comprobacion", relacion=trip, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), fecha=datetime.now(), importe=0, descripcion=u"Descripción", archivo=None, container=portal.viaticos) #None#
+    except Exception as error:
+        import pdb; pdb.set_trace()
     if obj != None:
         print("We made it!")
     else:
