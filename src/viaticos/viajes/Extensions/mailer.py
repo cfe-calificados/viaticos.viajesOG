@@ -17,7 +17,7 @@ def build_body(brain, users):
     out += u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d %B %Y")
     out += u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d %B %Y")
     out += u"\nPaís destino: "+brain.pais.encode('utf-8').decode('utf-8')
-    out += u"\nCiudad destino: "+brain.ciudad.encode('utf-8').decode('utf-8')+" CP: "+brain.cp.encode('utf-8').decode('utf-8')
+    out += u"\nCiudad destino: "+brain.ciudad.encode('utf-8').decode('utf-8')+(" CP: "+brain.cp.encode('utf-8').decode('utf-8') if brain.cp else "")
     return out
     
     

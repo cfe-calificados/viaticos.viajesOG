@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="viaticos.viajes">
+  <body>
+    <metal:content-core fill-slot="content-core">
+      <p><b>Solicitud</b></p>
+      <div tal:define="viaje python:view.get_viaje()">
+        <a tal:attributes="href python:viaje.absolute_url()"><p>${python:viaje.title}</p></a>
+      </div>
+      <br>
+      <div tal:condition="context/notas">
+	<p><b>Notas</b></p>
+        <p tal:content="structure view/w/notas/render"></p>
+      </div>
+      <br>
+      <legend>Conceptos</legend>
+
+      <table class="datagridwidget-table-view" id="form-widgets-grupo_comprobacion">
+	<thead>
+	  <tr>
+    
+	    <th class="header">
+              <span>Fecha</span>
+              <span class="required">*</span>
+	    </th>
+    
+	    <th class="header">
+              <span>Concepto</span>
+              <span class="required">*</span>
+	    </th>
+    
+	    <th class="header">
+              <span>Descripción</span>
+              <span class="required">*</span>
+	    </th>
+    
+	    <th class="header">
+              <span>Importe</span>
+              <span class="required">*</span>
+	    </th>
+    
+	    <th class="header">
+              <span>Archivo</span>
+            
+	    </th>
+    
+	  </tr>
+	</thead>
+	<tbody id="datagridwidget-tbody" data-name_prefix="form.widgets.grupo_comprobacion" data-id_prefix="form-widgets-grupo_comprobacion" tal:define="conceptos context/grupo_comprobacion">
+	  <tr class="datagridwidget-row" tal:repeat="concepto conceptos">
+	    <td tal:content="python:concepto['fecha'].strftime('%d/%m/%Y')">fecha</td>
+	    <td tal:content="python:str(concepto['concepto'])">concepto</td>
+	    <td tal:content="python:concepto['descripcion']">descripcion</td>
+	    <td tal:content="python:concepto['importe']">importe</td>
+	    <td>${python: "Ningún archivo" if not concepto['archivo'] else "archivo"}</td>
+	  </tr>
+	</tbody>
+      </table>
+      
+    </metal:content-core>
+  </body>
+</html>
+

@@ -23,6 +23,13 @@ from zope.interface import provider
 #for multiple files upload
 #from plone.formwidget.multifile import MultiFileFieldWidget
 from plone.formwidget.namedfile import NamedFileFieldWidget
+from collective.z3cform.datagridfield import DataGridFieldFactory, BlockDataGridFieldFactory
+from collective.z3cform.datagridfield import DictRow
+from zope import interface
+from plone.app.z3cform.widget import DateFieldWidget
+from plone.directives import form
+from datetime import datetime
+from plone.formwidget.namedfile.widget import NamedFileWidget
 
 print("IComprobacion loaded")
 
@@ -40,7 +47,29 @@ def viaje_associated(context):
 
 directlyProvides(viaje_associated, IContextSourceBinder)
 
+class ITable(interface.Interface):
+    '''temporalmente lo quitamos para hacer la vista que no vulnere la seguridad por el widget'''
+    directives.widget(
+        'fecha',
+        DateFieldWidget,         
+        pattern_options={
+            'today': False,
+        }
+    )    
 
+    fecha= schema.Date(title=u"Fecha", required=True)
+    concepto = schema.TextLine(title=u"Concepto",required=True)
+    descripcion = schema.TextLine(title=u"Descripción",required=True)
+    importe = schema.Float(title=u"Importe",required=True)
+    archivo = schema.ASCII(
+        title=_(u'Archivo'),
+        description=u"Usar comprimido para múltiples archivos.",
+        required = True
+    )
+    directives.widget(
+        'archivo',
+        NamedFileWidget
+    )
 
 class IComprobacion(model.Schema):
     """ Esquema dexterity para el tipo Comprobacion
@@ -64,48 +93,44 @@ class IComprobacion(model.Schema):
         required = True
     )
     '''
-    fecha = schema.Datetime(
-        title = _(u'Fecha'),
-        required = True
-    )
-    #clave = "" unnecessary -> obj id
-    importe = schema.Float(
-        title = _(u'Importe'),
-        required = True,
-        #min=0.0,        
-        #default=0.0
-    )
-    
-    descripcion = schema.Text(
-        title = _(u'Descripción'),
-        required = True
-    )
-
     '''
-    archivos = schema.List(
-        title=u'Adjuntos',
-        value_type=NamedFile(),
-        default=1;
-        required=False)
+    fecha_s = schema.Datetime(
+        title = _(u'Fecha creación'),
+        required = True
+    )
+    '''
+    #clave = "" unnecessary -> obj id
+    
+    
+    notas = schema.Text(
+        title = _(u'Notas'),
+        required = False
+    )
 
-    schema.List(
-            title=u'Adjuntos',
-            value_type=schema.Float(),
-            required=False
-        )
     '''
     archivo = NamedFile(
         title=_(u'Archivo'),
         description=u"Usar comprimido para múltiples archivos.",
         required = False
     )
+    '''
 
-    fcurricula = schema.List(
-        title=_(u'Concepto'),
+    directives.widget(grupo_comprobacion=DataGridFieldFactory)
+    grupo_comprobacion = schema.List(
+        title=_(u'Comprobación'),
         description=_(u'Concepto, monto y algo más'),        
-        value_type=object,
-        default = [0, 3, 5],
-        min_length = 3,
-        max_length = 3,        
-        required=False,
+        value_type=DictRow(
+            title=u"tablerow",
+            schema=ITable,
+        ),
+        required=False
     )
+
+    model.fieldset(
+        'concepto',
+        label=_(u"Conceptos"),
+        fields=['grupo_comprobacion']
+    )
+
+    
+    

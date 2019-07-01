@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from Products.Five.browser import BrowserView
 from plone.dexterity.browser.view import DefaultView
 from plone import api
@@ -27,3 +28,18 @@ class VistaViaje(DefaultView):
 
     def valid_registration(self):
         return True
+
+
+class VistaComprobacion(DefaultView):
+    """ Vista por defecto para comprobacion de gastos """
+    def get_viaje(self):
+        obj_comp = self.context
+        catalog = api.portal.get_tool('portal_catalog')
+        if obj_comp.relacion.isBroken():
+            print("Relación a viaje rota")
+            return None
+        brains = catalog(path={'query': obj_comp.relacion.to_path, 'depth': 0})
+        return brains[0].getObject()
+        
+        
+        

@@ -28,12 +28,30 @@
      permission="zope2.View"
      />
 
+  <!-- Vista resumen comprobacion de gastos -->
+  <browser:page
+     name="resumen_comprobacion"
+     for="*"
+     layer="zope.interface.Interface"
+     class=".views.VistaComprobacion"
+     template="templates/comprobacionview.pt"
+     permission="zope2.View"
+     />
+
   <!-- Form test -->
   <browser:page
      for="Products.CMFCore.interfaces.ISiteRoot"
      name="ticket-form"
      permission="zope2.View"
      class=".form.TicketForm"
+     />
+
+  <!-- Form test 2 -->
+  <browser:page
+     for="*"
+     name="datagrid-form"
+     permission="zope2.View"
+     class=".test.DataGridForm"
      />
   
 </configure>
