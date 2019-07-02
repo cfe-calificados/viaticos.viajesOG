@@ -40,6 +40,10 @@ class VistaComprobacion(DefaultView):
             return None
         brains = catalog(path={'query': obj_comp.relacion.to_path, 'depth': 0})
         return brains[0].getObject()
+
+    def get_file_idx(self, concepto):
+        return self.context.grupo_comprobacion.index(concepto)
+        
         
         
         

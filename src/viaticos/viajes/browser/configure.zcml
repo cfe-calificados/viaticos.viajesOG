@@ -53,5 +53,12 @@
      permission="zope2.View"
      class=".test.DataGridForm"
      />
+
+  <browser:page
+    for="viaticos.viajes.content.comprobacion.IComprobacion"
+    name="editar"
+    class="viaticos.viajes.content.comprobacion.EditComprobacion"
+    permission="cmf.ModifyPortalContent"
+    />
   
 </configure>

@@ -30,6 +30,11 @@ from plone.app.z3cform.widget import DateFieldWidget
 from plone.directives import form
 from datetime import datetime
 from plone.formwidget.namedfile.widget import NamedFileWidget
+from zope.interface import implementer
+from plone.autoform.interfaces import IFormFieldProvider
+from plone.dexterity.browser import edit
+from z3c.form import button
+from z3c.relationfield import RelationValue, TemporaryRelationValue
 
 print("IComprobacion loaded")
 
@@ -61,15 +66,18 @@ class ITable(interface.Interface):
     concepto = schema.TextLine(title=u"Concepto",required=True)
     descripcion = schema.TextLine(title=u"Descripción",required=True)
     importe = schema.Float(title=u"Importe",required=True)
-    archivo = schema.ASCII(
+    archivo = NamedFile(
         title=_(u'Archivo'),
         description=u"Usar comprimido para múltiples archivos.",
         required = True
     )
+    
     directives.widget(
         'archivo',
-        NamedFileWidget
+        NamedFileFieldWidget
     )
+    
+
 
 class IComprobacion(model.Schema):
     """ Esquema dexterity para el tipo Comprobacion
@@ -133,4 +141,94 @@ class IComprobacion(model.Schema):
     )
 
     
+
+class EditComprobacion(edit.DefaultEditForm):
+    schema = IComprobacion
+    label = u"Modificar comprobaciones"
+    description = u"Agregar comprobaciones."
+
+    '''
+    def update(self):
+        try:
+            if self.request.REQUEST_METHOD == 'POST':
+                import pdb; pdb.set_trace()
+            elif self.request.REQUEST_METHOD == 'GET':
+                super(EditComprobacion, self).update()
+        except Exception as error:
+            import pdb; pdb.set_trace()
+    
+    '''
+    def updateActions(self):
+        super(EditComprobacion, self).updateActions()
+        self.actions["guardar"].addClass("context")
+        self.actions["cancelar"].addClass("standalone")
+    
+    @button.buttonAndHandler(u'Guardar')
+    def handleApply(self, action):
+        data, errors = self.extractData()
+        if errors:
+            self.status = self.formErrorsMessage
+            return
+
+        # Do something with valid data here
+        temp = TemporaryRelationValue(data['relacion'].absolute_url_path()) #Una relacion no formada completamente 
+        rel_full = temp.convert() 
+        self.context.relacion = rel_full #tal vez deberia ser la misma aunque intente cambiarse
+        self.context.tile = data['title']
+        self.context.notas = data['notas']
+
+        grupo_comprobacion = []
+        for dicc in self.context.grupo_comprobacion:
+            grupo_comprobacion.append(dicc.copy())
+
+        
+        for index, item in enumerate(data['grupo_comprobacion']):
+            # check if an image was submitted with each individual sponsor
+            if item['archivo']:
+                if index < len(grupo_comprobacion):
+                    grupo_comprobacion[index]['archivo'] = item['archivo']
+                else:
+                    grupo_comprobacion.append(item)
+                
+        self.context.grupo_comprobacion = grupo_comprobacion
+        self.status = "¡Información registrada exitosamente!"
+        self.request.response.redirect(self.context.absolute_url())
+
+    @button.buttonAndHandler(u"Cancelar")
+    def handleCancel(self, action):
+        """User cancelled. Redirect back to the front page.
+        """
+        self.status = "Cancelado por el usuario."
+        self.request.response.redirect(self.context.absolute_url())
+
+    '''
+    _grupo_comprobacion = None
+           
+    @property
+    def grupo_comprobacion(self):
+        print("jap")
+        return self.context.grupo_comprobacion
+
+    @grupo_comprobacion.setter
+    def grupo_comprobacion(self, data):
+        if data is None:
+            data = []
+        
+        # Create a dictionary of sponsors by their oid (id)
+        grupo_comprobacion = {
+            v['oid']: v
+            for v in (self.context.grupo_comprobacion or [])
+        }
+        for index, item in enumerate(data):
+            # check if an image was submitted with each individual sponsor
+            if not item['archivo']:
+                key = item['oid']
+                
+                # check if the submitted id is present in the existing sponsors' id
+                # if yes, store the image in the new field
+                if key in grupo_comprobacion:
+                    data[index]['archivo'] = grupo_comprobacion[key]['archivo']
+
+        self.context.grupo_comprobacion = data
+    '''
     
