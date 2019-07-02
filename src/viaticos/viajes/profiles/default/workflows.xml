@@ -4,5 +4,8 @@
         <type type_id="viaje">
             <bound-workflow workflow_id="viaje_workflow"/>
         </type>
+	<type type_id="comprobacion">
+            <bound-workflow workflow_id="comprobacion_workflow"/>
+        </type>
     </bindings>
 </object>

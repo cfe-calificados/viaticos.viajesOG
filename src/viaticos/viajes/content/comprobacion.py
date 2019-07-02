@@ -131,6 +131,7 @@ class IComprobacion(model.Schema):
             title=u"tablerow",
             schema=ITable,
         ),
+        default = [],
         required=False
     )
 
@@ -176,8 +177,10 @@ class EditComprobacion(edit.DefaultEditForm):
         self.context.relacion = rel_full #tal vez deberia ser la misma aunque intente cambiarse
         self.context.tile = data['title']
         self.context.notas = data['notas']
-
+        #self.context.grupo_comprobacion = [] if not self.context.grupo_comprobacion else self.context.grupo_comprobacion
+        
         grupo_comprobacion = []
+
         for dicc in self.context.grupo_comprobacion:
             grupo_comprobacion.append(dicc.copy())
 
