@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
 <registry>
-<!-- -*- extra stuff goes here -*- -->
+  <!-- -*- extra stuff goes here -*- -->
+  <records prefix="plone.resources/estaticos"
+         interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+    <value key="js">++plone++viaticos.viajes/fill_field.js</value>
+    <!--value key="js">++plone++viaticos/animation.js</value-->
+  </records>
 </registry>

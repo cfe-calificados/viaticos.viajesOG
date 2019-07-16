@@ -3,6 +3,12 @@
       i18n:domain="viaticos.viajes">
   <metal:block fill-slot="javascript_head_slot">
     <script type="text/javascript">
+      $(document).ready(function() {
+      if ($(".portalMessage.error", $(".form")).length != 0) {
+      console.log("hurdur");
+      show_hide_form();
+      }});
+      
       function show_hide_form() {
           console.log("wtaf")
           $(".hidden_form").show();
@@ -93,14 +99,18 @@
 
   <body>
     <metal:content-core fill-slot="content-core">
-      <!--INFO SOBRE ESTADO DEL REGISTRO -->
+      <dl tal:define="info_state python: view.get_info_state()" tal:condition="python:info_state" class="portalMessage warning">
+	<dt>Estado</dt>
+	<dd>${python: info_state}</dd>
+      </dl>
+      <!--INFO SOBRE ESTADO DEL REGISTRO -->      
       <div tal:condition="python:view.is_transact_state()">
-	<dl tal:condition="python:view.values_setted()" class="portalMessage info">
+	<dl tal:condition="python:view.values_setted() or not view.requirements()" class="portalMessage info">
 	  <dt>Aviso</dt>
 	  <dd>La información de la agencia ya está registrada. Proceder a registrar la solicitud si no requiere de cambios.</dd>
 	</dl>
 
-	<dl tal:condition="python:not view.values_setted()" class="portalMessage error">
+	<dl tal:condition="python:not view.values_setted() and view.requirements()" class="portalMessage error">
 	  <dt>Nota</dt>
 	  <dd>Para registrar la solicitud de gastos, es necesario capturar información de la agencia de viajes.</dd>
 	</dl>
@@ -152,7 +162,7 @@
 
 	</div>
 	
-	<div class="showtime columne ticket" tal:condition="python: view.values_setted()">
+	<div class="showtime columne ticket" tal:condition="python: view.values_setted() and view.requirements()">
 	  <div tal:condition="context/tarifa">
 	    <h3>Tarifa</h3>
 	    <p tal:content="structure view/w/tarifa/render"></p>
@@ -197,7 +207,7 @@
       <hr>
       <!--input tal:condition="python: view.values_setted()" onclick="show_hide_form()" type="button" value="Cambiar boleto" id="bselect"></input-->
       <div class="div-btn">
-	<input class="btn-bottom" tal:condition="python: not view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Registrar boleto" id="bselect"></input> <br>
+	<input class="btn-bottom" tal:condition="python: not view.values_setted() and view.is_transact_state() and view.requirements()" onclick="show_hide_form()" type="button" value="Registrar información" id="bselect"></input> <br>
       </div>
       <!-- div class="hidden_form" hidden tal:condition="python: view.is_transact_state()">
 	<div tal:define="form python:view.render_ticket_form()"> 

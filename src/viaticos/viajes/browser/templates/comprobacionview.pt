@@ -52,13 +52,15 @@
 	    <td tal:content="python:str(concepto['concepto'])">concepto</td>
 	    <td tal:content="python:concepto['descripcion']">descripcion</td>
 	    <td tal:content="python:concepto['importe']">importe</td>
-	    <td tal:define="file nocall:concepto/archivo">	      
+	    <td tal:condition="concepto/archivo" tal:define="file nocall:concepto/archivo">	      
 	      <a tal:define="idx python:view.get_file_idx(concepto)" tal:attributes="href string:${context/absolute_url}/editar/++widget++form.widgets.grupo_comprobacion.${idx}.widgets.archivo/@@download/${file/filename}">		
 		  ${python: file.filename} (${python: file.contentType})
 		</a>
 		
 	    </td>
-	    
+	    <td tal:condition="python: not concepto['archivo']">
+	      <p> Ningún archivo </p>
+	    </td>
 	  </tr>
 	</tbody>
       </table>

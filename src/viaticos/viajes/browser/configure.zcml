@@ -48,17 +48,47 @@
 
   <!-- Form test 2 -->
   <browser:page
-     for="*"
+     for="Products.CMFCore.interfaces.ISiteRoot"
      name="datagrid-form"
      permission="zope2.View"
-     class=".test.DataGridForm"
+     class=".test.PruebaForm"
      />
 
+  <!-- Edit form for comprobacion -->
   <browser:page
-    for="viaticos.viajes.content.comprobacion.IComprobacion"
-    name="editar"
-    class="viaticos.viajes.content.comprobacion.EditComprobacion"
-    permission="cmf.ModifyPortalContent"
-    />
+     for="viaticos.viajes.content.comprobacion.IComprobacion"
+     name="editar"
+     class="viaticos.viajes.content.comprobacion.EditComprobacion"
+     permission="cmf.ModifyPortalContent"
+     />
+
+  <!-- test 3 -->
+  <browser:page
+     name="prueba"
+     for="*"
+     class=".test.Prueba"
+     template="templates/prueba.pt"
+     permission="zope2.View"
+     />
+
+    <!-- Edit form for comprobacion -->
+  <browser:page
+     for="*"
+     name="agregar_viaje"
+     class="viaticos.viajes.content.viaje.AddViaje"
+     permission="cmf.AddPortalContent"
+     />
+  
+
+  <!-- Vista sobreescritura de folder de viaticos -->
+   <browser:page
+     name="vista_viaticos"
+     for="*"
+     layer="zope.interface.Interface"
+     class=".views.VistaViaticos"
+     template="templates/viaticos_folder.pt"
+     permission="zope2.View"
+     />
+
   
 </configure>

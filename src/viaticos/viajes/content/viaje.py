@@ -16,6 +16,12 @@ from zope.schema.interfaces import IContextAwareDefaultFactory
 #for access and view purposes
 from z3c.form.interfaces import IAddForm
 from z3c.form.interfaces import IEditForm
+#for add template purposes
+from plone.dexterity.browser import add
+
+##for validation purposes
+from zope.interface import Invalid
+from zope.interface import invariant
 
 OpcionesRequerimientos = SimpleVocabulary(
     [SimpleTerm(value=u'boleto_avion', title=_(u'Boleto de avión')),
@@ -47,11 +53,15 @@ class IViaje(model.Schema):
     """ Esquema dexterity para el tipo Viajes
     """
 
+    @invariant
+    def validacion_fechas(data):
+        if data.fecha_salida > data.fecha_regreso:
+            raise Invalid(_(u'La fecha de salida no puede ser posterior a la de regreso!'))        
+
     title = schema.TextLine(
         title=_(u'Título'),
     )
 
-    #directives.widget(motivo=RadioFieldWidget)
     motivo = schema.Choice(
         title = _(u'Motivo'),
         vocabulary = OpcionesMotivo,
@@ -64,14 +74,6 @@ class IViaje(model.Schema):
     )
 
     directives.widget(req=CheckBoxFieldWidget)
-    """
-    req = schema.Choice(
-        title = _(u'Requerimientos'),
-        vocabulary = OpcionesRequerimientos,
-        required = True
-    )
-    """
-
     req = schema.List(title=_(u'Requerimientos'),
                                description=u"",
                                required=True,
@@ -89,11 +91,17 @@ class IViaje(model.Schema):
         required = True
     )
 
+    
     pais = schema.TextLine(
         title = _(u'País destino'),
         required = True
     )
 
+    estado = schema.TextLine(
+        title = _(u'Estado destino'),
+        required = True
+    )
+    
     ciudad = schema.TextLine(
         title = _(u'Ciudad destino'),
         required = True
@@ -177,5 +185,35 @@ class IViaje(model.Schema):
     )
            
     #import pdb; pdb.set_trace()
+
+    model.fieldset(
+        'avion_req',
+        label=_(u"Avión"),
+        fields=['tarifa', 'aerolinea', 'hora_salida', 'hora_regreso']
+    )
     
+    model.fieldset(
+        'hotel_req',
+        label=_(u"Hospedaje"),
+        fields=['hotel_nombre', 'hotel_domicilio']
+    )
+
     
+from Products.CMFPlone.resources import add_resource_on_request    
+class AddViaje(add.DefaultAddForm):
+    def __call__(self):
+        # utility function to add resource to rendered page
+        #add_resource_on_request(self.request, 'exercise2')
+        print("loading JS")
+        add_resource_on_request(self.request, 'estaticos')
+        #import pdb; pdb.set_trace()
+        return super(AddViaje, self).__call__()
+    
+    portal_type = 'viaje'
+    schema = IViaje
+    label = u"Agregar solicitud de gastos"
+    description = u"Añade información sobre tus salidas. "
+
+    
+class AddViajesss(add.DefaultAddView):
+    form = None

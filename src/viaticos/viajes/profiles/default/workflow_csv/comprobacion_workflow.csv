@@ -17,7 +17,7 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 
 [State]
 Id:,revision
-Title:,Por revisar
+Title:,Por aprobar
 Description:,Pendiente de revisar por encargado.
 Transitions:,"terminar,fallo_bosquejo"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
@@ -25,11 +25,11 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   Y,	   N,		N
-Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
 
 [State]
-Id:,terminado
-Title:,Revisado
+Id:,aprobado
+Title:,Aprobado
 Description:,Revisado y aprobado por encargado.
 Transitions:,
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
@@ -37,7 +37,7 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
 
 
 [Transition]
@@ -50,7 +50,7 @@ Script after:,viaticos.viajes.Extensions.mailer.test
 
 [Transition]
 Id:,terminar
-Title:,Terminar
+Title:,Aprobar
 Description:,Aprobar la informacion de la comprobacion de gastos
 Target state:,terminado
 Guard permission:,Review portal content

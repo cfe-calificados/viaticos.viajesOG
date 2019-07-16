@@ -1,0 +1,98 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="viaticos.viajes">
+  <body>
+    <metal:content-core fill-slot="content-core">
+	  
+      <h3> Solicitudes de gastos </h3>
+      <table class="listing"
+             id="viajes"
+             tal:define="viajes python:view.viajes()">
+	<thead>
+	  <tr>
+            <th>Título</th>
+            <th>Creador</th>
+            <th>Estado</th>
+	    <th>Fecha de modificación</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr tal:repeat="viaje viajes">
+            <td>
+              <a tal:attributes="href viaje/url;
+				 title viaje/motivo">
+		<!--tal:content="python:talk['title']"-->
+		${python:viaje['title']}
+              </a>
+            </td>
+            <td>
+	      <a tal:attributes="href viaje/creator_url"
+		 tal:content="viaje/creator">
+		Autor
+	      </a>
+            </td>
+            <td> <!-- tal:content="talk/audience"-->
+              ${python:viaje['state']}
+            </td>
+	    <td tal:content="viaje/modif_date">
+	      Fecha
+            </td>
+	  </tr>
+	  <tr tal:condition="not:viajes">
+            <td colspan=3>
+              Aún no hay solicitudes de gastos registradas :-(
+            </td>
+	  </tr>
+	</tbody>
+      </table>
+
+      <br>
+      <h3> Comprobaciones de gastos </h3>
+      <table class="listing"
+             id="comprobaciones"
+             tal:define="comprobaciones python:view.comprobaciones()">
+	<thead>
+	  <tr>
+            <th>Título</th>
+            <th>Creador</th>	    
+            <th>Estado</th>
+	    <th>Solicitud de gastos</th>
+	    <th>Fecha de modificación</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr tal:repeat="comprobacion comprobaciones">
+            <td>
+              <a tal:attributes="href comprobacion/url;
+				 title comprobacion/title">
+		<!--tal:content="python:talk['title']"-->
+		${python:comprobacion['title']}
+              </a>
+            </td>
+            <td>
+	      <a tal:attributes="href comprobacion/creator_url"
+		 tal:content="comprobacion/creator">
+		Autor
+	      </a>
+            </td>
+            <td> <!-- tal:content="talk/audience"-->
+              ${python:comprobacion['state']}
+            </td>
+	    <td>
+	      <a tal:content="comprobacion/viaje" tal:attributes="href comprobacion/viaje_url">
+            </td>
+	    <td tal:content="comprobacion/modif_date">
+	      Fecha
+            </td>
+	  </tr>
+	  <tr tal:condition="not:comprobaciones">
+            <td colspan=3>
+              Aún no hay comprobaciones de gastos registradas :-(
+            </td>
+	  </tr>
+	</tbody>
+      </table>
+      
+    </metal:content-core>
+  </body>
+</html>

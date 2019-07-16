@@ -23,7 +23,7 @@ from zope.interface import provider
 #for multiple files upload
 #from plone.formwidget.multifile import MultiFileFieldWidget
 from plone.formwidget.namedfile import NamedFileFieldWidget
-from collective.z3cform.datagridfield import DataGridFieldFactory, BlockDataGridFieldFactory
+from collective.z3cform.datagridfield import DataGridFieldFactory
 from collective.z3cform.datagridfield import DictRow
 from zope import interface
 from plone.app.z3cform.widget import DateFieldWidget
@@ -33,8 +33,12 @@ from plone.formwidget.namedfile.widget import NamedFileWidget
 from zope.interface import implementer
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.browser import edit
-from z3c.form import button
+from z3c.form import button, field
 from z3c.relationfield import RelationValue, TemporaryRelationValue
+## for validation purposes
+from zope.interface import Invalid
+from zope.interface import invariant
+
 
 print("IComprobacion loaded")
 
@@ -53,7 +57,7 @@ def viaje_associated(context):
 directlyProvides(viaje_associated, IContextSourceBinder)
 
 class ITable(interface.Interface):
-    '''temporalmente lo quitamos para hacer la vista que no vulnere la seguridad por el widget'''
+    '''temporalmente lo quitamos para hacer la vista que no vulnere la seguridad por el widget '''
     directives.widget(
         'fecha',
         DateFieldWidget,         
@@ -61,6 +65,7 @@ class ITable(interface.Interface):
             'today': False,
         }
     )    
+
 
     fecha= schema.Date(title=u"Fecha", required=True)
     concepto = schema.TextLine(title=u"Concepto",required=True)
@@ -71,13 +76,12 @@ class ITable(interface.Interface):
         description=u"Usar comprimido para múltiples archivos.",
         required = True
     )
-    
+
     directives.widget(
         'archivo',
         NamedFileFieldWidget
     )
     
-
 
 class IComprobacion(model.Schema):
     """ Esquema dexterity para el tipo Comprobacion
@@ -123,7 +127,13 @@ class IComprobacion(model.Schema):
     )
     '''
 
-    directives.widget(grupo_comprobacion=DataGridFieldFactory)
+    directives.widget(
+        'grupo_comprobacion',
+        DataGridFieldFactory,
+        pattern_options={
+            'auto_append': False,
+        }
+    )
     grupo_comprobacion = schema.List(
         title=_(u'Comprobación'),
         description=_(u'Concepto, monto y algo más'),        
@@ -131,16 +141,23 @@ class IComprobacion(model.Schema):
             title=u"tablerow",
             schema=ITable,
         ),
-        default = [],
-        required=False
+        default = None,
+        required=True
     )
 
+    '''
     model.fieldset(
         'concepto',
         label=_(u"Conceptos"),
         fields=['grupo_comprobacion']
     )
+    '''
 
+    '''
+    def updateWidgets(self):
+        super(EditComprobacion, self).updateWidgets()        
+        self.widgets['grupo_comprobacion'].auto_append = False 
+    '''
     
 
 class EditComprobacion(edit.DefaultEditForm):
@@ -148,17 +165,31 @@ class EditComprobacion(edit.DefaultEditForm):
     label = u"Modificar comprobaciones"
     description = u"Agregar comprobaciones."
 
+
+    form.widget(
+        'grupo_comprobacion',
+        DataGridFieldFactory,
+        pattern_options={
+            'auto_append': False,
+        }
+    )
+    #fields = field.Fields(IComprobacion)
+    #fields['grupo_comprobacion'].widgetFactory = DataGridFieldFactory
     '''
-    def update(self):
-        try:
-            if self.request.REQUEST_METHOD == 'POST':
-                import pdb; pdb.set_trace()
-            elif self.request.REQUEST_METHOD == 'GET':
-                super(EditComprobacion, self).update()
-        except Exception as error:
-            import pdb; pdb.set_trace()
-    
+    form.fieldset(
+        'concepto',
+        label=_(u"Conceptos"),
+        fields=['grupo_comprobacion']
+    )    
     '''
+
+
+    def updateWidgets(self):
+        #import pdb; pdb.set_trace()
+        super(EditComprobacion, self).updateWidgets()
+        
+        self.widgets['grupo_comprobacion'].auto_append = False 
+
     def updateActions(self):
         super(EditComprobacion, self).updateActions()
         self.actions["guardar"].addClass("context")
@@ -180,6 +211,8 @@ class EditComprobacion(edit.DefaultEditForm):
         #self.context.grupo_comprobacion = [] if not self.context.grupo_comprobacion else self.context.grupo_comprobacion
         
         grupo_comprobacion = []
+        if self.context.grupo_comprobacion == None:
+            self.context.grupo_comprobacion = []
 
         for dicc in self.context.grupo_comprobacion:
             grupo_comprobacion.append(dicc.copy())
@@ -204,34 +237,4 @@ class EditComprobacion(edit.DefaultEditForm):
         self.status = "Cancelado por el usuario."
         self.request.response.redirect(self.context.absolute_url())
 
-    '''
-    _grupo_comprobacion = None
-           
-    @property
-    def grupo_comprobacion(self):
-        print("jap")
-        return self.context.grupo_comprobacion
-
-    @grupo_comprobacion.setter
-    def grupo_comprobacion(self, data):
-        if data is None:
-            data = []
-        
-        # Create a dictionary of sponsors by their oid (id)
-        grupo_comprobacion = {
-            v['oid']: v
-            for v in (self.context.grupo_comprobacion or [])
-        }
-        for index, item in enumerate(data):
-            # check if an image was submitted with each individual sponsor
-            if not item['archivo']:
-                key = item['oid']
-                
-                # check if the submitted id is present in the existing sponsors' id
-                # if yes, store the image in the new field
-                if key in grupo_comprobacion:
-                    data[index]['archivo'] = grupo_comprobacion[key]['archivo']
-
-        self.context.grupo_comprobacion = data
-    '''
     
