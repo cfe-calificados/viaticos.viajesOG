@@ -1,0 +1,79 @@
+div {
+	box-sizing: border-box;
+	transition: all ease-in-out .5s;
+	-moz-transition: all ease-in-out .5s;
+	-webkit-transition: all ease-in-out .5s;
+}
+.icetab {
+    border: 2px solid #fafafa;/*#007bb1;*/
+	display: inline-block; 
+	border-bottom: 0px;	
+	margin: 0px;	
+  color: #000;
+	cursor: pointer;
+	border-right: 0px;
+}
+
+.icetab:last-child {
+    border-right: 2px solid #fafafa;/*#007bb1*/
+}
+
+#icetab-content {
+	overflow: hidden;
+	position: relative;
+	border-top: 2px solid #fafafa;/*#007bb1;*/
+}
+
+
+.tabcontent {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background: #fafafa;/*#fff;*/
+	width: 100%;
+	border-top: 0px;
+	border: 2px solid #fafafa;/*#007bb1;*/
+	border-top: 0px;
+	transform: translateY(-100%);
+	-moz-transform: translateY(-100%);
+	-webkit-transform: translateY(-100%);
+}
+
+.tabcontent:first-child {
+	position: relative;	
+}
+.tabcontent.tab-active {
+	border-top: 0px;
+	display: block;
+	transform: translateY(0%);
+	-moz-transform: translateY(0%);
+	-webkit-transform: translateY(0%);
+}
+
+
+/* A tiny wee bit of visual formating */
+body {
+	font-family: Segoe, "Segoe UI", "DejaVu Sans", "Trebuchet MS", Verdana, sans-serif;	
+	background: #666;
+	color: #454545;
+}
+.codepen-container {
+  /*max-width: 700px;*/
+  margin: 0px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tabcontent {
+	padding: 3px;
+}
+.icetab {
+	padding: 15px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+}
+.current-tab {
+    background: #007bb1;
+    color: #fff;
+}
+

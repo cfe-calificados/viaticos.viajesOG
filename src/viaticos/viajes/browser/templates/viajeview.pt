@@ -41,7 +41,7 @@
       text-decoration: none;
       /*padding: 6px 12px;*/
       background: #0083BE;
-      color: #fff;
+      color: #fafafa;
       font-weight: bold;
       position: relative;
       display: inline-block;
@@ -60,7 +60,7 @@
       z-index: 100;
       top: 8px;
       left: -10px;
-      border: 11px solid #fff;
+      border: 11px solid #fafafa;
       border-radius: 12px;
       }
       .showtime:after {
@@ -71,12 +71,17 @@
       z-index: 100;
       top: 8px;
       right: -10px;
-      border: 11px solid #fff;
+      border: 11px solid #fafafa;
       border-radius: 12px;
       }
 
       .ticket:nth-child(n){
+      padding-top:1.5em;
       padding-left: 5em;
+      }
+
+      .ticket div.documentDescription{
+      color: #fff;
       }
 
       .div-btn {
@@ -118,74 +123,74 @@
       
       <div class="rowe">
 	<div class="columne">
-	  <h3>Motivo</h3>
-	  <div tal:content="structure view/w/motivo/render">
+	  <p>Motivo</p>
+	  <div class="documentDescription" tal:content="structure view/w/motivo/render">
             Motivo
 	  </div>
 
-	  <h3>Objetivo</h3>
-	  <div tal:condition="context/objetivo" tal:content="structure view/w/objetivo/render">
+	  <p>Objetivo</p>
+	  <div tal:condition="context/objetivo" class="documentDescription" tal:content="structure view/w/objetivo/render">
             Objetivo
 	  </div>
-	  <h3>Requerimientos</h3>
-	  <div tal:content="structure view/w/req/render">
+	  <p>Requerimientos</p>
+	  <div class="documentDescription" tal:content="structure view/w/req/render">
             Requerimientos
 	  </div>
-	  <h3>Fecha Salida</h3>
+	  <p>Fecha Salida</p>
 	  <p>
-	    <span tal:content="structure view/w/fecha_salida/render">
+	    <span class="documentDescription" tal:content="structure view/w/fecha_salida/render">
               Talk
             </span>
 	  </p>
-	  <h3>Fecha Regreso</h3>
+	  <p>Fecha Regreso</p>
 	  <p>
-	    <span tal:content="structure view/w/fecha_regreso/render">
+	    <span class="documentDescription" tal:content="structure view/w/fecha_regreso/render">
             </span>
 	  </p>
-	  <h3>Ciudad</h3>
-	  <div tal:content="structure view/w/ciudad/render">
+	  <p>Ciudad</p>
+	  <div class="documentDescription" tal:content="structure view/w/ciudad/render">
 	  </div>
-	  <h3>País</h3>
-	  <div tal:content="structure view/w/pais/render">
+	  <p>País</p>
+	  <div class="documentDescription" tal:content="structure view/w/pais/render">
 	  </div>
-	  <h3>Código Postal</h3>
-	  <div tal:content="structure view/w/cp/render">
+	  <p>Código Postal</p>
+	  <div class="documentDescription" tal:content="structure view/w/cp/render">
 	  </div>      
 	  <div tal:condition="context/notas_avion">
-	    <h3>Notas de avión</h3>
-            <p tal:content="structure view/w/notas_avion/render"></p>
+	    <p>Notas de avión</p>
+            <div class="documentDescription" tal:content="structure view/w/notas_avion/render"></div>
 	  </div>      
 	  <div tal:condition="context/notas_hospedaje">
-	    <h3>Notas de hospedaje</h3>
-	    <p tal:content="structure view/w/notas_hospedaje/render"></p>
+	    <p>Notas de hospedaje</p>
+	    <div class="documentDescription" tal:content="structure view/w/notas_hospedaje/render"></div>
 	  </div>
 
 	</div>
 	
 	<div class="showtime columne ticket" tal:condition="python: view.values_setted() and view.requirements()">
-	  <div tal:condition="context/tarifa">
-	    <h3>Tarifa</h3>
-	    <p tal:content="structure view/w/tarifa/render"></p>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/tarifa">
+	    <p>Tarifa</p>
+	    <div class="documentDescription" tal:content="structure view/w/tarifa/render"></div>
 	  </div>	  
-	  <div tal:condition="context/aerolinea">
-	    <h3>Clave aerolínea</h3>
-	    <p tal:content="structure view/w/aerolinea/render"></p>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/aerolinea">
+	    <p>Clave aerolínea</p>
+	    <div class="documentDescription" tal:content="structure view/w/aerolinea/render"></div>
 	  </div>
-	  <div tal:condition="context/hora_salida">
-	    <h3>Salida</h3>
-	    <p tal:content="structure view/w/hora_salida/render"></p>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/hora_salida">
+	    <p>Salida</p>
+	    <div class="documentDescription" tal:content="structure view/w/hora_salida/render"></div>
 	  </div>
-	  <div tal:condition="context/hora_regreso">
-	    <h3>Regreso</h3>
-	    <p tal:content="structure view/w/hora_regreso/render"></p>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/hora_regreso">
+	    <p>Regreso</p>
+	    <div class="documentDescription" tal:content="structure view/w/hora_regreso/render"></div>
 	  </div>
-	  <div tal:condition="context/hotel_nombre">
-	    <h3>Hotel</h3>
-	    <p tal:content="structure view/w/hotel_nombre/render"></p>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/hotel_nombre">
+	    <p>Hotel</p>
+	    <div class="documentDescription" tal:content="structure view/w/hotel_nombre/render"></div>
 	  </div>
-	  <div tal:condition="context/hotel_domicilio">
-	    <h3>Dirección hotel</h3>
-	    <p tal:content="structure view/w/hotel_domicilio/render"></p>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/hotel_domicilio">
+	    <p>Dirección hotel</p>
+	    <div class="documentDescription" tal:content="structure view/w/hotel_domicilio/render"></div>
 	  </div>
 	  <input class="btn-edit" tal:condition="python: view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Editar información" id="bselect"></input> <br>
 	</div>

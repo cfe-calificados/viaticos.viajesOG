@@ -12,6 +12,8 @@ from plone.dexterity.browser.view import DefaultView
 #import requests
 from viaticos.viajes import _
 from z3c.form import button
+#static resources
+from Products.CMFPlone.resources import add_resource_on_request
 
 #datagrid
 #from z3c.form import DataGridField
@@ -37,6 +39,12 @@ class DataGridForm(form.EditForm):
 
 class Prueba(DefaultView):
     """ Prueba para JS """
+    def __call__(self):
+        # utility function to add resource to rendered page
+        print("loading CSS")        
+        add_resource_on_request(self.request, 'tabs_statics')
+        return super(Prueba, self).__call__()
+    
     def get_pieces(self):
         #countries = requests.get("http://battuta.medunes.net/api/country/all/?key=1dd922d979a3bed9b393e51f9eccf102")
         

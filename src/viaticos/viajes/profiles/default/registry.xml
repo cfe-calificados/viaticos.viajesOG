@@ -4,6 +4,10 @@
   <records prefix="plone.resources/estaticos"
          interface='Products.CMFPlone.interfaces.IResourceRegistry'>
     <value key="js">++plone++viaticos.viajes/fill_field.js</value>
-    <!--value key="js">++plone++viaticos/animation.js</value-->
+  </records>
+
+  <records prefix="plone.resources/tabs_statics"
+         interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+    <value key="js">++plone++viaticos.viajes/tabs_script.js</value>  
   </records>
 </registry>
