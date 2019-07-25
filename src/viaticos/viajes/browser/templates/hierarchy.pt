@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="viaticos.viajes">
+  <metal:block fill-slot="javascript_head_slot">
+    <script type="text/javascript">
+      $(document).ready(function() {
+      console.log("prueba jerarquica");
+      $("#form-widgets-up_members-from").children().remove()
+      $("#form-widgets-up_members-to").children().remove()
+      $("#form-buttons-rellenar").hide()
+      $("#btn-fill").click();
+            
+      $("select#form-widgets-miembro").on("change", function(){
+      console.log("hdspm");
+      $("#form-buttons-rellenar").click();      
+      });
+
+      if ($("#form-widgets-up_members-to").children("option").length + $("#form-widgets-up_members-from").children("option").length < 1) { $("#form-buttons-rellenar").click();}
+      
+      });
+
+      function fill_selects(lists_members) {
+      var list_avail = lists_members[0];
+      var list_select = lists_members[1];
+      $.each(list_avail, function(){
+      $("#form-widgets-up_members-from").append($("<option></option>").attr("value", this["value"]).text(decodeURIComponent(this["option"])));
+      });
+      $.each(list_select, function(){
+      $("#form-widgets-up_members-to").append($("<option></option>").attr("value", this["value"]).text(decodeURIComponent(this["option"])));
+      });
+
+      
+      };
+    </script>
+  </metal:block>
+
+  <metal:block fill-slot="style_slot">
+    <style media="all" type="text/css">
+    </style>
+  </metal:block>
+
+  <body>
+    <metal:content-core fill-slot="content-core">
+      <div tal:define="form python:view.render_hierarchy_form()"> 
+        <tal:with-form-as-view define="view nocall:form">
+          <metal:block use-macro="form/@@ploneform-macros/form" />
+        </tal:with-form-as-view>
+      </div>
+      <div tal:define="usuarios python:view.get_members()">
+	<input style="display:none;" id="btn-fill" type="button" onclick="fill_selects(${python:usuarios})" value="Huuhuh"></input>
+	<!--p tal:content="python:str(usuarios)"></p-->
+      </div>
+    </metal:content-core>
+  </body>
+</html>

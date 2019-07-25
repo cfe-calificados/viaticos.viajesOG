@@ -3,6 +3,11 @@
       i18n:domain="viaticos.viajes">
   <body>
     <metal:content-core fill-slot="content-core">
+      <dl tal:define="info_state python: view.get_info_state()" tal:condition="python:info_state" class="portalMessage warning">
+	<dt>Estado</dt>
+	<dd>${python: info_state}</dd>
+      </dl>
+      
       <p><b>Solicitud</b></p>
       <div tal:define="viaje python:view.get_viaje()">
         <a tal:attributes="href python:viaje.absolute_url()"><p>${python:viaje.title}</p></a>

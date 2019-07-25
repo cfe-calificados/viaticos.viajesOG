@@ -93,7 +93,7 @@
       right:0;
       }
       .btn-edit {
-      position:absolute;
+      position:float;
       bottom:0;
       right:0;
       color:#3d3f42;
@@ -191,9 +191,14 @@
 	  <div class="col-xs-6 col-md-6" tal:condition="context/hotel_domicilio">
 	    <p>Dirección hotel</p>
 	    <div class="documentDescription" tal:content="structure view/w/hotel_domicilio/render"></div>
+	    
 	  </div>
+
+	  
+	  
 	  <input class="btn-edit" tal:condition="python: view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Editar información" id="bselect"></input> <br>
 	</div>
+
 
 	<div class="columne hidden_form" hidden tal:condition="python: view.is_transact_state()">
 	  <div tal:define="form python:view.render_ticket_form()"> 

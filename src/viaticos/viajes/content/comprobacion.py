@@ -32,13 +32,14 @@ from datetime import datetime
 from plone.formwidget.namedfile.widget import NamedFileWidget
 from zope.interface import implementer
 from plone.autoform.interfaces import IFormFieldProvider
-from plone.dexterity.browser import edit
+from plone.dexterity.browser import edit, add
 from z3c.form import button, field
 from z3c.relationfield import RelationValue, TemporaryRelationValue
 ## for validation purposes
 from zope.interface import Invalid
 from zope.interface import invariant
-
+#for omissions
+from z3c.form.interfaces import IEditForm
 
 print("IComprobacion loaded")
 
@@ -88,45 +89,28 @@ class IComprobacion(model.Schema):
     """
 
     directives.read_permission(relacion='zope2.View')
-    directives.write_permission(relacion='zope2.View')
-    #directives.widget(relacion=AutocompleteFieldWidget)
+    directives.write_permission(relacion='cmf.ModifyPortalContent')
+    directives.omitted(IEditForm, 'relacion')    
     relacion = RelationChoice(
         title=_(u'Solicitud'),
         source=CatalogSource(portal_type=['viaje'], review_state=['final']),#viaje_associatede,#
         required=True,
     )
-    
+
+    directives.read_permission(title='zope2.View')
+    directives.write_permission(title='cmf.ModifyPortalContent')
+    directives.omitted(IEditForm, 'title')
+    #directives.omitted(IEditForm, 'title')    
     title = schema.TextLine(
         title=_(u'Título'),
     )
-    '''
-    empleado = schema.TextLine(
-        title=_(u'Empleado'),
-        required = True
-    )
-    '''
-    '''
-    fecha_s = schema.Datetime(
-        title = _(u'Fecha creación'),
-        required = True
-    )
-    '''
-    #clave = "" unnecessary -> obj id
-    
-    
+
     notas = schema.Text(
         title = _(u'Notas'),
         required = False
     )
 
-    '''
-    archivo = NamedFile(
-        title=_(u'Archivo'),
-        description=u"Usar comprimido para múltiples archivos.",
-        required = False
-    )
-    '''
-
+    
     directives.widget(
         'grupo_comprobacion',
         DataGridFieldFactory,
@@ -158,7 +142,15 @@ class IComprobacion(model.Schema):
         super(EditComprobacion, self).updateWidgets()        
         self.widgets['grupo_comprobacion'].auto_append = False 
     '''
-    
+
+class AddComprobacion(add.DefaultAddForm):
+    """ Default, for specific permissions only """
+    portal_type = 'viaje'
+    schema = IComprobacion
+
+    label = u"Añadir Comprobación de gastos"
+    description = u"Proporciona datos para comprobar alguno de tus gastos."
+
 
 class EditComprobacion(edit.DefaultEditForm):
     schema = IComprobacion
@@ -203,10 +195,12 @@ class EditComprobacion(edit.DefaultEditForm):
             return
 
         # Do something with valid data here
-        temp = TemporaryRelationValue(data['relacion'].absolute_url_path()) #Una relacion no formada completamente 
-        rel_full = temp.convert() 
-        self.context.relacion = rel_full #tal vez deberia ser la misma aunque intente cambiarse
-        self.context.tile = data['title']
+        if data.has_key("relacion"):
+            temp = TemporaryRelationValue(data['relacion'].absolute_url_path()) #Una relacion no formada completamente 
+            rel_full = temp.convert() 
+            self.context.relacion = rel_full #tal vez deberia ser la misma aunque intente cambiarse
+        if data.has_key("title"):
+            self.context.tile = data['title']
         self.context.notas = data['notas']
         #self.context.grupo_comprobacion = [] if not self.context.grupo_comprobacion else self.context.grupo_comprobacion
         
@@ -219,13 +213,27 @@ class EditComprobacion(edit.DefaultEditForm):
 
         
         for index, item in enumerate(data['grupo_comprobacion']):
-            # check if an image was submitted with each individual sponsor
+            if index < len(grupo_comprobacion):
+                if item['archivo']:
+                    grupo_comprobacion[index]['archivo'] = item['archivo']
+                if item['fecha']:
+                    grupo_comprobacion[index]['fecha'] = item['fecha']
+                if item['concepto']:
+                    grupo_comprobacion[index]['concepto'] = item['concepto']
+                if item['descripcion']:
+                    grupo_comprobacion[index]['descripcion'] = item['descripcion']
+                if item['importe']:
+                    grupo_comprobacion[index]['importe'] = item['importe']
+            else:
+                grupo_comprobacion.append(item)
+
+            '''    
             if item['archivo']:
                 if index < len(grupo_comprobacion):
                     grupo_comprobacion[index]['archivo'] = item['archivo']
                 else:
                     grupo_comprobacion.append(item)
-                
+            ''' 
         self.context.grupo_comprobacion = grupo_comprobacion
         self.status = "¡Información registrada exitosamente!"
         self.request.response.redirect(self.context.absolute_url())

@@ -1,5 +1,23 @@
+function coloring(){
+    $("td").each(
+	function(){
+	    var texto = $(this).text();
+	    if(texto.includes("borrador")){
+		$(this).attr("style", "color:red;");
+	    }
+	    else if(texto.includes("pendiente") || texto.includes("bosquejo")){
+		$(this).attr("style", "color:#eb6123;");
+	    }
+	    else if(texto.includes("esperando") || texto.includes("revision")){
+		$(this).attr("style", "color:green;");
+	    }
+	});
+}
+
 $(document).ready(function(){
     $("#viewlet-below-content").hide();
+    coloring();
+    
     var tabs = document.getElementById('icetab-container').children;
     var tabcontents = document.getElementById('icetab-content').children;
 

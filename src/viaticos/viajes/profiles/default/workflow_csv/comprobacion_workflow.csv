@@ -52,7 +52,7 @@ Script after:,viaticos.viajes.Extensions.mailer.test
 Id:,terminar
 Title:,Aprobar
 Description:,Aprobar la informacion de la comprobacion de gastos
-Target state:,terminado
+Target state:,aprobado
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.test
 

@@ -9,6 +9,9 @@ from Products.CMFPlone.resources import add_resource_on_request
 from AccessControl import getSecurityManager
 from AccessControl import Unauthorized
 from Products.CMFCore.permissions import AddPortalContent
+#sorting
+from operator import itemgetter as get_item
+        
 
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
@@ -60,6 +63,15 @@ class VistaViaje(DefaultView):
 
 class VistaComprobacion(DefaultView):
     """ Vista por defecto para comprobacion de gastos """
+    def get_info_state(self):
+        portal = api.portal.get()
+        status = api.content.get_state(obj=portal["viaticos"][self.context.id])
+        out = ""
+        if status != 'aprobado':
+            out = "Este elemento se encuentra en el estado '"+status+"', por lo que aún está en proceso de registro. En la barra de herramientas encontrará las posibles transiciones de este objeto."
+        return out
+
+    
     def get_viaje(self):
         obj_comp = self.context
         catalog = api.portal.get_tool('portal_catalog')
@@ -79,6 +91,16 @@ class VistaViaticos(BrowserView):
     """ Una vista para listar solicitudes y comprobaciones de gastos
     """
 
+    order = {'borrador': 1, 'pendiente': 2, 'esperando':3, 'final':4}
+    get_states = {1:'borrador', 2:'pendiente', 3:'esperando', 4:'final'}
+    orden = {'bosquejo': 1,'revision': 2, 'aprobado': 3}
+    get_comp = {1:'bosquejo', 2:'revision', 3:'aprobado'} 
+
+    def order_by_state_date(self,owned_supervised):
+        owned = sorted(sorted(owned_supervised[0], key=lambda k: k['modif_date'], reverse=True), key=lambda k: k['state'])
+        supervised = sorted(sorted(owned_supervised[1], key=lambda k: k['modif_date'], reverse=True), key=lambda k: k['state'])
+        return [owned, supervised]
+
     def __call__(self):
         sm = getSecurityManager()
         if not sm.checkPermission(AddPortalContent, self):
@@ -95,7 +117,7 @@ class VistaViaticos(BrowserView):
 
     def viajes(self):        
         results = [[],[]]
-        brains = api.content.find(context=self.context, portal_type='viaje')
+        brains = api.content.find(context=self.context, portal_type='viaje')#aqui haremos la query mediante el owner o creador.
 
         for brain in brains:            
             viaje = brain.getObject()
@@ -106,14 +128,14 @@ class VistaViaticos(BrowserView):
                 'title': brain.Title,#with url brain.getURL()
                 'creator': brain.Creator,
                 'creator_url': portal.absolute_url()+'/author/'+brain.Creator,
-                'state': api.content.get_state(obj=portal["viaticos"][viaje.id]),
-                'modif_date':viaje.modified().strftime("%Y-%m-%d %H:%M:%S"),#  ,               
+                'state': self.order[api.content.get_state(obj=portal["viaticos"][viaje.id])],
+                'modif_date':viaje.modified().strftime("%Y-%m-%d %H:%M:%S"),
                 'uuid': brain.UID,
                 'url': brain.getURL(),
                 'motivo': viaje.motivo,#,
             })
             
-        return results
+        return self.order_by_state_date(results)
 
     def comprobaciones(self):
         
@@ -137,11 +159,11 @@ class VistaViaticos(BrowserView):
                 'title': brain.Title,#with url brain.getURL()
                 'creator': brain.Creator,
                 'creator_url': portal.absolute_url()+'/'+brain.Creator,
-                'state': api.content.get_state(obj=portal["viaticos"][comprobacion.id]),
+                'state': self.orden[api.content.get_state(obj=portal["viaticos"][comprobacion.id])],
                 'modif_date':comprobacion.modified().strftime("%Y-%m-%d %H:%M:%S"),#  ,               
                 'uuid': brain.UID,
                 'url': brain.getURL(),
                 'viaje': viaje.Title,
                 'viaje_url': viaje.absolute_url()
             })
-        return results
+        return self.order_by_state_date(results)

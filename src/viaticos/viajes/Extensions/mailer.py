@@ -9,8 +9,8 @@ def test(self, state_change):
     #import pdb; pdb.set_trace()
 
 def build_body(brain, users):
-    owner = users.getUserById(brain.owner_info()['id'])
-    out = u"El usuario "+owner.getProperty("fullname").encode('utf-8').decode('utf-8')+" acaba de registrar una nueva solicitud de gastos:\n\n"
+    owner = users.getUserById(brain.owner_info()['id'])    
+    out = u"El usuario "+owner.getProperty("fullname").decode('utf-8')+" acaba de registrar una nueva solicitud de gastos:\n\n"
     out += u"\nTítulo: "+brain.title.encode('utf-8').decode('utf-8')
     out += u"\nMotivo: "+brain.motivo.encode('utf-8').decode('utf-8')
     out += u"\nRequerimientos: "
@@ -28,9 +28,12 @@ def test_user(self, state_change):
     body_builded = build_body(state_change.object,uf)
     readers = [x for x in uf.getUsers() if x.has_role("Reader")]
     for boss in readers:
+        pass
+    '''
         api.portal.send_email(
             recipient=boss.getProperty("email"),   
             sender="noreply@plone.org",
             subject="Prueba",
             body=body_builded,
         )
+    '''

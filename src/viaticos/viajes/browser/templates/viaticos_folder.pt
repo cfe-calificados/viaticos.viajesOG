@@ -57,7 +57,7 @@
 		      </a>
 		    </td>
 		    <td> <!-- tal:content="talk/audience"-->
-		      ${python:viaje['state']}
+		      ${python:view.get_states[viaje['state']]}
 		    </td>
 		    <td tal:content="viaje/modif_date">
 		      Fecha
@@ -101,7 +101,7 @@
 		      </a>
 		    </td>
 		    <td> <!-- tal:content="talk/audience"-->
-		      ${python:viaje['state']}
+		      ${python:view.get_states[viaje['state']]}
 		    </td>
 		    <td tal:content="viaje/modif_date">
 		      Fecha
@@ -158,7 +158,7 @@
 		      </a>
 		    </td>
 		    <td> <!-- tal:content="talk/audience"-->
-		      ${python:comprobacion['state']}
+		      ${python:view.get_comp[comprobacion['state']]}
 		    </td>
 		    <td>
 		      <a tal:content="comprobacion/viaje" tal:attributes="href comprobacion/viaje_url">
@@ -204,7 +204,7 @@
 		      </a>
 		    </td>
 		    <td> <!-- tal:content="talk/audience"-->
-		      ${python:comprobacion['state']}
+		      ${python:view.get_comp[comprobacion['state']]}
 		    </td>
 		    <td>
 		      <a tal:content="comprobacion/viaje" tal:attributes="href comprobacion/viaje_url">
