@@ -11,10 +11,27 @@ from AccessControl import Unauthorized
 from Products.CMFCore.permissions import AddPortalContent
 #sorting
 from operator import itemgetter as get_item
-        
+import ast        
 
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
+
+    def __call__(self):
+        current_user = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        if current_user == 'admin':
+            return super(VistaViaje, self).__call__()
+        upward_dic = None
+        obj_owner = self.context.getOwner()
+        try:
+            membership = getToolByName(self.context, 'portal_membership')
+            upward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
+            upward_dic = ast.literal_eval(upward)
+        except SyntaxError:
+            print("Missing hierarchy for "+self.context.Title)
+        if upward_dic == None or (not upward_dic.has_key(current_user) and not current_user == obj_owner.getUserId()):        
+            raise Unauthorized("Contenido inaccesible para miembros no supervisores o que no pertenecen a este grupo.")        
+        return super(VistaViaje, self).__call__()
+
 
     def get_info_state(self):
         portal = api.portal.get()
@@ -63,6 +80,24 @@ class VistaViaje(DefaultView):
 
 class VistaComprobacion(DefaultView):
     """ Vista por defecto para comprobacion de gastos """
+
+    def __call__(self):
+        current_user = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        if current_user == 'admin':
+            return super(VistaComprobacion, self).__call__()
+        upward_dic = None
+        obj_owner = self.context.getOwner()
+        try:
+            membership = getToolByName(self.context, 'portal_membership')
+            upward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
+            upward_dic = ast.literal_eval(upward)
+        except SyntaxError:
+            print("Missing hierarchy for "+self.context.Title)
+        if upward_dic == None or (not upward_dic.has_key(current_user) and not current_user == obj_owner.getUserId()):        
+            raise Unauthorized("Contenido inaccesible para miembros no supervisores o que no pertenecen a este grupo.")        
+        return super(VistaComprobacion, self).__call__()
+        
+    
     def get_info_state(self):
         portal = api.portal.get()
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
@@ -117,12 +152,31 @@ class VistaViaticos(BrowserView):
 
     def viajes(self):        
         results = [[],[]]
-        brains = api.content.find(context=self.context, portal_type='viaje')#aqui haremos la query mediante el owner o creador.
+        #brains = api.content.find(context=self.context, portal_type='viaje')#aqui haremos la query mediante el owner o creador.
 
+        owner_username = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        portal_ctl = self.context.portal_catalog
+        membership = getToolByName(self.context, 'portal_membership')
+        brains = []
+        for x in portal_ctl({'portal_type':'viaje'}):
+            obj_owner = x.getObject().getOwner()
+            if owner_username == 'admin':
+                brains.append(x)
+                continue
+            downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
+            downward_dic = None
+            try:
+                downward_dic = ast.literal_eval(downward)
+            except SyntaxError:
+                print("Missing hierarchy for "+x.Creator)
+            if downward_dic == None: continue
+            if downward_dic.has_key(owner_username) or owner_username == obj_owner.getUserId():
+                brains.append(x)                            
+ 
         for brain in brains:            
             viaje = brain.getObject()
             portal = brain.portal_url.getPortalObject()
-            is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == viaje.getOwner().getUserName()
+            is_owner = owner_username == viaje.getOwner().getUserName()
             idx = 0 if is_owner else 1
             results[idx].append({
                 'title': brain.Title,#with url brain.getURL()
@@ -140,13 +194,31 @@ class VistaViaticos(BrowserView):
     def comprobaciones(self):
         
         results = [[],[]]
-        brains = api.content.find(context=self.context, portal_type='comprobacion')
+        #brains = api.content.find(context=self.context, portal_type='comprobacion')
         #import pdb; pdb.set_trace(
-
+        owner_username = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        portal_ctl = self.context.portal_catalog
+        membership = getToolByName(self.context, 'portal_membership')
+        brains = []
+        for x in portal_ctl({'portal_type':'comprobacion'}):
+            obj_owner = x.getObject().getOwner()
+            if owner_username == 'admin':
+                brains.append(x)
+                continue
+            downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
+            downward_dic = None
+            try:
+                downward_dic = ast.literal_eval(downward)
+            except SyntaxError:
+                print("Missing hierarchy for "+x.Creator)
+            if downward_dic == None: continue
+            if downward_dic.has_key(owner_username) or owner_username == obj_owner.getUserId():
+                brains.append(x)                            
+ 
         for brain in brains:            
             comprobacion = brain.getObject()
             portal = brain.portal_url.getPortalObject()
-            is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == comprobacion.getOwner().getUserName()
+            is_owner = owner_username == comprobacion.getOwner().getUserName()
             idx = 0 if is_owner else 1
 
             viaje = None

@@ -87,9 +87,8 @@ class UpwardForm(form.SchemaForm):
         if downward:
             self.members_selected = literal_eval(downward)
         self.members_avail = []
-        for member in membership.listMembers():
-            #import pdb; pdb.set_trace()
-            if not self.members_selected.has_key(member.getProperty("id")) and member != miembro:
+        for member in membership.listMembers():        
+            if member.has_role("Reader") and not self.members_selected.has_key(member.getProperty("id")) and member != miembro:
                 self.members_avail.append({"option":member.getProperty("fullname").decode('utf-8').encode('latin_1'), "value":str(member)})
         new_selected = []
         for boss in self.members_selected:
