@@ -39,7 +39,7 @@ class IUpwardForm(form.Schema):
 
 class UpwardForm(form.SchemaForm):
     schema = IUpwardForm
-    label = u"Jerarquía de usuarios"
+    label = u"Organización de usuarios"
     description = u"Establece quiénes pueden ver el contenido del miembro seleccionado."
     ignoreContext = True
 
@@ -75,8 +75,7 @@ class UpwardForm(form.SchemaForm):
     
     @button.buttonAndHandler(u"Cancelar")
     def handleCancel(self, action):
-        import pdb; pdb.set_trace()
-        return
+        self.request.response.redirect(self.context.absolute_url())
 
     @button.buttonAndHandler(u"Rellenar")
     def handleFill(self, action):

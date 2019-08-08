@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <object name="Folder">
  <property name="view_methods" purge="False">
-  <element value="vista_viaticos"/>
+   <element value="vista_viaticos"/>
+   <element value="upward-form"/>
  </property>
 </object>

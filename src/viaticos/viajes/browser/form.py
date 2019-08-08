@@ -137,7 +137,7 @@ class ITicketForm(form.Schema):
         'hotel_req',
         label=_(u"Hospedaje"),
         fields=['hotel_nombre', 'hotel_domicilio']
-    )
+    )    
 
 
 class TicketForm(form.SchemaForm):

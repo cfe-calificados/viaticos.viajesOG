@@ -15,20 +15,23 @@ import ast
 
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
+    def is_boss(self):
+        current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
+        return current_user.has_role("Manager") or current_user.has_role("Reader")
 
     def __call__(self):
         current_user = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
         if current_user == 'admin':
             return super(VistaViaje, self).__call__()
-        upward_dic = None
+        upward_dic = {}
         obj_owner = self.context.getOwner()
         try:
             membership = getToolByName(self.context, 'portal_membership')
             upward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
             upward_dic = ast.literal_eval(upward)
-        except SyntaxError:
-            print("Missing hierarchy for "+self.context.Title)
-        if upward_dic == None or (not upward_dic.has_key(current_user) and not current_user == obj_owner.getUserId()):        
+        except Exception:
+            print("Missing hierarchy")
+        if not upward_dic.has_key(current_user) and not current_user == obj_owner.getUserId():        
             raise Unauthorized("Contenido inaccesible para miembros no supervisores o que no pertenecen a este grupo.")        
         return super(VistaViaje, self).__call__()
 
@@ -63,9 +66,9 @@ class VistaViaje(DefaultView):
         #import pdb; pdb.set_trace()
         portal = api.portal.get()
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
-        is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == self.context.getOwner().getUserName()
+        #is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == self.context.getOwner().getUserName()
         needs_ticket = 'boleto_avion' in self.context.req or 'hospedaje' in self.context.req
-        return True if status == "esperando" and is_owner else False
+        return True if status == "esperando" and self.is_boss() else False#is_owner else False
         
     def render_ticket_form(self):
         #import pdb; pdb.set_trace()
@@ -145,6 +148,9 @@ class VistaViaticos(BrowserView):
         add_resource_on_request(self.request, 'tabs_statics')
         return super(VistaViaticos, self).__call__()
 
+    def get_upward_url(self):
+        current = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        return "/".join([self.context.absolute_url(),"@@upward-form"]) if current == "admin" else ""
     
     def is_boss(self):
         current_user = self.context.portal_membership.getAuthenticatedMember().getUser()

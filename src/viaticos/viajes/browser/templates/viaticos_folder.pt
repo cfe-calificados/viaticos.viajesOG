@@ -228,6 +228,10 @@
 	    
 	  </div>       
 	</div>
+
+	<!--div tal:define="url python:view.get_upward_url()" tal:condition="url">
+	  <a tal:attributes="href url"> <input class="context" value="Actualizar Jerarquía" type="button"> </a>
+	</div-->
        
     </metal:content-core>
   </body>
