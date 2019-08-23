@@ -107,6 +107,15 @@
      template="templates/hierarchy.pt"
      />
 
+  <browser:page
+     name="can-send-to-agency"
+     for="*"
+     layer="zope.interface.Interface"
+     class=".transition_guards.CanSendToAgency"     
+     permission="zope2.View"
+     />
+
+
 
   
 </configure>

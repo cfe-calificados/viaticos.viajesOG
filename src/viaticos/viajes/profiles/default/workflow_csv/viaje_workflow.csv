@@ -20,11 +20,11 @@ Id:,pendiente
 Title:,Pendiente
 Description:,Pendiente de revision.
 Transitions:,"enviar,fallo_borrador"
-Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Reader,Editor, Owner,  Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
-Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
-Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   Y,	   N,		N
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
@@ -36,8 +36,8 @@ Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
-Review portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   Y,	   N,		N  
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N
+Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
 Id:,final
@@ -56,6 +56,7 @@ Id:,confirmar
 Title:,Confirmar
 Description:,Confirmar informacion del viaje. 
 Target state:,pendiente
+Guard expression:, here/@@can-send-to-agency
 Guard permission:,Request review
 Script after:,viaticos.viajes.Extensions.mailer.test_user
 
@@ -64,6 +65,7 @@ Id:,enviar
 Title:,Enviar
 Description:,Enviar a la compania
 Target state:,esperando
+Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.test
 
@@ -72,7 +74,7 @@ Id:,registrar
 Title:,Registrar
 Description:,Registrar solicitud de gastos
 Target state:,final
-Guard expression:,python: ((object.aerolinea != None and object.tarifa != None and object.hora_regreso != None and object.hora_salida != None) or 'boleto_avion' not in object.req) and ((object.hotel_nombre != None and object.hotel_domicilio != None) or 'hospedaje' not in object.req)
+Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
 Script before:,viaticos.viajes.Extensions.triggers.create_comprobacion 
 
@@ -81,11 +83,13 @@ Id:,fallo_borrador
 Title:,No aprobado
 Description:,De vuelta al creador para correccion
 Target state:,borrador
+Guard expression:, here/@@can-send-to-agency
 Guard permission:,"Request review, Review portal content"
+
 
 [Transition]
 Id:,fallo_tramite
 Title:,Correccion
 Description:,"Rechazado. Por corregir."
 Target state:,borrador
-Guard permission:,"Review portal content, Access contents information"
+Guard permission:,Review portal content

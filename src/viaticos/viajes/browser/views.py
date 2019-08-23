@@ -45,19 +45,12 @@ class VistaViaje(DefaultView):
         return out
     
     def requirements(self):
-        return "boleto_avion" in self.context.req or "hospedaje" in self.context.req
+        current_user = self.context.portal_membership.getAuthenticatedMember()
+        return current_user.has_role('Manager')
 
     def values_setted(self):
-        objeto = self.context        
-        avion_bool = objeto.aerolinea != None and objeto.tarifa != None and objeto.hora_regreso != None and objeto.hora_salida != None  
-        hotel_bool = objeto.hotel_nombre != None and objeto.hotel_domicilio != None
-        if "boleto_avion" in objeto.req and 'hospedaje' in objeto.req:
-            return avion_bool and hotel_bool
-        if "boleto_avion" in objeto.req and 'hospedaje' not in objeto.req:
-            return avion_bool
-        if "boleto_avion" not in objeto.req and 'hospedaje' in objeto.req:
-            return hotel_bool
-        return False
+        viaje = self.context        
+        return ((viaje.aerolinea != None and viaje.tarifa != None and viaje.hora_regreso != None and viaje.hora_salida != None) or 'boleto_avion' not in viaje.req) and ((viaje.hotel_nombre != None and viaje.hotel_domicilio != None) or 'hospedaje' not in viaje.req) and ('transporte_terrestre' not in viaje.req or (viaje.trans_empresa != None and viaje.trans_desc != None and viaje.trans_reserv != None and viaje.trans_pago != None)) and ('otro' not in viaje.req or (viaje.otro_empresa != None and viaje.otro_desc != None and viaje.otro_reserv != None and viaje.otro_pago != None)) and (viaje.anti_desc != None and viaje.anti_monto != None)
                                      
         
         
@@ -121,6 +114,16 @@ class VistaComprobacion(DefaultView):
 
     def get_file_idx(self, concepto):
         return self.context.grupo_comprobacion.index(concepto)
+
+    def calc_saldo(self):
+        conceptos = self.context.grupo_comprobacion
+        total = self.context.total_comprobar*-1        
+        for concepto in conceptos:
+            if concepto['importe'] <= concepto['comprobado']:
+                total += concepto['importe']
+            else:
+                total += concepto['comprobado']
+        return total
         
         
         
@@ -178,7 +181,7 @@ class VistaViaticos(BrowserView):
             if downward_dic == None: continue
             if downward_dic.has_key(owner_username) or owner_username == obj_owner.getUserId():
                 brains.append(x)                            
- 
+        
         for brain in brains:            
             viaje = brain.getObject()
             portal = brain.portal_url.getPortalObject()
@@ -186,8 +189,8 @@ class VistaViaticos(BrowserView):
             idx = 0 if is_owner else 1
             results[idx].append({
                 'title': brain.Title,#with url brain.getURL()
-                'creator': brain.Creator,
-                'creator_url': portal.absolute_url()+'/author/'+brain.Creator,
+                'creator': viaje.getOwner().getId(),
+                'creator_url': portal.absolute_url()+'/author/'+viaje.getOwner().getId(),
                 'state': self.order[api.content.get_state(obj=portal["viaticos"][viaje.id])],
                 'modif_date':viaje.modified().strftime("%Y-%m-%d %H:%M:%S"),
                 'uuid': brain.UID,
@@ -206,6 +209,7 @@ class VistaViaticos(BrowserView):
         portal_ctl = self.context.portal_catalog
         membership = getToolByName(self.context, 'portal_membership')
         brains = []
+        #import pdb; pdb.set_trace()
         for x in portal_ctl({'portal_type':'comprobacion'}):
             obj_owner = x.getObject().getOwner()
             if owner_username == 'admin':
@@ -218,6 +222,7 @@ class VistaViaticos(BrowserView):
             except SyntaxError:
                 print("Missing hierarchy for "+x.Creator)
             if downward_dic == None: continue
+            #import pdb; pdb.set_trace()
             if downward_dic.has_key(owner_username) or owner_username == obj_owner.getUserId():
                 brains.append(x)                            
  
@@ -235,8 +240,8 @@ class VistaViaticos(BrowserView):
                 
             results[idx].append({
                 'title': brain.Title,#with url brain.getURL()
-                'creator': brain.Creator,
-                'creator_url': portal.absolute_url()+'/'+brain.Creator,
+                'creator': comprobacion.getOwner().getId(),
+                'creator_url': portal.absolute_url()+'/author/'+comprobacion.getOwner().getId(),
                 'state': self.orden[api.content.get_state(obj=portal["viaticos"][comprobacion.id])],
                 'modif_date':comprobacion.modified().strftime("%Y-%m-%d %H:%M:%S"),#  ,               
                 'uuid': brain.UID,

@@ -12,8 +12,8 @@ Transitions,guardar
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   N,	    Y,	   N,	   N,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
-Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N  
+Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
 
 [State]
 Id:,revision
@@ -22,9 +22,10 @@ Description:,Pendiente de revisar por encargado.
 Transitions:,"terminar,fallo_bosquejo"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
-Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
-Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   Y,	   N,		N
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N
+Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N  		
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
 
 [State]
@@ -36,7 +37,7 @@ Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
-Review portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
+Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
 
 
@@ -45,7 +46,7 @@ Id:,guardar
 Title:,Guardar
 Description:,Guardar informacion de la comprobacion de gastos. 
 Target state:,revision
-Guard permission:,Request review
+Guard permission:,Modify portal content
 Script after:,viaticos.viajes.Extensions.mailer.test
 
 [Transition]
@@ -62,4 +63,4 @@ Id:,fallo_bosquejo
 Title:,No aprobado
 Description:,De vuelta al creador para correccion
 Target state:,bosquejo
-Guard permission:,"Request review, Review portal content"
+Guard permission:,Request review

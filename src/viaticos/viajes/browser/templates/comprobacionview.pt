@@ -13,6 +13,15 @@
         <a tal:attributes="href python:viaje.absolute_url()"><p>${python:viaje.title}</p></a>
       </div>
       <br>
+      <div tal:condition="context/total_comprobar">
+	<p><b>Total a comprobar</b></p>
+        <p tal:content="structure view/w/total_comprobar/render"></p>
+      </div>
+      <div>
+	<p><b>Saldo</b></p>
+        <p tal:content="python: view.calc_saldo()"></p>
+      </div>
+      <br>
       <div tal:condition="context/notas">
 	<p><b>Notas</b></p>
         <p tal:content="structure view/w/notas/render"></p>
@@ -43,10 +52,20 @@
               <span>Importe</span>
               <span class="required">*</span>
 	    </th>
+
+	    <th class="header">
+              <span>Monto comprobado</span>
+              <span class="required">*</span>
+	    </th>
+
+	    <th class="header">
+              <span>Por anticipo</span>
+              <span class="required">*</span>
+	    </th>
     
 	    <th class="header">
               <span>Archivo</span>
-            
+              <span class="required">*</span>
 	    </th>
     
 	  </tr>
@@ -54,9 +73,11 @@
 	<tbody id="datagridwidget-tbody" data-name_prefix="form.widgets.grupo_comprobacion" data-id_prefix="form-widgets-grupo_comprobacion" tal:define="conceptos context/grupo_comprobacion">
 	  <tr class="datagridwidget-row" tal:repeat="concepto conceptos">
 	    <td tal:content="python:concepto['fecha'].strftime('%d/%m/%Y')">fecha</td>
-	    <td tal:content="python:str(concepto['concepto'])">concepto</td>
+	    <td tal:content="python:concepto['concepto']">concepto</td>
 	    <td tal:content="python:concepto['descripcion']">descripcion</td>
 	    <td tal:content="python:concepto['importe']">importe</td>
+	    <td tal:content="python:concepto['comprobado']">comprobado</td>
+	    <td tal:content="python: concepto['anticipo'].capitalize() if concepto['anticipo'] == 'no' else 'Sí'">anticipo</td>
 	    <td tal:condition="concepto/archivo" tal:define="file nocall:concepto/archivo">	      
 	      <a tal:define="idx python:view.get_file_idx(concepto)" tal:attributes="href string:${context/absolute_url}/editar/++widget++form.widgets.grupo_comprobacion.${idx}.widgets.archivo/@@download/${file/filename}">		
 		  ${python: file.filename} (${python: file.contentType})

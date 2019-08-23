@@ -38,12 +38,25 @@ OpcionesMotivo = SimpleVocabulary(
      SimpleTerm(value=u'propuesta', title=_(u'Propuesta comercial')),
      SimpleTerm(value=u'negociacion', title=_(u'Negociación')),
      SimpleTerm(value=u'contrato', title=_(u'Firma de contrato')),
-     SimpleTerm(value=u'proceso', title=_(u'Proceso no entiendo que dice')),
+     SimpleTerm(value=u'proceso', title=_(u'Proceso de entrega de servicio')),
      SimpleTerm(value=u'visita_tec', title=_(u'Visita técnica')),
      SimpleTerm(value=u'servicio_cliente', title=_(u'Servicio al cliente')),
      SimpleTerm(value=u'evento', title=_(u'Congreso, foro o evento especializado')),
      SimpleTerm(value=u'capacitacion', title=_(u'Capacitación')),
      SimpleTerm(value=u'otro', title=_(u'Otro')),
+    ]
+)
+
+OpcionesReserva = SimpleVocabulary(
+    [SimpleTerm(value=u'reservado', title=_(u'Reservado')),
+     SimpleTerm(value=u'no_reservado', title=_(u'No reservado')),
+    ]
+)
+
+OpcionesPago = SimpleVocabulary(
+    [SimpleTerm(value=u'pagado', title=_(u'Pagado')),
+     SimpleTerm(value=u'anticipo', title=_(u'Por anticipo')),
+     SimpleTerm(value=u'reembolso', title=_(u'Por reembolso')),
     ]
 )
 
@@ -183,8 +196,112 @@ class IViaje(model.Schema):
         required = False,
         #defaultFactory=get_context_domic
     )
-           
-    #import pdb; pdb.set_trace()
+
+
+    directives.omitted(IAddForm, 'hotel_reserv')
+    directives.omitted(IEditForm, 'hotel_reserv')    
+    hotel_reserv = schema.Choice(
+        title = _(u'Reservación'),
+        vocabulary = OpcionesReserva,
+        required = False #tmp        
+    )
+
+    directives.omitted(IAddForm, 'hotel_pago')
+    directives.omitted(IEditForm, 'hotel_pago')    
+    hotel_pago = schema.Choice(
+        title = _(u'Pago'),
+        vocabulary = OpcionesPago,
+        required = False #tmp        
+    )
+
+
+    ### Nuevos campos ###
+
+    ## Transporte terrestre
+    directives.omitted(IAddForm, 'trans_empresa')
+    directives.omitted(IEditForm, 'trans_empresa')    
+    trans_empresa =  schema.TextLine(
+        title = _(u'Nombre de la empresa de transporte'),
+        required = True,
+        #defaultFactory=get_context_hotel
+    )
+
+    directives.omitted(IAddForm, 'trans_desc')
+    directives.omitted(IEditForm, 'trans_desc')    
+    trans_desc =  schema.Text(
+        title = _(u'Descripción'),
+        required = True,
+        #defaultFactory=get_context_hotel
+    )    
+
+    directives.omitted(IAddForm, 'trans_reserv')
+    directives.omitted(IEditForm, 'trans_reserv')    
+    trans_reserv = schema.Choice(
+        title = _(u'Reservación'),
+        vocabulary = OpcionesReserva,
+        required = False #tmp        
+    )
+
+    directives.omitted(IAddForm, 'trans_pago')
+    directives.omitted(IEditForm, 'trans_pago')    
+    trans_pago = schema.Choice(
+        title = _(u'Pago'),
+        vocabulary = OpcionesPago,
+        required = False #tmp        
+    )
+
+    ## OTRO
+
+    directives.omitted(IAddForm, 'otro_empresa')
+    directives.omitted(IEditForm, 'otro_empresa')    
+    otro_empresa =  schema.TextLine(
+        title = _(u'Nombre de la empresa'),
+        required = True,
+        #defaultFactory=get_context_hotel
+    )
+
+    directives.omitted(IAddForm, 'otro_desc')
+    directives.omitted(IEditForm, 'otro_desc')    
+    otro_desc =  schema.Text(
+        title = _(u'Descripción'),
+        required = True,
+        #defaultFactory=get_context_hotel
+    )    
+
+    directives.omitted(IAddForm, 'otro_reserv')
+    directives.omitted(IEditForm, 'otro_reserv')    
+    otro_reserv = schema.Choice(
+        title = _(u'Reservación'),
+        vocabulary = OpcionesReserva,
+        required = False #tmp        
+    )
+
+    directives.omitted(IAddForm, 'otro_pago')
+    directives.omitted(IEditForm, 'otro_pago')    
+    otro_pago = schema.Choice(
+        title = _(u'Pago'),
+        vocabulary = OpcionesPago,
+        required = False #tmp        
+    )
+
+
+    ## ANTICIPO
+
+    directives.omitted(IAddForm, 'anti_desc')
+    directives.omitted(IEditForm, 'anti_desc')    
+    anti_desc =  schema.Text(
+        title = _(u'Descripción'),
+        required = True,
+        #defaultFactory=get_context_hotel
+    )
+
+    directives.omitted(IAddForm, 'anti_monto')
+    directives.omitted(IEditForm, 'anti_monto')    
+    anti_monto = schema.Float(
+        title=_(u"Monto"),
+        required=False,
+        #defaultFactory=get_context_hotel
+    )
 
     model.fieldset(
         'avion_req',
@@ -195,7 +312,25 @@ class IViaje(model.Schema):
     model.fieldset(
         'hotel_req',
         label=_(u"Hospedaje"),
-        fields=['hotel_nombre', 'hotel_domicilio']
+        fields=['hotel_nombre', 'hotel_domicilio', 'hotel_reserv', 'hotel_pago']
+    )
+
+    model.fieldset(
+        'trans_req',
+        label=_(u"Transporte terrestre"),
+        fields=['trans_empresa', 'trans_desc', 'trans_reserv', 'trans_pago']
+    )    
+
+    model.fieldset(
+        'otro_req',
+        label=_(u"Otro"),
+        fields=['otro_empresa', 'otro_desc', 'otro_reserv', 'otro_pago']
+    )
+
+    model.fieldset(
+        'anticipo_req',
+        label=_(u"Anticipo"),
+        fields=['anti_monto' ,'anti_desc']
     )
 
     

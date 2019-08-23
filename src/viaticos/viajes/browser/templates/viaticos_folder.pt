@@ -35,7 +35,7 @@
 		  </tr>
 		  <tr tal:condition="mis_viajes">
 		    <th>Título</th>
-		    <th>Creador</th>
+		    <th>Propietario</th>
 		    <th>Estado</th>
 		    <th>Fecha de modificación</th>
 		  </tr>
@@ -78,7 +78,7 @@
 		  </tr>
 		  <tr tal:condition="otros_viajes">
 		    <th>Título</th>
-		    <th>Creador</th>
+		    <th>Propietario</th>
 		    <th>Estado</th>
 		    <th>Fecha de modificación</th>
 		  </tr>
@@ -136,7 +136,7 @@
 		  </tr>
 		  <tr tal:condition="mis_comprobaciones">
 		    <th>Título</th>
-		    <th>Creador</th>	    
+		    <th>Propietario</th>	    
 		    <th>Estado</th>
 		    <th>Solicitud de gastos</th>
 		    <th>Fecha de modificación</th>
@@ -182,7 +182,7 @@
 		  </tr>
 		  <tr tal:condition="otras_comprobaciones">
 		    <th>Título</th>
-		    <th>Creador</th>	    
+		    <th>Propietario</th>	    
 		    <th>Estado</th>
 		    <th>Solicitud de gastos</th>
 		    <th>Fecha de modificación</th>

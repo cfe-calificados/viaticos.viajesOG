@@ -110,7 +110,7 @@
       </dl>
       <!--INFO SOBRE ESTADO DEL REGISTRO -->      
       <div tal:condition="python:view.is_transact_state()">
-	<dl tal:condition="python:view.values_setted() or not view.requirements()" class="portalMessage info">
+	<dl tal:condition="python:view.values_setted()" class="portalMessage info">
 	  <dt>Aviso</dt>
 	  <dd>La información de la agencia ya está registrada. Proceder a registrar la solicitud si no requiere de cambios.</dd>
 	</dl>

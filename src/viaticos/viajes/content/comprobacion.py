@@ -40,6 +40,7 @@ from zope.interface import Invalid
 from zope.interface import invariant
 #for omissions
 from z3c.form.interfaces import IEditForm
+from Products.CMFPlone.resources import add_resource_on_request
 
 print("IComprobacion loaded")
 
@@ -70,8 +71,13 @@ class ITable(interface.Interface):
 
     fecha= schema.Date(title=u"Fecha", required=True)
     concepto = schema.TextLine(title=u"Concepto",required=True)
-    descripcion = schema.TextLine(title=u"Descripción",required=True)
-    importe = schema.Float(title=u"Importe",required=True)
+    descripcion = schema.Text(title=u"Descripción",required=True)
+    directives.omitted(edit.DefaultEditForm, 'importe')
+    importe = schema.Float(title=u"Importe",required=True, default=0.0)    
+    comprobado = schema.Float(title=u"Monto comprobado", default=0.0, required=True)
+
+    directives.omitted(edit.DefaultEditForm, 'anticipo')
+    anticipo = schema.Choice(title=_(u"Por anticipo"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'si', title=_(u'Sí')), SimpleTerm(value=u'no', title=_(u'No'))]), default=u'no', required=True)
     archivo = NamedFile(
         title=_(u'Archivo'),
         description=u"Usar comprimido para múltiples archivos.",
@@ -81,6 +87,11 @@ class ITable(interface.Interface):
     directives.widget(
         'archivo',
         NamedFileFieldWidget
+    )
+
+    directives.widget(
+        'anticipo',
+        RadioFieldWidget
     )
     
 
@@ -103,6 +114,13 @@ class IComprobacion(model.Schema):
     #directives.omitted(IEditForm, 'title')    
     title = schema.TextLine(
         title=_(u'Título'),
+    )
+
+    directives.write_permission(total_comprobar='cmf.ManagePortal')
+    #directives.read_permission(title='cmf.ManagePortal')
+    total_comprobar = schema.Float(
+        title=_(u"Total por comprobar"),
+        required = False
     )
 
     notas = schema.Text(
@@ -175,17 +193,29 @@ class EditComprobacion(edit.DefaultEditForm):
     )    
     '''
 
+    #def updateFields(self):
+    #    super(EditComprobacion, self).updateFields()
+        #import pdb; pdb.set_trace()
+
+    def __call__(self):
+        # utility function to add resource to rendered page
+        print("loading JS comprobacion")
+        add_resource_on_request(self.request, 'comp_static')
+        return super(EditComprobacion, self).__call__()
 
     def updateWidgets(self):
         #import pdb; pdb.set_trace()
-        super(EditComprobacion, self).updateWidgets()
-        
-        self.widgets['grupo_comprobacion'].auto_append = False 
+        super(EditComprobacion, self).updateWidgets()        
+        self.widgets['grupo_comprobacion'].auto_append = False
 
     def updateActions(self):
         super(EditComprobacion, self).updateActions()
         self.actions["guardar"].addClass("context")
         self.actions["cancelar"].addClass("standalone")
+
+    
+    def datagridInitialise(self, subform, widget):
+        subform.fields = subform.fields.omit('importe')
     
     @button.buttonAndHandler(u'Guardar')
     def handleApply(self, action):
@@ -222,9 +252,19 @@ class EditComprobacion(edit.DefaultEditForm):
                     grupo_comprobacion[index]['concepto'] = item['concepto']
                 if item['descripcion']:
                     grupo_comprobacion[index]['descripcion'] = item['descripcion']
-                if item['importe']:
-                    grupo_comprobacion[index]['importe'] = item['importe']
+                if item['comprobado']:
+                    grupo_comprobacion[index]['comprobado'] = item['comprobado']
+
+                #if item['anticipo']:
+                #    grupo_comprobacion[index]['anticipo'] = item['anticipo']
+                    
+                #if item['importe']:
+                #   grupo_comprobacion[index]['importe'] = item['importe']
             else:
+                if not item.has_key("anticipo"):
+                    item['anticipo'] = u'no'
+                if not item.has_key("importe"):
+                    item['importe'] = 0.0
                 grupo_comprobacion.append(item)
 
             '''    

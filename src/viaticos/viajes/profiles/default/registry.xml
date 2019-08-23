@@ -10,4 +10,9 @@
          interface='Products.CMFPlone.interfaces.IResourceRegistry'>
     <value key="js">++plone++viaticos.viajes/tabs_script.js</value>  
   </records>
+
+  <records prefix="plone.resources/comp_static"
+         interface='Products.CMFPlone.interfaces.IResourceRegistry'>
+    <value key="js">++plone++viaticos.viajes/comprobacion_fields.js</value>  
+  </records>
 </registry>
