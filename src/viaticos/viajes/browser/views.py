@@ -20,9 +20,10 @@ class VistaViaje(DefaultView):
         return current_user.has_role("Manager") or current_user.has_role("Reader")
 
     def __call__(self):
-        current_user = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
-        if current_user == 'admin':
+        auth_member = self.context.portal_membership.getAuthenticatedMember()
+        if auth_member.has_role('Manager'):
             return super(VistaViaje, self).__call__()
+        current_user = auth_member.getUser().getUserName()
         upward_dic = {}
         obj_owner = self.context.getOwner()
         try:
@@ -78,9 +79,10 @@ class VistaComprobacion(DefaultView):
     """ Vista por defecto para comprobacion de gastos """
 
     def __call__(self):
-        current_user = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
-        if current_user == 'admin':
+        auth_member = self.context.portal_membership.getAuthenticatedMember()        
+        if auth_member.has_role('Manager'):
             return super(VistaComprobacion, self).__call__()
+        current_user = auth_member.getUser().getUserName()
         upward_dic = None
         obj_owner = self.context.getOwner()
         try:
@@ -152,8 +154,8 @@ class VistaViaticos(BrowserView):
         return super(VistaViaticos, self).__call__()
 
     def get_upward_url(self):
-        current = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
-        return "/".join([self.context.absolute_url(),"@@upward-form"]) if current == "admin" else ""
+        current_user = self.context.portal_membership.getAuthenticatedMember()
+        return "/".join([self.context.absolute_url(),"@@upward-form"]) if current_user.has_role('Manager') else ""
     
     def is_boss(self):
         current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
@@ -162,14 +164,14 @@ class VistaViaticos(BrowserView):
     def viajes(self):        
         results = [[],[]]
         #brains = api.content.find(context=self.context, portal_type='viaje')#aqui haremos la query mediante el owner o creador.
-
-        owner_username = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        auth_member = self.context.portal_membership.getAuthenticatedMember()
+        owner_username = auth_member.getUser().getUserName()
         portal_ctl = self.context.portal_catalog
         membership = getToolByName(self.context, 'portal_membership')
         brains = []
         for x in portal_ctl({'portal_type':'viaje'}):
             obj_owner = x.getObject().getOwner()
-            if owner_username == 'admin':
+            if auth_member.has_role('Manager'):
                 brains.append(x)
                 continue
             downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
@@ -205,14 +207,15 @@ class VistaViaticos(BrowserView):
         results = [[],[]]
         #brains = api.content.find(context=self.context, portal_type='comprobacion')
         #import pdb; pdb.set_trace(
-        owner_username = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        auth_member = self.context.portal_membership.getAuthenticatedMember()
+        owner_username = auth_member.getUser().getUserName()
         portal_ctl = self.context.portal_catalog
         membership = getToolByName(self.context, 'portal_membership')
         brains = []
         #import pdb; pdb.set_trace()
         for x in portal_ctl({'portal_type':'comprobacion'}):
             obj_owner = x.getObject().getOwner()
-            if owner_username == 'admin':
+            if auth_member.has_role("Manager"):
                 brains.append(x)
                 continue
             downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")

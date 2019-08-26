@@ -2,19 +2,29 @@
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="viaticos.viajes">
   <metal:block fill-slot="javascript_head_slot">
-    <script type="text/javascript">
+    <script type="text/javascript">      
       $(document).ready(function() {
       if ($(".portalMessage.error", $(".form")).length != 0) {
       console.log("hurdur");
       show_hide_form();
-      }});
+      }
+      
+      });
       
       function show_hide_form() {
           console.log("wtaf")
           $(".hidden_form").show();
-          $(".ticket").hide();
+          $(".tabify").hide();
           $(".btn-bottom").hide();
           $(".btn-edit").hide();
+      }
+
+      function show_id(identificador, id_ref) {
+      $("a").css("color", "#004667");
+      $("#"+id_ref).css("color", "#5f5f5f");
+      console.log($("#"+id_ref).text())
+      $(".autotoc-section > [style='display:inline-block;']").attr("style", "display:none;");
+      $(".autotoc-section > #"+identificador).attr("style", "display:inline-block;");
       }
     </script>
   </metal:block>
@@ -45,6 +55,9 @@
       font-weight: bold;
       position: relative;
       display: inline-block;
+      width: 100%;
+      padding-bottom: 2em;
+      margin-bottom: 2em;
       /*margin: 10px 10px 10px 0;*/
       }
       /*.showtime:hover {
@@ -92,11 +105,19 @@
       bottom:0;
       right:0;
       }
+
+      .btn-edit-bottom{
+      position: relative;
+      }
       .btn-edit {
-      position:float;
+      position:absolute;
       bottom:0;
       right:0;
       color:#3d3f42;
+      }
+
+      .autotoc-section > .showtime {
+      display: none;
       }
 
     </style>
@@ -127,15 +148,26 @@
 	  <div class="documentDescription" tal:content="structure view/w/motivo/render">
             Motivo
 	  </div>
+	  <div tal:condition="context/motivo">
+	  <hr>
+	  </div>
 
-	  <p>Objetivo</p>
+	  <p tal:condition="context/objetivo">Objetivo</p>
 	  <div tal:condition="context/objetivo" class="documentDescription" tal:content="structure view/w/objetivo/render">
             Objetivo
 	  </div>
+	  <div tal:condition="context/objetivo">
+	  <hr>
+	  </div>
+	  
 	  <p>Requerimientos</p>
 	  <div class="documentDescription" tal:content="structure view/w/req/render">
             Requerimientos
 	  </div>
+	  <div tal:condition="context/req">
+	  <hr>
+	  </div>
+	  
 	  <p>Fecha Salida</p>
 	  <p>
 	    <span class="documentDescription" tal:content="structure view/w/fecha_salida/render">
@@ -147,6 +179,10 @@
 	    <span class="documentDescription" tal:content="structure view/w/fecha_regreso/render">
             </span>
 	  </p>
+	  <div tal:condition="context/fecha_regreso">
+	  <hr>
+	  </div>
+	  
 	  <p>Ciudad</p>
 	  <div class="documentDescription" tal:content="structure view/w/ciudad/render">
 	  </div>
@@ -155,11 +191,19 @@
 	  </div>
 	  <p>Código Postal</p>
 	  <div class="documentDescription" tal:content="structure view/w/cp/render">
-	  </div>      
+	  </div>
+	  <div tal:condition="context/notas_avion">
+	  <hr>
+	  </div>
+	  
 	  <div tal:condition="context/notas_avion">
 	    <p>Notas de avión</p>
             <div class="documentDescription" tal:content="structure view/w/notas_avion/render"></div>
-	  </div>      
+	  </div>
+	  <div tal:condition="context/notas_avion">
+	  <hr>
+	  </div>
+	  
 	  <div tal:condition="context/notas_hospedaje">
 	    <p>Notas de hospedaje</p>
 	    <div class="documentDescription" tal:content="structure view/w/notas_hospedaje/render"></div>
@@ -167,7 +211,7 @@
 
 	</div>
 	
-	<div class="showtime columne ticket" tal:condition="python: view.values_setted() and view.requirements()">
+	<!-- div class="showtime columne ticket" tal:condition="python: view.values_setted()">
 	  <div class="col-xs-6 col-md-6" tal:condition="context/tarifa">
 	    <p>Tarifa</p>
 	    <div class="documentDescription" tal:content="structure view/w/tarifa/render"></div>
@@ -184,20 +228,199 @@
 	    <p>Regreso</p>
 	    <div class="documentDescription" tal:content="structure view/w/hora_regreso/render"></div>
 	  </div>
+
+	  <div class="col-xs-12 col-md-12" tal:condition="context/tarifa">
+	  <hr>
+	  </div>
+	  
 	  <div class="col-xs-6 col-md-6" tal:condition="context/hotel_nombre">
 	    <p>Hotel</p>
 	    <div class="documentDescription" tal:content="structure view/w/hotel_nombre/render"></div>
 	  </div>
 	  <div class="col-xs-6 col-md-6" tal:condition="context/hotel_domicilio">
-	    <p>Dirección hotel</p>
+	    <p>Dirección del hotel</p>
 	    <div class="documentDescription" tal:content="structure view/w/hotel_domicilio/render"></div>
-	    
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/hotel_reserv">
+	    <p>Reservación del hotel</p>
+	    <div class="documentDescription" tal:content="structure view/w/hotel_reserv/render"></div>
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/hotel_pago">
+	    <p>Pago del hotel</p>
+	    <div class="documentDescription" tal:content="structure view/w/hotel_pago/render"></div>
+	  </div>
+	  
+	  <div class="col-xs-12 col-md-12" tal:condition="context/hotel_nombre">
+	  <hr>
 	  </div>
 
+	  <div class="col-xs-6 col-md-6" tal:condition="context/trans_empresa">
+	    <p>Empresa de Transporte</p>
+	    <div class="documentDescription" tal:content="structure view/w/trans_empresa/render"></div>
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/trans_desc">
+	    <p>Descripción de Transporte</p>
+	    <div class="documentDescription" tal:content="structure view/w/trans_desc/render"></div>
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/trans_reserv">
+	    <p>Reservación de Transporte</p>
+	    <div class="documentDescription" tal:content="structure view/w/trans_reserv/render"></div>
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/trans_pago">
+	    <p>Pago de Transporte</p>
+	    <div class="documentDescription" tal:content="structure view/w/trans_pago/render"></div>
+	  </div>	  
+
+	  <div class="col-xs-12 col-md-12" tal:condition="context/trans_empresa">
+	  <hr>
+	  </div>
 	  
+	  <div class="col-xs-6 col-md-6" tal:condition="context/otro_empresa">
+	    <p>Empresa</p>
+	    <div class="documentDescription" tal:content="structure view/w/otro_empresa/render"></div>
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/otro_desc">
+	    <p>Descripción</p>
+	    <div class="documentDescription" tal:content="structure view/w/otro_desc/render"></div>
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/otro_reserv">
+	    <p>Reservación</p>
+	    <div class="documentDescription" tal:content="structure view/w/otro_reserv/render"></div>
+	  </div>
+	  <div class="col-xs-6 col-md-6" tal:condition="context/otro_pago">
+	    <p>Pago</p>
+	    <div class="documentDescription" tal:content="structure view/w/otro_pago/render"></div>
+	  </div>
+
+	  <div class="col-xs-12 col-md-12" tal:condition="context/otro_empresa">
+	  <hr>
+	  </div>
+
+	  <div class="col-xs-6 col-md-6" tal:condition="context/anti_monto">
+	    <p>Monto total de anticipo</p>
+	    <div class="documentDescription" tal:content="structure view/w/anti_monto/render"></div>
+	  </div>	  
 	  
-	  <input class="btn-edit" tal:condition="python: view.values_setted() and view.is_transact_state()" onclick="show_hide_form()" type="button" value="Editar información" id="bselect"></input> <br>
+	  <input class="btn-edit" tal:condition="python: view.values_setted() and view.is_transact_state() and view.requirements()" onclick="show_hide_form()" type="button" value="Editar información" id="bselect"></input> <br>
+      </div -->
+
+	<div id="content-core" class="columne tabify" tal:condition="python: view.values_setted()">
+	  <h3>Información de agencia</h3>
+	  <div class="autotabs">
+	    <div class="autotoc-nav">
+	      <a id="avion_ref" tal:condition="context/tarifa" href="#" id="autotoc-level-1 active" onclick="show_id('avion', 'avion_ref'); return false;"> Avión  </a>
+	      
+	      <a id="hotel_ref" tal:condition="context/hotel_nombre" href="#" onclick="show_id('hotel', 'hotel_ref'); return false;"> Hospedaje </a>
+
+	      <a id="trans_ref" tal:condition="context/trans_empresa" href="#" onclick="show_id('transporte', 'trans_ref'); return false;"> Transporte Terrestre </a>
+
+	      <a id="otro_ref" tal:condition="context/otro_empresa" href="#" onclick="show_id('otro','otro_ref' ); return false;"> Otro </a>	   
+	    </div>
+	    
+	    <fieldset class="autotoc-section active">
+
+	      <div id="avion" class="showtime ticket">
+		<div class="col-xs-6 col-md-6" tal:condition="context/tarifa">
+		  <p>Tarifa</p>
+		  <div class="documentDescription" tal:content="structure view/w/tarifa/render"></div>
+		</div>	  
+		<div class="col-xs-6 col-md-6" tal:condition="context/aerolinea">
+		  <p>Clave aerolínea</p>
+		  <div class="documentDescription" tal:content="structure view/w/aerolinea/render"></div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+		  <hr>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/hora_salida">
+		  <p>Salida</p>
+		  <div class="documentDescription" tal:content="structure view/w/hora_salida/render"></div>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/hora_regreso">
+		  <p>Regreso</p>
+		  <div class="documentDescription" tal:content="structure view/w/hora_regreso/render"></div>
+		</div>
+	      </div>
+
+	      <div id="hotel"  class="showtime ticket">
+		<div class="col-xs-6 col-md-6" tal:condition="context/hotel_nombre">
+		  <p>Hotel</p>
+		  <div class="documentDescription" tal:content="structure view/w/hotel_nombre/render"></div>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/hotel_domicilio">
+		  <p>Dirección del hotel</p>
+		  <div class="documentDescription" tal:content="structure view/w/hotel_domicilio/render"></div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+		  <hr>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/hotel_reserv">
+		  <p>Reservación del hotel</p>
+		  <div class="documentDescription" tal:content="structure view/w/hotel_reserv/render"></div>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/hotel_pago">
+		  <p>Pago del hotel</p>
+		  <div class="documentDescription" tal:content="structure view/w/hotel_pago/render"></div>
+		</div>
+	      </div>
+
+	      <div id="transporte"  class="showtime ticket">
+		<div class="col-xs-6 col-md-6" tal:condition="context/trans_empresa">
+		  <p>Empresa de Transporte</p>
+		  <div class="documentDescription" tal:content="structure view/w/trans_empresa/render"></div>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/trans_desc">
+		  <p>Descripción de Transporte</p>
+		  <div class="documentDescription" tal:content="structure view/w/trans_desc/render"></div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+		  <hr>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/trans_reserv">
+		  <p>Reservación de Transporte</p>
+		  <div class="documentDescription" tal:content="structure view/w/trans_reserv/render"></div>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/trans_pago">
+		  <p>Pago de Transporte</p>
+		  <div class="documentDescription" tal:content="structure view/w/trans_pago/render"></div>
+		</div>	  
+	      </div>
+
+	      <div id="otro"  class="showtime ticket">
+		<div class="col-xs-6 col-md-6" tal:condition="context/otro_empresa">
+		  <p>Empresa</p>
+		  <div class="documentDescription" tal:content="structure view/w/otro_empresa/render"></div>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/otro_desc">
+		  <p>Descripción</p>
+		  <div class="documentDescription" tal:content="structure view/w/otro_desc/render"></div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+		  <hr>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/otro_reserv">
+		  <p>Reservación</p>
+		  <div class="documentDescription" tal:content="structure view/w/otro_reserv/render"></div>
+		</div>
+		<div class="col-xs-6 col-md-6" tal:condition="context/otro_pago">
+		  <p>Pago</p>
+		  <div class="documentDescription" tal:content="structure view/w/otro_pago/render"></div>
+		</div>
+	      </div>
+	      
+	      <div class="col-xs-6 col-md-6" tal:condition="context/anti_monto">
+		<p>Monto total de anticipo</p>
+		<div class="documentDescription" tal:content="structure view/w/anti_monto/render"></div>
+	      </div>
+
+	      <br>
+	      <div class="col-xs-12 col-md-12 btn-edit-bottom">
+	      <input class="btn-edit" tal:condition="python: view.values_setted() and view.is_transact_state() and view.requirements()" onclick="show_hide_form()" type="button" value="Editar información" id="bselect"></input>
+	      </div>
+	    </fieldset>
+	    
+	  </div>
 	</div>
+	
 
 
 	<div class="columne hidden_form" hidden tal:condition="python: view.is_transact_state()">
@@ -219,17 +442,6 @@
       <div class="div-btn">
 	<input class="btn-bottom" tal:condition="python: not view.values_setted() and view.is_transact_state() and view.requirements()" onclick="show_hide_form()" type="button" value="Registrar información" id="bselect"></input> <br>
       </div>
-      <!-- div class="hidden_form" hidden tal:condition="python: view.is_transact_state()">
-	<div tal:define="form python:view.render_ticket_form()"> 
-          <tal:with-form-as-view define="view nocall:form">
-            <metal:block use-macro="form/@@ploneform-macros/form" />
-          </tal:with-form-as-view>
-	</div>
-      </div-->
-
-      
-      
-      
 
     </metal:content-core>
   </body>
