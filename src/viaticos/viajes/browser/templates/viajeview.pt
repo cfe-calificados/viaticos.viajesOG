@@ -20,7 +20,7 @@
       }
 
       function show_id(identificador, id_ref) {
-      $("a").css("color", "#004667");
+      $(".autotoc-nav > a").css("color", "#004667");
       $("#"+id_ref).css("color", "#5f5f5f");
       console.log($("#"+id_ref).text())
       $(".autotoc-section > [style='display:inline-block;']").attr("style", "display:none;");
