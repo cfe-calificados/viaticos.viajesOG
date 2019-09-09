@@ -200,7 +200,7 @@
 	    <p>Notas de avión</p>
             <div class="documentDescription" tal:content="structure view/w/notas_avion/render"></div>
 	  </div>
-	  <div tal:condition="context/notas_avion">
+	  <div tal:condition="context/notas_hospedaje">
 	  <hr>
 	  </div>
 	  
@@ -208,6 +208,15 @@
 	    <p>Notas de hospedaje</p>
 	    <div class="documentDescription" tal:content="structure view/w/notas_hospedaje/render"></div>
 	  </div>
+	  <div tal:condition="context/grupo">
+	  <hr>
+	  </div>
+
+	  <div tal:condition="context/grupo">
+	    <p>Grupo</p>
+	    <div class="documentDescription" tal:content="structure view/w/grupo/render"></div>
+	  </div>
+	  
 
 	</div>
 	
@@ -441,6 +450,7 @@
       <!--input tal:condition="python: view.values_setted()" onclick="show_hide_form()" type="button" value="Cambiar boleto" id="bselect"></input-->
       <div class="div-btn">
 	<input class="btn-bottom" tal:condition="python: not view.values_setted() and view.is_transact_state() and view.requirements()" onclick="show_hide_form()" type="button" value="Registrar información" id="bselect"></input> <br>
+	<a tal:condition="context/grupo" tal:attributes="href python:'./'+context.tpURL()+'/@@delete-traveler'"><input class="btn-bottom" tal:condition="python: view.is_pending_state() and view.valid_registration()" type="button" value="Modificar grupo" id="bselect"></input></a>
       </div>
 
     </metal:content-core>

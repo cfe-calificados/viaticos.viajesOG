@@ -23,6 +23,11 @@ from plone.dexterity.browser import add
 from zope.interface import Invalid
 from zope.interface import invariant
 
+#for group purposes
+from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget, AutocompleteFieldWidget
+from plone.app.z3cform.widget import AjaxSelectFieldWidget
+
+
 OpcionesRequerimientos = SimpleVocabulary(
     [SimpleTerm(value=u'boleto_avion', title=_(u'Boleto de avión')),
      SimpleTerm(value=u'hospedaje', title=_(u'Hospedaje')),
@@ -69,7 +74,9 @@ class IViaje(model.Schema):
     @invariant
     def validacion_fechas(data):
         if data.fecha_salida > data.fecha_regreso:
-            raise Invalid(_(u'La fecha de salida no puede ser posterior a la de regreso!'))        
+            raise Invalid(_(u'La fecha de salida no puede ser posterior a la de regreso!'))
+        if ('boleto_avion' in data.req and not data.notas_avion) or ('hospedaje' in data.req and not data.notas_hospedaje) or ('transporte_terrestre' in data.req and not data.notas_transporte) or ('otro' in data.req and not data.notas_otro) :
+            raise Invalid(_(u'Es necesario llenar las notas de aquellos elementos que fueron seleccionados en los requerimientos.'))
 
     title = schema.TextLine(
         title=_(u'Título'),
@@ -126,13 +133,31 @@ class IViaje(model.Schema):
     )
 
     notas_avion = schema.Text(
-        title = _(u'Notas del boleto de avión (?)'),
+        title = _(u'Notas del boleto de avión'),
         required = False
     )
 
     notas_hospedaje = schema.Text(
         title = _(u'Notas del hospedaje'),
         required = False
+    )
+
+    notas_transporte = schema.Text(
+        title = _(u'Notas del transporte terrestre'),
+        required = False
+    )
+
+    notas_otro = schema.Text(
+        title = _(u'Notas del requerimiento extra'),
+        required = False
+    )
+
+    directives.widget(grupo=AjaxSelectFieldWidget)
+    grupo = schema.Tuple(title=_(u'Grupo'),
+                         description=u"Solicitud de gastos de varios empleados. Advertencia: Una vez confirmado el borrador, solo la admón. y los superiores de los miembros del grupo podrán retirarlos de la solicitud.",
+            value_type=schema.Choice(source=u"plone.app.vocabularies.Users"),
+            required=False,            
+            missing_value=()
     )
 
     ### datos boleto avion
@@ -143,7 +168,7 @@ class IViaje(model.Schema):
     directives.omitted(IEditForm, 'tarifa')    
     tarifa = schema.Float(
         title = _(u'Tarifa'),
-        required = False,
+        required = False,        
         #defaultFactory=get_context_tarifa
     )
 
@@ -347,8 +372,8 @@ class AddViaje(add.DefaultAddForm):
     portal_type = 'viaje'
     schema = IViaje
     label = u"Agregar solicitud de gastos"
-    description = u"Añade información sobre tus salidas. "
-
+    description = u"Añade información sobre tu salida. "
+    
     
 class AddViajesss(add.DefaultAddView):
     form = None

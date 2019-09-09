@@ -115,6 +115,12 @@
      permission="zope2.View"
      />
 
+    <browser:page
+     for="viaticos.viajes.content.viaje.IViaje"
+     name="delete-traveler"
+     permission="zope2.View"
+     class=".hierarchy.VistaViajeros"     
+     />
 
 
   

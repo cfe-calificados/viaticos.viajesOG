@@ -15,6 +15,31 @@ import ast
 
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
+    def check_group(self, username, grupo):
+        if username in grupo:
+            return True
+        membership = getToolByName(self.context, 'portal_membership')
+        downward = membership.getMemberById(username).getProperty("downward")
+        downward_dic = {}
+        try:
+            downward_dic = ast.literal_eval(downward)
+        except SyntaxError:
+            print("Missing hierarchy for "+username)
+
+        for employee in grupo:
+            tmp = {}
+            downward = membership.getMemberById(employee).getProperty("downward")
+            try:
+                tmp = ast.literal_eval(downward)
+            except SyntaxError:
+                print("Missing hierarchy for "+employee)            
+            downward_dic.update(tmp)
+            
+        if downward_dic == None: return False
+        if downward_dic.has_key(username):                    
+            return True
+        return False
+    
     def is_boss(self):
         current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
         return current_user.has_role("Manager") or current_user.has_role("Reader")
@@ -32,6 +57,9 @@ class VistaViaje(DefaultView):
             upward_dic = ast.literal_eval(upward)
         except Exception:
             print("Missing hierarchy")
+        if self.context.grupo:#this is more time of processing :C
+            if self.check_group(current_user, self.context.grupo):
+                return super(VistaViaje, self).__call__()
         if not upward_dic.has_key(current_user) and not current_user == obj_owner.getUserId():        
             raise Unauthorized("Contenido inaccesible para miembros no supervisores o que no pertenecen a este grupo.")        
         return super(VistaViaje, self).__call__()
@@ -53,6 +81,11 @@ class VistaViaje(DefaultView):
         viaje = self.context        
         return ((viaje.aerolinea != None and viaje.tarifa != None and viaje.hora_regreso != None and viaje.hora_salida != None) or 'boleto_avion' not in viaje.req) and ((viaje.hotel_nombre != None and viaje.hotel_domicilio != None) or 'hospedaje' not in viaje.req) and ('transporte_terrestre' not in viaje.req or (viaje.trans_empresa != None and viaje.trans_desc != None and viaje.trans_reserv != None and viaje.trans_pago != None)) and ('otro' not in viaje.req or (viaje.otro_empresa != None and viaje.otro_desc != None and viaje.otro_reserv != None and viaje.otro_pago != None)) and (viaje.anti_desc != None and viaje.anti_monto != None)
                                      
+
+    def is_pending_state(self):
+        portal = api.portal.get()
+        status = api.content.get_state(obj=portal["viaticos"][self.context.id])
+        return True if status == "pendiente" and self.is_boss() else False
         
         
     def is_transact_state(self):
@@ -61,7 +94,7 @@ class VistaViaje(DefaultView):
         portal = api.portal.get()
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
         #is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == self.context.getOwner().getUserName()
-        needs_ticket = 'boleto_avion' in self.context.req or 'hospedaje' in self.context.req
+        #needs_ticket = 'boleto_avion' in self.context.req or 'hospedaje' in self.context.req
         return True if status == "esperando" and self.is_boss() else False#is_owner else False
         
     def render_ticket_form(self):
@@ -69,10 +102,11 @@ class VistaViaje(DefaultView):
         print("trying...")
         form = TicketForm(self.context, self.request)
         form.update()
+        #form.updateFields()
         return form
 
     def valid_registration(self):
-        return True
+        return self.context.getOwner().getUserName() != self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
 
 
 class VistaComprobacion(DefaultView):
@@ -161,6 +195,31 @@ class VistaViaticos(BrowserView):
         current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
         return current_user.has_role("Manager") or current_user.has_role("Reader")
 
+    def check_group(self, username, grupo):
+        if username in grupo:
+            return True
+        membership = getToolByName(self.context, 'portal_membership')
+        downward = membership.getMemberById(username).getProperty("downward")
+        downward_dic = {}
+        try:
+            downward_dic = ast.literal_eval(downward)
+        except SyntaxError:
+            print("Missing hierarchy for "+username)
+
+        for employee in grupo:
+            tmp = {}
+            downward = membership.getMemberById(employee).getProperty("downward")
+            try:
+                tmp = ast.literal_eval(downward)
+            except SyntaxError:
+                print("Missing hierarchy for "+employee)            
+            downward_dic.update(tmp)
+            
+        if downward_dic == None: return False
+        if downward_dic.has_key(username):                    
+            return True
+        return False
+
     def viajes(self):        
         results = [[],[]]
         #brains = api.content.find(context=self.context, portal_type='viaje')#aqui haremos la query mediante el owner o creador.
@@ -170,7 +229,8 @@ class VistaViaticos(BrowserView):
         membership = getToolByName(self.context, 'portal_membership')
         brains = []
         for x in portal_ctl({'portal_type':'viaje'}):
-            obj_owner = x.getObject().getOwner()
+            obj_tmp = x.getObject()
+            obj_owner = obj_tmp.getOwner()
             if auth_member.has_role('Manager'):
                 brains.append(x)
                 continue
@@ -182,12 +242,16 @@ class VistaViaticos(BrowserView):
                 print("Missing hierarchy for "+x.Creator)
             if downward_dic == None: continue
             if downward_dic.has_key(owner_username) or owner_username == obj_owner.getUserId():
-                brains.append(x)                            
+                brains.append(x)
+                continue
+            if obj_tmp.grupo:#this is more time of processing :C we try to skip it whenever possible
+                if self.check_group(owner_username, obj_tmp.grupo):
+                    brains.append(x)
         
         for brain in brains:            
             viaje = brain.getObject()
             portal = brain.portal_url.getPortalObject()
-            is_owner = owner_username == viaje.getOwner().getUserName()
+            is_owner = owner_username == viaje.getOwner().getUserName() or owner_username in viaje.grupo
             idx = 0 if is_owner else 1
             results[idx].append({
                 'title': brain.Title,#with url brain.getURL()

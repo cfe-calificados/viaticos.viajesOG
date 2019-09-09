@@ -17,6 +17,11 @@ from Products.CMFCore.utils import getToolByName
 from zope.schema.interfaces import IContextAwareDefaultFactory
 from ast import literal_eval
 import json
+## For group purposes
+from plone.app.z3cform.widget import AjaxSelectFieldWidget
+from zope.interface import provider
+import ast
+from zope.schema.interfaces import IContextSourceBinder
 
 class IUpwardForm(form.Schema):
     miembro = schema.Choice(
@@ -113,3 +118,138 @@ class VistaJerarquia(BrowserView):
         self.form = UpwardForm(self.context, self.request)
         self.form.update()
         return self.form
+
+
+
+def make_terms(items):
+    """ Create zope.schema terms for vocab from tuples """
+    terms = [ SimpleTerm(value=pair[0], token=pair[0], title=pair[1]) for pair in items ]
+    return terms
+
+def allowed_group(context):
+    if context == None or not context.grupo: return ()
+    #import pdb; pdb.set_trace()
+    #return context.grupo
+    out = []
+    owner = context.getOwner().getUserName()
+    auth_user = context.portal_membership.getAuthenticatedMember()
+    if owner in context.grupo:
+        context.grupo.remove(owner)
+    if auth_user.has_role("Manager"):        
+        return context.grupo
+
+    auth_member = auth_user.getUser().getUserName()
+    for person in context.grupo:
+        if person == owner:
+            continue
+        upward_dic = {}
+        membership = getToolByName(context, 'portal_membership')
+        downward = membership.getMemberById(person).getProperty("downward")
+        try:
+            upward_dic = ast.literal_eval(downward)
+        except SyntaxError:
+            print("Missing hierarchy for "+person)
+        if upward_dic.has_key(auth_member):
+            out.append(person)
+    print(out)
+    return out
+
+@provider(IContextAwareDefaultFactory)
+def get_allowed_grupo(context):
+    if context == None or context.grupo == None: return None
+    return tuple(allowed_group(context))
+
+@provider(IContextSourceBinder)
+def get_allowed_voca(context):
+    #from plone.app.vocabularies import Users
+    #return Users
+    if context == None or context.grupo == None: return None
+    return SimpleVocabulary(make_terms([[x,x] for x in allowed_group(context)]))
+
+
+class IVistaViajeros(form.Schema):
+    #form.widget(grupo=AjaxSelectFieldWidget)
+    grupo = schema.Tuple(
+        title=_(u'Grupo'),
+        description=u"Solicitud de gastos de varios empleados. Guardados | Por eliminar",    
+        value_type=schema.Choice(
+            source=get_allowed_voca,
+        ),
+        defaultFactory=get_allowed_grupo,
+        required=False,         
+        missing_value=()
+    )
+
+class VistaViajeros(form.SchemaForm):
+    schema = IVistaViajeros
+    label = u"Exclusión de miembros en Solicitud de gastos"
+    description = u"Permite a los supervisores eliminar usuarios de un grupo de solicitud de gastos"
+    ignoreContext = True
+
+    def check_group(self, username, grupo):
+        if username in grupo:
+            return True
+        membership = getToolByName(self.context, 'portal_membership')
+        downward = membership.getMemberById(username).getProperty("downward")
+        downward_dic = {}
+        try:
+            downward_dic = ast.literal_eval(downward)
+        except SyntaxError:
+            print("Missing hierarchy for "+username)
+
+        for employee in grupo:
+            tmp = {}
+            downward = membership.getMemberById(employee).getProperty("downward")
+            try:
+                tmp = ast.literal_eval(downward)
+            except SyntaxError:
+                print("Missing hierarchy for "+employee)            
+            downward_dic.update(tmp)
+            
+        if downward_dic == None: return False
+        if downward_dic.has_key(username):                    
+            return True
+        return False
+
+    def __call__(self):
+        print("heehheee")
+        auth_member = self.context.portal_membership.getAuthenticatedMember()
+        if auth_member.has_role('Manager'):
+            return super(VistaViajeros, self).__call__()
+        current_user = auth_member.getUser().getUserName()
+        upward_dic = {}
+        obj_owner = self.context.getOwner()
+        try:
+            membership = getToolByName(self.context, 'portal_membership')
+            upward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
+            upward_dic = ast.literal_eval(upward)
+        except Exception:
+            print("Missing hierarchy")
+        if self.context.grupo:#this is more time of processing :C
+            if self.check_group(current_user, self.context.grupo):
+                return super(VistaViajeros, self).__call__()
+        if not upward_dic.has_key(current_user) and not current_user == obj_owner.getUserId():        
+            raise Unauthorized("Contenido inaccesible para miembros no supervisores o que no pertenecen a este grupo.")        
+        return super(VistaViajeros, self).__call__()
+
+    @button.buttonAndHandler(u'Aceptar')
+    def handleApply(self, action):
+        data, errors = self.extractData()
+        if errors:
+            self.status = self.formErrorsMessage
+            return
+        l_data = list(data['grupo'])
+        ctx_list = list(self.context.grupo)
+        for employee in l_data:
+            ctx_list.remove(employee)
+        self.context.grupo = tuple(ctx_list)
+        self.request.response.redirect(self.context.absolute_url())
+
+    @button.buttonAndHandler(u'Cancelar')
+    def handleCancel(self, action):
+        self.request.response.redirect(self.context.absolute_url())
+
+    def updateActions(self):
+        super(VistaViajeros, self).updateActions()
+        self.actions["aceptar"].addClass("context")
+        self.actions["cancelar"].addClass("standalone")

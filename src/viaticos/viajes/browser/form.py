@@ -41,6 +41,12 @@ OpcionesPago = SimpleVocabulary(
 )
 
 def calc_meals(obj):
+    multiplier = 1
+    if obj.grupo:
+        addition = 1
+        if obj.getOwner().getUserName() in obj.grupo:
+            addition = 0
+        multiplier = len(obj.grupo)+addition            
     start_date = obj.fecha_salida
     end_date = obj.fecha_regreso
     start = start_date
@@ -49,18 +55,24 @@ def calc_meals(obj):
     while(start <= end_date):
         diff = (start-start_date).days
         if (start.hour, start.minute) <= (9,0) and verif[0] <= diff:
-            monto += 250
+            monto += 250 * multiplier
             verif[0] += 1
         if (start.hour, start.minute) >= (9,1)  and verif[1] <= diff and (start.hour, start.minute) < (19,0):
-            monto += 250
+            monto += 250 * multiplier
             verif[1] += 1
         if (start.hour, start.minute) >= (19,0) and verif[2] <= diff:
-            monto += 250
+            monto += 250 * multiplier
             verif[2] += 1
         start = start + dt.timedelta(minutes=5)
     return monto
 
 def calc_desglose(obj):
+    multiplier = 1
+    if obj.grupo:
+        addition = 1
+        if obj.getOwner().getUserName() in obj.grupo:
+            addition = 0
+        multiplier = len(obj.grupo)+addition
     print("wea")
     start_date = obj.fecha_salida
     end_date = obj.fecha_regreso
@@ -75,19 +87,19 @@ def calc_desglose(obj):
         #print("day:",start.strftime("%Y-%m-%d %H:%M"), "diff:", diff, "verif:", verif, "dia:", diff_1)
         if (start.hour, start.minute) <= (9,0) and verif[0] <= diff:
             #import pdb; pdb.set_trace()
-            buff += u"Desayuno día "+str(diff_1)+": 250\n"
+            buff += u"Desayuno día "+str(diff_1)+": "+str(250*multiplier)+"\n"
             verif[0] += 1
             group += 1 
         if (start.hour, start.minute) >= (9,1)  and verif[1] <= diff and (start.hour, start.minute) < (19,0):
-            buff += u"Comida día "+str(diff_1)+": 250\n"
+            buff += u"Comida día "+str(diff_1)+": "+str(250*multiplier)+"\n"
             verif[1] += 1
             group += 1 
         if (start.hour, start.minute) >= (19,0) and verif[2] <= diff:
-            buff += u"Cena día "+str(diff_1)+": 250\n"
+            buff += u"Cena día "+str(diff_1)+": "+str(250*multiplier)+"\n"
             verif[2] += 1
             group += 1            
         if group == 3:
-            desglose += u"Comidas día "+str(diff_1)+": 750\n"
+            desglose += u"Comidas día "+str(diff_1)+": "+str(750*multiplier)+"\n"
             group = 0
             buff = u""
         elif (start.hour, start.minute) >= (19,0):

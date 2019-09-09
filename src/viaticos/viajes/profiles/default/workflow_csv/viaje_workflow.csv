@@ -21,7 +21,7 @@ Title:,Pendiente
 Description:,Pendiente de revision.
 Transitions:,"enviar,fallo_borrador"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Reader,Editor, Owner,  Contributor,	Reviewer
-View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
@@ -33,8 +33,8 @@ Title:,En tramite
 Description:,Esperando confirmacion.
 Transitions:,"registrar,fallo_tramite"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
-View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
-Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
@@ -45,8 +45,8 @@ Title:,Registrado
 Description:,Solicitud registrada.
 Transitions:,
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
-View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
-Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 
@@ -85,6 +85,7 @@ Description:,De vuelta al creador para correccion
 Target state:,borrador
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,"Request review, Review portal content"
+Script after:,viaticos.viajes.Extensions.mailer.return_to_draft 
 
 
 [Transition]
@@ -93,3 +94,4 @@ Title:,Correccion
 Description:,"Rechazado. Por corregir."
 Target state:,borrador
 Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.rejected

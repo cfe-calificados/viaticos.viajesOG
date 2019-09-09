@@ -1,12 +1,63 @@
-console.log("tptm")
+console.log("tptm");
+
+$(document).ready(function() {
+    if ($("input#form-widgets-req-0").is(":not(:checked)")){
+	$("#form-widgets-notas_avion").hide();
+	$("label[for='form-widgets-notas_avion']").hide();
+    }
+    if ($("input#form-widgets-req-1").is(":not(:checked)")){
+	$("#form-widgets-notas_hospedaje").hide();
+	$("label[for='form-widgets-notas_hospedaje']").hide();
+    }
+
+    if ($("input#form-widgets-req-3").is(":not(:checked)")){
+	$("#form-widgets-notas_transporte").hide();
+	$("label[for='form-widgets-notas_transporte']").hide();
+    }
+
+    if ($("input#form-widgets-req-4").is(":not(:checked)")){
+	$("#form-widgets-notas_otro").hide();
+	$("label[for='form-widgets-notas_otro']").hide();
+    }
+    
+    $("input#form-widgets-req-0").on("change",function() {
+	$("#form-widgets-notas_avion").toggle();
+	$("label[for='form-widgets-notas_avion']").toggle();
+	if ($("input#form-widgets-req-0").is(":checked")){
+	    $("#form-widgets-notas_avion").addClass("required");
+	} else {
+	    $("#form-widgets-notas_avion").removeClass("required");
+	}
+    });
+    $("input#form-widgets-req-1").on("change",function() {
+	$("#form-widgets-notas_hospedaje").toggle();
+	$("label[for='form-widgets-notas_hospedaje']").toggle();
+    });
+
+    //$("input#form-widgets-req-2").on("change",function() {});
+
+    $("input#form-widgets-req-3").on("change",function() {
+	$("#form-widgets-notas_transporte").toggle();
+	$("label[for='form-widgets-notas_transporte']").toggle();
+    });
+    $("input#form-widgets-req-4").on("change",function() {
+	$("#form-widgets-notas_otro").toggle();
+	$("label[for='form-widgets-notas_otro']").toggle();
+    });
+});
+
+
+
+
+
 //alert("alv")
 var currentCities=[];
-var BATTUTA_KEY="e1d59bc56c58f9fc7e11268607723b48"
+var BATTUTA_KEY="e1d59bc56c58f9fc7e11268607723b48";
 // Populate country select box from battuta API
 url="https://geo-battuta.net/api/country/all/?key="+BATTUTA_KEY+"&callback=?";
 
 function prueba_de_existencia() {
-    alert('loasnakl')
+    alert('loasnakl');
 };
 
 
