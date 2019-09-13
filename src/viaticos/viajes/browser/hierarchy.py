@@ -23,13 +23,30 @@ from zope.interface import provider
 import ast
 from zope.schema.interfaces import IContextSourceBinder
 
+Coordinaciones = SimpleVocabulary(
+    [SimpleTerm(value=u'administracion', title=_(u'Administración')),
+     SimpleTerm(value=u'servicio_cliente', title=_(u'Atención y servicio al cliente')),
+     SimpleTerm(value=u'comercial', title=_(u'Comercial')),
+     SimpleTerm(value=u'finanzas', title=_(u'Finanzas')), 
+     SimpleTerm(value=u'gestion_energia', title=_(u'Gestión de energía')),
+     SimpleTerm(value=u'juridico', title=_(u'Jurídico')),
+    ]
+)
+
 class IUpwardForm(form.Schema):
     miembro = schema.Choice(
         title = _(u'Miembro'),
         vocabulary=u"plone.app.vocabularies.Users",
         required = True,
         default=None
-    )    
+    )
+
+    coordinacion = schema.Choice(
+        title=_(u'Coordinación'),
+        vocabulary=Coordinaciones,
+        required=True        
+    )
+    
     up_members = schema.List(
         title=_(u'Superiores'),
         description=_(u'Agregar lista de miembros con permiso de lectura (Disponibles | Actuales)'),        
@@ -50,9 +67,10 @@ class UpwardForm(form.SchemaForm):
 
     members_selected = {}
     members_avail = []
+    employee_area = ""
     def update_member(self, data):
         #import pdb; pdb.set_trace()
-        if not (data['up_members'] and data['miembro']) :
+        if not (data['miembro'] and data['coordinacion']):
             self.status = u"No se puede continuar con una selección vacía"
             return
         try:
@@ -64,7 +82,10 @@ class UpwardForm(form.SchemaForm):
         membership = getToolByName(self.context, 'portal_membership')
         member = membership.getMemberById(data['miembro'])
         print(upward)
-        member.setMemberProperties(mapping={"downward": upward})
+        if data['up_members']:
+            member.setMemberProperties(mapping={"downward": upward, "coordinacion":data['coordinacion']})
+        else:
+            member.setMemberProperties(mapping={"coordinacion":data['coordinacion']})
         self.status = "Miembros superiores asignados exitosamente."
         return 
 
@@ -88,8 +109,9 @@ class UpwardForm(form.SchemaForm):
         membership = getToolByName(self.context, 'portal_membership')
         miembro = membership.getMemberById(data['miembro'])
         downward = miembro.getProperty("downward")
+        
         if downward:
-            self.members_selected = literal_eval(downward)
+            self.members_selected = literal_eval(downward)        
         self.members_avail = []
         for member in membership.listMembers():        
             if member.has_role("Reader") and not self.members_selected.has_key(member.getProperty("id")) and member != miembro:
@@ -98,6 +120,11 @@ class UpwardForm(form.SchemaForm):
         for boss in self.members_selected:
             new_selected.append({"option": membership.getMemberById(boss).getProperty("fullname").decode('utf-8').encode('latin_1'), "value":boss})
         self.members_selected = new_selected
+
+        # Set Coordinacion
+        coordinacion = miembro.getProperty("coordinacion")
+        if coordinacion:
+            self.employee_area = coordinacion
         return
 
 
@@ -110,7 +137,9 @@ class UpwardForm(form.SchemaForm):
 class VistaJerarquia(BrowserView):
 
     def get_members(self, user_id=None):
-        return [self.form.members_avail, self.form.members_selected]
+        #import pdb; pdb.set_trace()
+        print([self.form.members_avail, self.form.members_selected, self.form.employee_area])
+        return [self.form.members_avail, self.form.members_selected, self.form.employee_area]
         
     def render_hierarchy_form(self):
         #import pdb; pdb.set_trace()

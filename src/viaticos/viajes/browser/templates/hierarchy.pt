@@ -22,13 +22,17 @@
       function fill_selects(lists_members) {
       var list_avail = lists_members[0];
       var list_select = lists_members[1];
+      var coordinacion = lists_members[2];
+      console.log(coordinacion);
+      $('#form-widgets-coordinacion').ready(function(){
+      $("#form-widgets-coordinacion").val(coordinacion).prop('selected',true);
+      });
       $.each(list_avail, function(){
       $("#form-widgets-up_members-from").append($("<option></option>").attr("value", this["value"]).text(decodeURIComponent(this["option"])));
       });
       $.each(list_select, function(){
       $("#form-widgets-up_members-to").append($("<option></option>").attr("value", this["value"]).text(decodeURIComponent(this["option"])));
       });
-
       
       };
     </script>

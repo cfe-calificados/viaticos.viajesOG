@@ -58,10 +58,10 @@ def calc_meals(obj):
             monto += 250 * multiplier
             verif[0] += 1
         if (start.hour, start.minute) >= (9,1)  and verif[1] <= diff and (start.hour, start.minute) < (19,0):
-            monto += 250 * multiplier
+            monto += 300 * multiplier
             verif[1] += 1
         if (start.hour, start.minute) >= (19,0) and verif[2] <= diff:
-            monto += 250 * multiplier
+            monto += 200 * multiplier
             verif[2] += 1
         start = start + dt.timedelta(minutes=5)
     return monto
@@ -91,11 +91,11 @@ def calc_desglose(obj):
             verif[0] += 1
             group += 1 
         if (start.hour, start.minute) >= (9,1)  and verif[1] <= diff and (start.hour, start.minute) < (19,0):
-            buff += u"Comida día "+str(diff_1)+": "+str(250*multiplier)+"\n"
+            buff += u"Comida día "+str(diff_1)+": "+str(300*multiplier)+"\n"
             verif[1] += 1
             group += 1 
         if (start.hour, start.minute) >= (19,0) and verif[2] <= diff:
-            buff += u"Cena día "+str(diff_1)+": "+str(250*multiplier)+"\n"
+            buff += u"Cena día "+str(diff_1)+": "+str(200*multiplier)+"\n"
             verif[2] += 1
             group += 1            
         if group == 3:

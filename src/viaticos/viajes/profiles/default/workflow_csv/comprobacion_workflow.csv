@@ -47,7 +47,7 @@ Title:,Guardar
 Description:,Guardar informacion de la comprobacion de gastos. 
 Target state:,revision
 Guard permission:,Modify portal content
-Script after:,viaticos.viajes.Extensions.mailer.test
+Script after:,viaticos.viajes.Extensions.mailer.comp_save
 
 [Transition]
 Id:,terminar
@@ -55,7 +55,7 @@ Title:,Aprobar
 Description:,Aprobar la informacion de la comprobacion de gastos
 Target state:,aprobado
 Guard permission:,Review portal content
-Script after:,viaticos.viajes.Extensions.mailer.test
+Script after:,viaticos.viajes.Extensions.mailer.comp_reg
 
 
 [Transition]
@@ -64,3 +64,5 @@ Title:,No aprobado
 Description:,De vuelta al creador para correccion
 Target state:,bosquejo
 Guard permission:,Request review
+Script after:,viaticos.viajes.Extensions.mailer.comp_fail
+

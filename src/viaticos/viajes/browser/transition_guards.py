@@ -47,8 +47,8 @@ class CanSendToAgency(grok.View):
         if status == "pendiente":
             if upward_dic.has_key(auth_member.getUser().getUserName()):
                 if viaje.grupo and auth_member.getUser().getUserName() in viaje.grupo:
-                    print("Es jefe del owner, pero no puede autorizar su propio viaje.")
-                    return False
+                    print("Es jefe del owner, y puede autorizar su propio viaje.")
+                    return True
                 print("Es jefe del owner, puede hacer transicion")
                 return True
             print("Es jefe pero no del owner, no puede hacer transicion")

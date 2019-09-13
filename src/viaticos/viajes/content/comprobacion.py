@@ -143,7 +143,7 @@ class IComprobacion(model.Schema):
             title=u"tablerow",
             schema=ITable,
         ),
-        default = None,
+        default=None,
         required=True
     )
 
@@ -216,9 +216,11 @@ class EditComprobacion(edit.DefaultEditForm):
     
     def datagridInitialise(self, subform, widget):
         subform.fields = subform.fields.omit('importe')
+        subform.fields = subform.fields.omit('anticipo')
     
     @button.buttonAndHandler(u'Guardar')
     def handleApply(self, action):
+        #import pdb; pdb.set_trace()
         data, errors = self.extractData()
         if errors:
             self.status = self.formErrorsMessage
