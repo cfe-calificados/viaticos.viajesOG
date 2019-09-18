@@ -122,6 +122,14 @@
      class=".hierarchy.VistaViajeros"     
      />
 
+     <browser:page
+      name="make-transitions"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".chronos.TestChronos"     
+      permission="zope2.View"
+     />
+
 
   
 </configure>

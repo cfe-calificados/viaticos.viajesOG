@@ -104,6 +104,14 @@ def boss_mail(self, state_change):
         body=boss_mail,
     )
 
+    if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
+        api.portal.send_email(
+            recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx",   
+            sender="noreply@plone.org",
+            subject="Solcitud de cotización",
+            body=agency_mail,
+        )
+
 
 def agency_mail(self, state_change):
     print("enviando correo a la compañía de viajes")
@@ -140,7 +148,7 @@ def return_to_draft(self, state_change):
 def rejected(self, state_change):    
     membership = api.portal.get_tool('portal_membership')
     trip = state_change.object
-    body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no concluyó con éxito su trámite. Favor de hacer las ediciones pertinentes antes de comenzar de nuevo el proceso de solicitud."+URL+state_change.object.virtual_url_path()
+    body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no concluyó con éxito su trámite. Favor de hacer las ediciones pertinentes antes de comenzar de nuevo el proceso de solicitud. "+URL+state_change.object.virtual_url_path()
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     receivers = []
     if trip.grupo:

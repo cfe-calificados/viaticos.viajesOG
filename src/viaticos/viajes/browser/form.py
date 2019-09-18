@@ -89,21 +89,17 @@ def calc_desglose(obj):
             #import pdb; pdb.set_trace()
             buff += u"Desayuno día "+str(diff_1)+": "+str(250*multiplier)+"\n"
             verif[0] += 1
-            group += 1 
+            group += 250 
         if (start.hour, start.minute) >= (9,1)  and verif[1] <= diff and (start.hour, start.minute) < (19,0):
             buff += u"Comida día "+str(diff_1)+": "+str(300*multiplier)+"\n"
             verif[1] += 1
-            group += 1 
+            group += 300
         if (start.hour, start.minute) >= (19,0) and verif[2] <= diff:
             buff += u"Cena día "+str(diff_1)+": "+str(200*multiplier)+"\n"
             verif[2] += 1
-            group += 1            
-        if group == 3:
-            desglose += u"Comidas día "+str(diff_1)+": "+str(750*multiplier)+"\n"
-            group = 0
-            buff = u""
-        elif (start.hour, start.minute) >= (19,0):
-            desglose += buff
+            group += 200            
+        if group and (start.hour, start.minute) >= (19,0):
+            desglose += u"Comidas día "+str(diff_1)+": "+str(group*multiplier)+"\n"
             group = 0
             buff = u""
         start = start + dt.timedelta(minutes=5)

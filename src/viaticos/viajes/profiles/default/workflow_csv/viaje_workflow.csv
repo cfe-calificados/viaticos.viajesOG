@@ -67,7 +67,6 @@ Description:,Enviar a la compania
 Target state:,esperando
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
-Script after:,viaticos.viajes.Extensions.mailer.agency_mail
 
 [Transition]
 Id:,registrar

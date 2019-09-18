@@ -95,7 +95,7 @@ class IViaje(model.Schema):
 
     directives.widget(req=CheckBoxFieldWidget)
     req = schema.List(title=_(u'Requerimientos'),
-                               description=u"",
+                               description=u"Nota: Solicitar anticipo con 48 horas de anticipación a su salida seleccionada.",
                                required=True,
                                value_type=schema.Choice(source=OpcionesRequerimientos),
     )
