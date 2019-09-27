@@ -35,12 +35,28 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.browser import edit, add
 from z3c.form import button, field
 from z3c.relationfield import RelationValue, TemporaryRelationValue
+from Products.CMFCore.utils import getToolByName
 ## for validation purposes
 from zope.interface import Invalid
 from zope.interface import invariant
 #for omissions
 from z3c.form.interfaces import IEditForm
 from Products.CMFPlone.resources import add_resource_on_request
+## vcb
+from plone.app.z3cform.widget import AjaxSelectFieldWidget
+
+claves_vcb = SimpleVocabulary(
+    [SimpleTerm(value=1, title=_(u'Taxis')),
+     SimpleTerm(value=2, title=_(u'Boletos de avión')),
+     SimpleTerm(value=3, title=_(u'Boletos de autobús')),
+     SimpleTerm(value=4, title=_(u'Gasolina')), 
+     SimpleTerm(value=5, title=_(u'Autopista')),
+     SimpleTerm(value=6, title=_(u'Estacionamiento')),
+     SimpleTerm(value=7, title=_(u'Hospedaje')),
+     SimpleTerm(value=8, title=_(u'Alimentos')),
+     SimpleTerm(value=9, title=_(u'Gastos especiales')),
+    ]
+)
 
 print("IComprobacion loaded")
 
@@ -69,15 +85,18 @@ class ITable(interface.Interface):
     )    
 
 
-    fecha= schema.Date(title=u"Fecha", required=True)
+    fecha = schema.Date(title=u"Fecha", required=True)
+    clave = schema.Choice(title = _(u'Clave de gasto'), vocabulary=claves_vcb, required=True, default=None)
     concepto = schema.TextLine(title=u"Concepto",required=True)
     descripcion = schema.Text(title=u"Descripción",required=True)
-    directives.omitted(edit.DefaultEditForm, 'importe')
+    #directives.omitted(IEditForm, 'importe')
+    #directives.write_permission(importe='cmf.ManagePortal')
     importe = schema.Float(title=u"Importe",required=True, default=0.0)    
     comprobado = schema.Float(title=u"Monto comprobado", default=0.0, required=True)
 
-    directives.omitted(edit.DefaultEditForm, 'anticipo')
-    anticipo = schema.Choice(title=_(u"Por anticipo"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'si', title=_(u'Sí')), SimpleTerm(value=u'no', title=_(u'No'))]), default=u'no', required=True)
+    #directives.omitted(IEditForm, 'anticipo')
+    #directives.write_permission(anticipo='cmf.ManagePortal')
+    anticipo = schema.Choice(title=_(u"Tipo"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'anticipo', title=_(u'Por anticipo')), SimpleTerm(value=u'reembolso', title=_(u'Por reembolso'))]), default=u'reembolso', required=True)
     archivo = NamedFile(
         title=_(u'Archivo'),
         description=u"Usar comprimido para múltiples archivos.",
@@ -160,17 +179,87 @@ class IComprobacion(model.Schema):
         super(EditComprobacion, self).updateWidgets()        
         self.widgets['grupo_comprobacion'].auto_append = False 
     '''
-
+class IProp(form.Schema):
+    #form.widget(propietario=AjaxSelectFieldWidget)
+    propietario = schema.Choice(
+        __name__ = "propietario",
+        title = _(u'Propietario'),
+        vocabulary=u"plone.app.vocabularies.Users",
+        required = True,
+        default=None
+    )
 class AddComprobacion(add.DefaultAddForm):
     """ Default, for specific permissions only """
-    portal_type = 'viaje'
+    portal_type = 'comprobacion'
     schema = IComprobacion
-
     label = u"Añadir Comprobación de gastos"
-    description = u"Proporciona datos para comprobar alguno de tus gastos."
+    description = u"Proporciona datos para comprobar alguno de tus gastos."    
+    #additionalSchemata = [IProp] #try this later
 
+    '''
+    def updateFields(self):
+        super(AddComprobacion, self).updateFields()
+        #import pdb; pdb.set_trace()
 
-class EditComprobacion(edit.DefaultEditForm):
+        propietario = schema.Choice(
+            __name__ = "propietario",
+            title = _(u'Propietario'),
+            vocabulary=u"plone.app.vocabularies.Users",
+            required = True,
+            default=None
+        )
+        
+        field_obj = field.Fields(propietario)
+        self.fields += field_obj
+        #import pdb; pdb.set_trace()
+
+        #self.fields['propietario'].widgetFactory = AjaxSelectFieldWidget
+
+    
+    def updateWidgets(self):
+        super(AddComprobacion, self).updateWidgets()
+        self.fields['propietario'].widgetFactory = AjaxSelectFieldWidget
+    
+    def datagridInitialise(self, subform, widget):
+        #import pdb; pdb.set_trace()
+        pass
+
+    def datagridUpdateWidgets(self, subform, widgets, widget):
+        pass
+        #import pdb; pdb.set_trace()
+    '''
+    
+    def createAndAdd(self, data):
+        print("HHHHH")
+        new_obj = super(AddComprobacion, self).createAndAdd(data)
+        import pdb; pdb.set_trace()
+        catalog = api.portal.get_tool('portal_catalog')
+        brain = catalog({'portal_type': 'comprobacion', 'id': new_obj.id})[0]
+        new_obj = brain.getObject()         
+        viaje = None
+        if not new_obj.relacion.isBroken():            
+                brains = catalog(path={'query': new_obj.relacion.to_path, 'depth': 0})
+                viaje = brains[0].getObject()
+        new_owner = viaje.getOwner()#api.user.get(username=).getUser()
+        employee = new_owner.getId()
+        #old_comp_owner = api.user.get(new_obj._owner[1]).getUser() #1
+        new_obj.changeOwnership(new_owner, recursive=False)
+        new_obj.setCreators([employee])
+        roles = list(new_obj.get_local_roles_for_userid(employee))
+        if "Owner" not in roles: roles.append("Owner")
+        if "Reviewer" not in roles: roles.append("Reviewer")
+        if "Manager" in roles: roles.remove("Manager")
+        new_obj.manage_setLocalRoles(employee, roles)
+        #new_obj.manage_setLocalRoles(old_comp_owner.getId(), ["Manager"]) #1
+        new_obj.reindexObjectSecurity()
+        brain = catalog({'portal_type': 'comprobacion', 'id': new_obj.id})[0]
+        brain.changeOwnership(new_owner, recursive=True)
+        brain.manage_setLocalRoles(employee, roles)
+        brain.setCreators([employee])
+        brain.reindexObjectSecurity()
+        return new_obj    
+    
+class EditComprobacion(edit.DefaultEditForm):    
     schema = IComprobacion
     label = u"Modificar comprobaciones"
     description = u"Agregar comprobaciones."
@@ -207,6 +296,7 @@ class EditComprobacion(edit.DefaultEditForm):
         #import pdb; pdb.set_trace()
         super(EditComprobacion, self).updateWidgets()        
         self.widgets['grupo_comprobacion'].auto_append = False
+        #import pdb; pdb.set_trace()
 
     def updateActions(self):
         super(EditComprobacion, self).updateActions()
@@ -215,9 +305,35 @@ class EditComprobacion(edit.DefaultEditForm):
 
     
     def datagridInitialise(self, subform, widget):
-        subform.fields = subform.fields.omit('importe')
-        subform.fields = subform.fields.omit('anticipo')
-    
+        #import pdb; pdb.set_trace()
+        print("datagrid")
+        #subform.fields = subform.fields.omit('importe')
+        #subform.fields = subform.fields.omit('anticipo')
+        '''
+        if subform.fields.items():
+            import pdb; pdb.set_trace()
+            subform.fields['importe'].mode = 'hidden'
+            subform.fields['importe'].required = False
+            subform.fields['anticipo'].mode = 'hidden'
+            subform.fields['anticipo'].required = False
+        '''
+    def datagridUpdateWidgets(self, subform, widgets, widget):
+        #subform.fields = subform.fields.omit('importe')
+        #subform.fields = subform.fields.omit('anticipo')
+        if self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Manager"):
+            return
+        if subform.fields.items():
+            #import pdb; pdb.set_trace()
+            subform.fields['importe'].mode = 'hidden'
+            subform.fields['importe'].required = False
+            subform.fields['anticipo'].mode = 'hidden'
+            subform.fields['anticipo'].required = False
+        if widgets.items():
+            widgets['anticipo'].mode = 'hidden'
+            widgets['anticipo'].required = False
+            widgets['importe'].mode = 'hidden'
+            widgets['importe'].required = False
+            
     @button.buttonAndHandler(u'Guardar')
     def handleApply(self, action):
         #import pdb; pdb.set_trace()
@@ -264,7 +380,7 @@ class EditComprobacion(edit.DefaultEditForm):
                 #   grupo_comprobacion[index]['importe'] = item['importe']
             else:
                 if not item.has_key("anticipo"):
-                    item['anticipo'] = u'no'
+                    item['anticipo'] = u'reembolso'
                 if not item.has_key("importe"):
                     item['importe'] = 0.0
                 grupo_comprobacion.append(item)

@@ -168,8 +168,8 @@ class VistaViaticos(BrowserView):
     """ Una vista para listar solicitudes y comprobaciones de gastos
     """
 
-    order = {'borrador': 1, 'pendiente': 2, 'esperando':3, 'final':4}
-    get_states = {1:'borrador', 2:'pendiente', 3:'esperando', 4:'final'}
+    order = {'borrador': 1, 'pendiente': 2, 'esperando':3, 'autorizado':4, 'final':5}
+    get_states = {1:'borrador', 2:'pendiente', 3:'esperando', 4:'autorizado', 5:'final'}
     orden = {'bosquejo': 1,'revision': 2, 'aprobado': 3}
     get_comp = {1:'bosquejo', 2:'revision', 3:'aprobado'} 
 

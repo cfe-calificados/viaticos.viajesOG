@@ -9,7 +9,7 @@ div {
 	display: inline-block; 
 	border-bottom: 0px;	
 	margin: 0px;	
-  color: #000;
+	color: #000;
 	cursor: pointer;
 	border-right: 0px;
 }
@@ -22,6 +22,7 @@ div {
 	overflow: hidden;
 	position: relative;
 	border-top: 2px solid #fafafa;/*#007bb1;*/
+	/*height: 700px;*/
 }
 
 
@@ -62,6 +63,7 @@ body {
   margin: 0px;
   margin-left: auto;
   margin-right: auto;
+
 }
 
 .tabcontent {
@@ -76,4 +78,3 @@ body {
     background: #007bb1;
     color: #fff;
 }
-

@@ -52,7 +52,7 @@ $(document).ready(function() {
 
 //alert("alv")
 var currentCities=[];
-var BATTUTA_KEY="e1d59bc56c58f9fc7e11268607723b48";
+var BATTUTA_KEY="7e874777f3421691c58c62dd6bdfb483";
 // Populate country select box from battuta API
 url="https://geo-battuta.net/api/country/all/?key="+BATTUTA_KEY+"&callback=?";
 

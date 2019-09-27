@@ -9,6 +9,9 @@ function coloring(){
 		$(this).attr("style", "color:#eb6123;");
 	    }
 	    else if(texto.includes("esperando") || texto.includes("revision")){
+		$(this).attr("style", "color:blue;");
+	    }
+	    else if(texto.includes("autorizado")){
 		$(this).attr("style", "color:green;");
 	    }
 	});
@@ -20,6 +23,7 @@ $(document).ready(function(){
     
     var tabs = document.getElementById('icetab-container').children;
     var tabcontents = document.getElementById('icetab-content').children;
+    $("#icetab-content").css("height",(($(".tab-active tr").length+4)*2)+"em");
 
     var myFunction = function() {
 	var tabchange = this.mynum;
@@ -29,6 +33,7 @@ $(document).ready(function(){
 	}
 	tabcontents[tabchange].classList.add('tab-active');
 	this.classList.add('current-tab');
+	$("#icetab-content").css("height",(($(".tab-active tr").length+4)*2.2)+"em");
     }	
 
 

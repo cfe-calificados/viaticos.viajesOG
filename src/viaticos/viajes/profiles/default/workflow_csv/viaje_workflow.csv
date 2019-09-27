@@ -30,8 +30,20 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 [State]
 Id:,esperando
 Title:,En tramite
-Description:,Esperando confirmacion.
-Transitions:,"registrar,fallo_tramite"
+Description:,Esperando confirmacion de anticipo.
+Transitions:,"autorizar,fallo_tramite"
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N
+Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N
+Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
+
+[State]
+Id:,autorizado
+Title:,Autorizado
+Description:,Anticipo por autorizado.
+Transitions:,"registrar,fallo_anticipo"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N
@@ -69,6 +81,15 @@ Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
 
 [Transition]
+Id:,autorizar
+Title:,Autorizar
+Description:,Autorizar montos de anticipo
+Target state:,autorizado
+Guard expression:, here/@@can-send-to-agency
+Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.finances_mail
+
+[Transition]
 Id:,registrar
 Title:,Registrar
 Description:,Registrar solicitud de gastos
@@ -94,4 +115,13 @@ Description:,"Rechazado. Por corregir."
 Target state:,borrador
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.rejected
+
+
+[Transition]
+Id:,fallo_anticipo
+Title:,Anticipo no aprobado
+Description:,"Anticipo no autorizado, por revisar montos."
+Target state:,esperando
+Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.finances_rejected
 
