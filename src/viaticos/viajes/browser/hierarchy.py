@@ -118,7 +118,9 @@ class UpwardForm(form.SchemaForm):
                 self.members_avail.append({"option":member.getProperty("fullname").decode('utf-8').encode('latin_1'), "value":str(member)})
         new_selected = []
         for boss in self.members_selected:
-            new_selected.append({"option": membership.getMemberById(boss).getProperty("fullname").decode('utf-8').encode('latin_1'), "value":boss})
+            member_boss = membership.getMemberById(boss)
+            if not member_boss: continue
+            new_selected.append({"option": member_boss.getProperty("fullname").decode('utf-8').encode('latin_1'), "value":boss})
         self.members_selected = new_selected
 
         # Set Coordinacion

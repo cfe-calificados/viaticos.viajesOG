@@ -128,7 +128,16 @@
       layer="zope.interface.Interface"
       class=".chronos.TestChronos"     
       permission="zope2.View"
+	/>
+
+     <browser:page
+      name="reset_list"
+      for="viaticos.viajes.content.comprobacion.IComprobacion"
+      layer="zope.interface.Interface"
+      class=".object_actions.ResetComprobacion"     
+      permission="zope2.View"
      />
+
 
 
   

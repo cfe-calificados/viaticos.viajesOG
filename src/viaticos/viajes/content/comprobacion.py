@@ -232,7 +232,7 @@ class AddComprobacion(add.DefaultAddForm):
     def createAndAdd(self, data):
         print("HHHHH")
         new_obj = super(AddComprobacion, self).createAndAdd(data)
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         catalog = api.portal.get_tool('portal_catalog')
         brain = catalog({'portal_type': 'comprobacion', 'id': new_obj.id})[0]
         new_obj = brain.getObject()         

@@ -112,6 +112,8 @@ class VistaViaje(DefaultView):
 class VistaComprobacion(DefaultView):
     """ Vista por defecto para comprobacion de gastos """
 
+    convert = {1:"Taxis",2:"Boletos de avión",3:"Boletos de avión",4:"Gasolina",5:"Autopista",6:"Estacionamiento",7:"Hospedaje",8:"Alimentos",9:"Gastos especiales"}    
+
     def __call__(self):
         auth_member = self.context.portal_membership.getAuthenticatedMember()        
         if auth_member.has_role('Manager'):
@@ -152,14 +154,27 @@ class VistaComprobacion(DefaultView):
         return self.context.grupo_comprobacion.index(concepto)
 
     def calc_saldo(self):
+        tupla_totales = []
         conceptos = self.context.grupo_comprobacion
-        total = self.context.total_comprobar*-1        
+        total = self.context.total_comprobar*-1
+        tupla_totales.append(total)
+        tupla_totales.append(0.0)
         for concepto in conceptos:
+            if concepto['anticipo'] == "reembolso":
+                tupla_totales[1] += concepto['comprobado']
+                continue
             if concepto['importe'] <= concepto['comprobado']:
-                total += concepto['importe']
+                tupla_totales[0] += concepto['importe']
             else:
-                total += concepto['comprobado']
-        return total
+                tupla_totales[0] += concepto['comprobado']
+        
+        return tupla_totales+['{:,}'.format(tupla_totales[0]+tupla_totales[1])]
+
+    def get_clave(self,concepto):
+        return self.convert[concepto]
+
+    def confirm_reset(self):
+        return "confirmar('¿Está seguro de reiniciar la información de comprobaciones? Perderá toda la información que ha añadido hasta ahora.')"
         
         
         

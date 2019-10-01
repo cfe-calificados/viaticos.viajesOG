@@ -1,6 +1,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
       metal:use-macro="context/main_template/macros/master"
       i18n:domain="viaticos.viajes">
+  <head>
+    <metal:block fill-slot="javascript_head_slot">
+      <script type="text/javascript"  src="../++plone++viaticos.viajes/comprobacion_reset.js">
+      </script>
+    </metal:block>
+  </head>
   <body>
     <metal:content-core fill-slot="content-core">
       <dl tal:define="info_state python: view.get_info_state()" tal:condition="python:info_state" class="portalMessage warning">
@@ -12,20 +18,43 @@
       <div tal:define="viaje python:view.get_viaje()">
         <a tal:attributes="href python:viaje.absolute_url()"><p>${python:viaje.title}</p></a>
       </div>
+      
       <br>
-      <div tal:condition="context/total_comprobar">
-	<p><b>Total a comprobar</b></p>
-        <p tal:content="structure view/w/total_comprobar/render"></p>
+
+      <div class="container" tal:define="tupla_totales python: view.calc_saldo()">
+	<div class="row">
+
+	  <div class="col-md-6 align-self-center" tal:condition="context/total_comprobar">
+	    <p><b>Total a comprobar</b></p>
+            <p tal:content="structure view/w/total_comprobar/render"></p>
+	  </div>
+
+	</div>
+	<hr>
+	<div class="row">
+	  <div class="col-md-4">
+	    <p><b>Total de anticipo</b></p>
+            <p tal:content="python: tupla_totales[0]"></p>
+	  </div>
+	  <div class="col-md-4">
+	    <p><b>Total de reembolso</b></p>
+	    <p tal:content="python: tupla_totales[1]"></p>
+	  </div>
+	  <div class="col-md-4">
+	    <p><b>Total General</b></p>
+	    <p tal:content="python: tupla_totales[2]"></p>
+	  </div>
+	</div>
+
       </div>
-      <div>
-	<p><b>Saldo</b></p>
-        <p tal:content="python: view.calc_saldo()"></p>
-      </div>
+
       <br>
       <div tal:condition="context/notas">
 	<p><b>Notas</b></p>
-        <p tal:content="structure view/w/notas/render"></p>
+	<p tal:content="structure view/w/notas/render"></p>
       </div>
+
+      
       <br>
       <legend>Conceptos</legend>
 
@@ -35,6 +64,11 @@
     
 	    <th class="header">
               <span>Fecha</span>
+              <span class="required">*</span>
+	    </th>
+
+	    <th class="header">
+              <span>Clave</span>
               <span class="required">*</span>
 	    </th>
     
@@ -73,6 +107,7 @@
 	<tbody id="datagridwidget-tbody" data-name_prefix="form.widgets.grupo_comprobacion" data-id_prefix="form-widgets-grupo_comprobacion" tal:define="conceptos context/grupo_comprobacion">
 	  <tr class="datagridwidget-row" tal:repeat="concepto conceptos">
 	    <td tal:content="python:concepto['fecha'].strftime('%d/%m/%Y')">fecha</td>
+	    <td tal:content="python:view.get_clave(concepto['clave'])">fecha</td>
 	    <td tal:content="python:concepto['concepto']">concepto</td>
 	    <td tal:content="python:concepto['descripcion']">descripcion</td>
 	    <td tal:content="python:concepto['importe']">importe</td>
@@ -90,6 +125,20 @@
 	  </tr>
 	</tbody>
       </table>
+
+      <br>
+
+      <div class="container">
+	<div class="row" tal:define="texto_confirma python:view.confirm_reset()">
+	  <div class="col-md-6" >	    
+	  </div>
+
+	  <div class="col-md-6">
+	   <button onclick="${python:texto_confirma}"> Reinicializar comprobaciones </button>
+	     <button onclick=""> Descargar comprobación </button>
+	  </div>
+	</div>
+      </div>
       
     </metal:content-core>
   </body>
