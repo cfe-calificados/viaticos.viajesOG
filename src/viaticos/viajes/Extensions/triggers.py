@@ -35,7 +35,7 @@ def generate(viaje, n_grupo=1):
     grupo = []
     for x in desc_monto:
         #import pdb; pdb.set_trace()
-        grupo.append({'descripcion': u'Descripción', 'fecha': datetime.now(), 'concepto': x[0], 'importe': float(x[1])/n_grupo, 'archivo': None, 'comprobado':0.0, 'anticipo':u'anticipo', 'clave':8})
+        grupo.append({'descripcion': u'Descripción', 'fecha': datetime.now(), 'concepto': x[0], 'importe': float(x[1])/n_grupo, 'archivo': None, 'comprobado':0.0, 'anticipo':u'anticipo', 'clave':8, 'origen':'nacional'})
     return grupo#[{'descripcion': u'Descripción', 'fecha': datetime.now(), 'concepto': u'Concepto', 'importe': 0.0, 'archivo': None}]
 
 def create_comprobaciones(portal, trip, rel_full):
@@ -44,7 +44,7 @@ def create_comprobaciones(portal, trip, rel_full):
     full_grupo = list(trip.grupo)+([trip_owner] if trip_owner not in trip.grupo else [])
     #import pdb; pdb.set_trace()
     for employee in full_grupo:
-        try:
+        try:            
             comp_tmp = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto/len(full_grupo),notas=u"", grupo_comprobacion=generate(trip, len(full_grupo)), container=portal.viaticos)            
             new_owner = api.user.get(username=employee).getUser()
             old_comp_owner = comp_tmp.getOwner() #1
@@ -83,11 +83,13 @@ def create_comprobacion(self, state_change):
     try:
         obj = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto,notas=u"", grupo_comprobacion=generate(trip), container=portal.viaticos)#api.content.create(safe_id=True,type="comprobacion", relacion=trip, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), fecha=datetime.now(), importe=0, descripcion=u"Descripción", archivo=None, container=portal.viaticos) #None#
     except Exception as error:
+        print(error)
         import pdb; pdb.set_trace()
     if obj != None:
         print("We made it!")
         #import pdb; pdb.set_trace()
         try:
+            #import pdb; pdb.set_trace()
             trip_owner = trip.getOwner()
             old_comp_owner = obj.getOwner() #1
             obj.changeOwnership(trip_owner, recursive=False)
@@ -106,7 +108,9 @@ def create_comprobacion(self, state_change):
             brain.reindexObjectSecurity()
             #print(obj.listCreators(), obj.listCreators__roles__)
         except Exception as error:
+            print("Algo fallo: revisar.")
             import pdb; pdb.set_trace()
+
     else:        
         print("Algo malo pasó")
 

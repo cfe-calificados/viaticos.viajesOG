@@ -93,10 +93,11 @@ class ITable(interface.Interface):
     #directives.write_permission(importe='cmf.ManagePortal')
     importe = schema.Float(title=u"Importe",required=True, default=0.0)    
     comprobado = schema.Float(title=u"Monto comprobado", default=0.0, required=True)
-
+    
     #directives.omitted(IEditForm, 'anticipo')
     #directives.write_permission(anticipo='cmf.ManagePortal')
     anticipo = schema.Choice(title=_(u"Tipo"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'anticipo', title=_(u'Por anticipo')), SimpleTerm(value=u'reembolso', title=_(u'Por reembolso'))]), default=u'reembolso', required=True)
+    origen = schema.Choice(title=_(u"Origen"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'nacional', title=_(u'Nacional')), SimpleTerm(value=u'internacional', title=_(u'Internacional'))]), default=u'nacional', required=True)
     archivo = NamedFile(
         title=_(u'Archivo'),
         description=u"Usar comprimido para múltiples archivos.",
@@ -110,6 +111,10 @@ class ITable(interface.Interface):
 
     directives.widget(
         'anticipo',
+        RadioFieldWidget
+    )
+    directives.widget(
+        'origen',
         RadioFieldWidget
     )
     
@@ -305,8 +310,7 @@ class EditComprobacion(edit.DefaultEditForm):
 
     
     def datagridInitialise(self, subform, widget):
-        #import pdb; pdb.set_trace()
-        print("datagrid")
+        #import pdb; pdb.set_trace()        
         #subform.fields = subform.fields.omit('importe')
         #subform.fields = subform.fields.omit('anticipo')
         '''
@@ -371,19 +375,27 @@ class EditComprobacion(edit.DefaultEditForm):
                 if item['descripcion']:
                     grupo_comprobacion[index]['descripcion'] = item['descripcion']
                 if item['comprobado']:
-                    grupo_comprobacion[index]['comprobado'] = item['comprobado']
-
-                #if item['anticipo']:
-                #    grupo_comprobacion[index]['anticipo'] = item['anticipo']
+                    grupo_comprobacion[index]['comprobado'] = item['comprobado']                
+                if item['clave']:
+                    grupo_comprobacion[index]['clave'] = item['clave']
+                if item['origen']:
+                    grupo_comprobacion[index]['origen'] = item['origen']
                     
-                #if item['importe']:
-                #   grupo_comprobacion[index]['importe'] = item['importe']
-            else:
+                    
                 if not item.has_key("anticipo"):
                     item['anticipo'] = u'reembolso'
+                else:
+                    grupo_comprobacion[index]['anticipo'] = item['anticipo']
                 if not item.has_key("importe"):
                     item['importe'] = 0.0
+                else:
+                   grupo_comprobacion[index]['importe'] = item['importe']                   
+            else:                
                 grupo_comprobacion.append(item)
+                
+        if len(grupo_comprobacion) > len(data['grupo_comprobacion']):
+            for i in range(0,len(grupo_comprobacion) - len(data['grupo_comprobacion'])):
+                grupo_comprobacion.pop()
 
             '''    
             if item['archivo']:

@@ -136,6 +136,14 @@
       layer="zope.interface.Interface"
       class=".object_actions.ResetComprobacion"     
       permission="zope2.View"
+	/>
+
+     <browser:page
+      name="descarga_comprobacion"
+      for="viaticos.viajes.content.comprobacion.IComprobacion"
+      layer="zope.interface.Interface"
+      class=".object_actions.DescargaComprobacion"     
+      permission="zope2.View"
      />
 
 

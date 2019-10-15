@@ -22,6 +22,7 @@ from plone.dexterity.browser import add
 ##for validation purposes
 from zope.interface import Invalid
 from zope.interface import invariant
+from plone import api
 
 #for group purposes
 from plone.formwidget.autocomplete import AutocompleteMultiFieldWidget, AutocompleteFieldWidget
@@ -359,9 +360,27 @@ class IViaje(model.Schema):
     )
 
     
-from Products.CMFPlone.resources import add_resource_on_request    
+from Products.CMFPlone.resources import add_resource_on_request
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 class AddViaje(add.DefaultAddForm):
+    error_template = ViewPageTemplateFile("../browser/templates/not_allowed.pt")
+    portal_type = 'viaje'
+    schema = IViaje
+    label = u"Agregar solicitud de gastos"
+    description = u"Añade información sobre tu salida. "
+
+    def allowed(self,user):
+        catalog = api.portal.get_tool('portal_catalog')
+        brains = catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision", "aprobado"], "Creator": user.getId()})
+        #import pdb; pdb.set_trace()
+        return [(x.Title, x.getURL()) for x in brains]
+        
     def __call__(self):
+        
+        current_user = self.context.portal_membership.getAuthenticatedMember()
+        if not current_user.has_role("Manager") and not len(self.allowed(current_user)) < 2:
+            return self.error_template()
+
         # utility function to add resource to rendered page
         #add_resource_on_request(self.request, 'exercise2')
         print("loading JS")
@@ -369,10 +388,7 @@ class AddViaje(add.DefaultAddForm):
         #import pdb; pdb.set_trace()
         return super(AddViaje, self).__call__()
     
-    portal_type = 'viaje'
-    schema = IViaje
-    label = u"Agregar solicitud de gastos"
-    description = u"Añade información sobre tu salida. "
+    
     
     
 class AddViajesss(add.DefaultAddView):

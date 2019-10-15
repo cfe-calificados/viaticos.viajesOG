@@ -175,6 +175,11 @@ class VistaComprobacion(DefaultView):
 
     def confirm_reset(self):
         return "confirmar('¿Está seguro de reiniciar la información de comprobaciones? Perderá toda la información que ha añadido hasta ahora.')"
+
+    def get_status(self):
+        portal = api.portal.get()
+        status = api.content.get_state(obj=portal["viaticos"][self.context.id])
+        return status
         
         
         

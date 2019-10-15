@@ -133,9 +133,9 @@
 	  <div class="col-md-6" >	    
 	  </div>
 
-	  <div class="col-md-6">
-	   <button onclick="${python:texto_confirma}"> Reinicializar comprobaciones </button>
-	     <button onclick=""> Descargar comprobación </button>
+	  <div class="col-md-6" style="text-align: right;">
+	    <button tal:condition="python: view.get_status() == 'bosquejo'" class="destructive" onclick="${python:texto_confirma}"> Reinicializar comprobaciones </button>
+	    <button tal:condition="python: view.get_status() == 'aprobado'" class="submit-widget button-field context" onclick="window.location+='/@@descarga_comprobacion';"> Descargar comprobación </button>
 	  </div>
 	</div>
       </div>
