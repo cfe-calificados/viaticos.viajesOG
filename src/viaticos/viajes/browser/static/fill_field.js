@@ -25,6 +25,7 @@ $(document).ready(function() {
 	$("label[for='form-widgets-notas_avion']").toggle();
 	if ($("input#form-widgets-req-0").is(":checked")){
 	    $("#form-widgets-notas_avion").addClass("required");
+	    $("label[for='form-widgets-notas_avion']").append("<span class='required horizontal' title='Obligatorio'>&nbsp;</span>");
 	} else {
 	    $("#form-widgets-notas_avion").removeClass("required");
 	}
@@ -32,6 +33,9 @@ $(document).ready(function() {
     $("input#form-widgets-req-1").on("change",function() {
 	$("#form-widgets-notas_hospedaje").toggle();
 	$("label[for='form-widgets-notas_hospedaje']").toggle();
+	if ($("input#form-widgets-req-1").is(":checked")){
+	    $("label[for='form-widgets-notas_hospedaje']").append("<span class='required horizontal' title='Obligatorio'>&nbsp;</span>");
+	}
     });
 
     //$("input#form-widgets-req-2").on("change",function() {});
@@ -39,10 +43,16 @@ $(document).ready(function() {
     $("input#form-widgets-req-3").on("change",function() {
 	$("#form-widgets-notas_transporte").toggle();
 	$("label[for='form-widgets-notas_transporte']").toggle();
+	if ($("input#form-widgets-req-3").is(":checked")){
+	    $("label[for='form-widgets-notas_transporte']").append("<span class='required horizontal' title='Obligatorio'>&nbsp;</span>");
+	}
     });
     $("input#form-widgets-req-4").on("change",function() {
 	$("#form-widgets-notas_otro").toggle();
 	$("label[for='form-widgets-notas_otro']").toggle();
+	if ($("input#form-widgets-req-4").is(":checked")){
+	    $("label[for='form-widgets-notas_otro']").append("<span class='required horizontal' title='Obligatorio'>&nbsp;</span>");
+	}
     });
 });
 

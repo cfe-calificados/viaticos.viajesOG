@@ -8,7 +8,7 @@ Initial state:,borrador
 Id:,borrador
 Title:,Borrador
 Description:,Una vez completado, el encargado lo aprobara para solicitud.
-Transitions,confirmar
+Transitions,guardar_borrador
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   N,	    Y,	   N,	   N,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
@@ -16,10 +16,10 @@ Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N  
 
 [State]
-Id:,pendiente
-Title:,Pendiente
+Id:,revision_aprobador
+Title:,Revision aprobador
 Description:,Pendiente de revision.
-Transitions:,"enviar,fallo_borrador"
+Transitions:,"aprobar_solicitud,fallo_borrador"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Reader,Editor, Owner,  Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
@@ -28,10 +28,10 @@ Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
-Id:,esperando
-Title:,En tramite
-Description:,Esperando confirmacion de anticipo.
-Transitions:,"autorizar,fallo_tramite"
+Id:,esperando_agencia
+Title:,Esperando agencia
+Description:,Esperando registro de informacion de agencia.
+Transitions:,"enviar_anticipo,fallo_tramite"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N
@@ -40,9 +40,9 @@ Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
-Id:,autorizado
-Title:,Autorizado
-Description:,Anticipo por autorizado.
+Id:,anticipo_pendiente
+Title:,Anticipo pendiente
+Description:,Anticipo por autorizar.
 Transitions:,"registrar,fallo_anticipo"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
@@ -64,27 +64,27 @@ Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 
 
 [Transition]
-Id:,confirmar
-Title:,Confirmar
+Id:,guardar_borrador
+Title:,Guardar borrador
 Description:,Confirmar informacion del viaje. 
-Target state:,pendiente
+Target state:,revision_aprobador
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Request review
 Script after:,viaticos.viajes.Extensions.mailer.boss_mail
 
 [Transition]
-Id:,enviar
-Title:,Enviar
-Description:,Enviar a la compania
-Target state:,esperando
+Id:,aprobar_solicitud
+Title:,Aprobar solicitud
+Description:,Automatico
+Target state:,esperando_agencia
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
 
 [Transition]
-Id:,autorizar
-Title:,Autorizar
+Id:,enviar_anticipo
+Title:,Enviar anticipo
 Description:,Autorizar montos de anticipo
-Target state:,autorizado
+Target state:,anticipo_pendiente
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.finances_mail
@@ -110,7 +110,7 @@ Script after:,viaticos.viajes.Extensions.mailer.return_to_draft
 
 [Transition]
 Id:,fallo_tramite
-Title:,Correccion
+Title:,Modificar solicitud
 Description:,"Rechazado. Por corregir."
 Target state:,borrador
 Guard permission:,Review portal content
@@ -121,7 +121,7 @@ Script after:,viaticos.viajes.Extensions.mailer.rejected
 Id:,fallo_anticipo
 Title:,Anticipo no aprobado
 Description:,"Anticipo no autorizado, por revisar montos."
-Target state:,esperando
+Target state:,esperando_agencia
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.finances_rejected
 

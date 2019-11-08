@@ -43,5 +43,21 @@
       />
 
   <!-- -*- extra stuff goes here -*- -->
+  <utility
+     name="viaticos.viajes.estados_comprobacion"
+     component="viaticos.viajes.my_vocabularies.extensiones.estados_comprobacion"     
+     />
+
+    <utility
+     name="viaticos.viajes.estados_viaje"
+     component="viaticos.viajes.my_vocabularies.extensiones.estados_viaje"     
+       />
+
+    <utility
+     name="viaticos.viajes.coordinaciones"
+     component="viaticos.viajes.my_vocabularies.extensiones.coordinaciones"     
+     />
+
+    
 
 </configure>

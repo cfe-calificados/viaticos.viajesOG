@@ -14,10 +14,10 @@ class TestChronos(BrowserView):
             print("Chronos is hungry...")
             pctl = api.portal.get_tool('portal_catalog')
             pwfl = api.portal.get_tool('portal_workflow')
-            all_trips = pctl({'portal_type':'viaje', 'review_state':'pendiente'})
+            all_trips = pctl({'portal_type':'viaje', 'review_state':'revision_aprobador'})
             for trip in all_trips:
                 if (DateTime().asdatetime()-trip.modified.asdatetime()).total_seconds()/3600 > 6:
-                    pwfl.doActionFor(trip.getObject(), 'enviar')
+                    pwfl.doActionFor(trip.getObject(), 'aprobar_solicitud')
             return "Chronos eats his own children"
 
         #authenticator = self.context.restrictedTraverse("@@authenticator")

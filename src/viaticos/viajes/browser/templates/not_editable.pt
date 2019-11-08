@@ -1,0 +1,16 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="viaticos.viajes">
+  <body>
+    
+    <metal:content-core fill-slot="content-core">
+      <h3>No es posible <b>editar</b> esta comprobación de gastos.</h3><br>
+      <h4 tal:define="created python: context.created().asdatetime().strftime('%d/%m/%Y %H:%M')">${python: context.Title()} creada el ${python: created}</h4>
+      <br>
+      <p>Ha excedido el plazo permitido para realizar la captura de sus comprobaciones.</p>
+      <p>Favor de comunicarse con <a href="mailto:abc@calificados.cfe.mx">Administración</a> directamente.</p>
+      
+    </metal:content-core>
+	    
+  </body>
+</html>

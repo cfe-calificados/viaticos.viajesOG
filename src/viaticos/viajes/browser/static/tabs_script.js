@@ -5,13 +5,13 @@ function coloring(){
 	    if(texto.includes("borrador")){
 		$(this).attr("style", "color:red;");
 	    }
-	    else if(texto.includes("pendiente") || texto.includes("bosquejo")){
+	    else if(texto.includes("revision_aprobador") || texto.includes("bosquejo")){
 		$(this).attr("style", "color:#eb6123;");
 	    }
-	    else if(texto.includes("esperando") || texto.includes("revision")){
+	    else if(texto.includes("esperando_agencia") || texto.includes("revision")){
 		$(this).attr("style", "color:blue;");
 	    }
-	    else if(texto.includes("autorizado")){
+	    else if(texto.includes("anticipo_pendiente")){
 		$(this).attr("style", "color:green;");
 	    }
 	});

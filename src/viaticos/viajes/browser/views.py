@@ -85,7 +85,7 @@ class VistaViaje(DefaultView):
     def is_pending_state(self):
         portal = api.portal.get()
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
-        return True if status == "pendiente" and self.is_boss() else False
+        return True if status == "revision_aprobador" and self.is_boss() else False
         
         
     def is_transact_state(self):
@@ -95,7 +95,7 @@ class VistaViaje(DefaultView):
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
         #is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == self.context.getOwner().getUserName()
         #needs_ticket = 'boleto_avion' in self.context.req or 'hospedaje' in self.context.req
-        return True if status == "esperando" and self.is_boss() else False#is_owner else False
+        return True if status == "esperando_agencia" and self.is_boss() else False#is_owner else False
         
     def render_ticket_form(self):
         #import pdb; pdb.set_trace()
@@ -188,8 +188,8 @@ class VistaViaticos(BrowserView):
     """ Una vista para listar solicitudes y comprobaciones de gastos
     """
 
-    order = {'borrador': 1, 'pendiente': 2, 'esperando':3, 'autorizado':4, 'final':5}
-    get_states = {1:'borrador', 2:'pendiente', 3:'esperando', 4:'autorizado', 5:'final'}
+    order = {'borrador': 1, 'revision_aprobador': 2, 'esperando_agencia':3, 'anticipo_pendiente':4, 'final':5}
+    get_states = {1:'borrador', 2:'revision_aprobador', 3:'esperando_agencia', 4:'anticipo_pendiente', 5:'final'}
     orden = {'bosquejo': 1,'revision': 2, 'aprobado': 3}
     get_comp = {1:'bosquejo', 2:'revision', 3:'aprobado'} 
 

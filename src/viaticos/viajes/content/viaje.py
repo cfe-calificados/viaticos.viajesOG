@@ -371,7 +371,7 @@ class AddViaje(add.DefaultAddForm):
 
     def allowed(self,user):
         catalog = api.portal.get_tool('portal_catalog')
-        brains = catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision", "aprobado"], "Creator": user.getId()})
+        brains = catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision"], "Creator": user.getId()})
         #import pdb; pdb.set_trace()
         return [(x.Title, x.getURL()) for x in brains]
         

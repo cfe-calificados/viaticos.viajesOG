@@ -44,6 +44,15 @@ from z3c.form.interfaces import IEditForm
 from Products.CMFPlone.resources import add_resource_on_request
 ## vcb
 from plone.app.z3cform.widget import AjaxSelectFieldWidget
+from DateTime import DateTime
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+##for validation purposes
+from zope.interface import Invalid
+from zope.interface import invariant
+import xml.etree.ElementTree as ET
+## XML Validation
+from io import BytesIO
+import zipfile
 
 claves_vcb = SimpleVocabulary(
     [SimpleTerm(value=1, title=_(u'Taxis')),
@@ -268,7 +277,7 @@ class EditComprobacion(edit.DefaultEditForm):
     schema = IComprobacion
     label = u"Modificar comprobaciones"
     description = u"Agregar comprobaciones."
-
+    error_template = ViewPageTemplateFile("../browser/templates/not_editable.pt")
 
     form.widget(
         'grupo_comprobacion',
@@ -293,6 +302,10 @@ class EditComprobacion(edit.DefaultEditForm):
 
     def __call__(self):
         # utility function to add resource to rendered page
+        current_user = self.context.portal_membership.getAuthenticatedMember()
+        
+        if not current_user.has_role("Manager") and (DateTime().asdatetime()-self.context.created().asdatetime()).days >= 28:
+            return self.error_template()
         print("loading JS comprobacion")
         add_resource_on_request(self.request, 'comp_static')
         return super(EditComprobacion, self).__call__()
@@ -337,6 +350,81 @@ class EditComprobacion(edit.DefaultEditForm):
             widgets['anticipo'].required = False
             widgets['importe'].mode = 'hidden'
             widgets['importe'].required = False
+
+    def single_xml(self, idx, data, filename, messages, container=""):
+        message = ""
+        root = None
+        try:
+            root = ET.fromstring(data)
+        except:
+            import pdb; pdb.set_trace()
+            message = u"Error: "+filename+u" no es un archivo XML"
+            messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
+            self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+            return message
+
+        if root == None:
+            message = u"Error: El archivo "+filename+" no se pudo analizar sintácticamente."
+            messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
+            self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+            return message
+
+        entries = [x for x in root.getchildren() if ("Rfc" in x.keys() or "RFC" in x.keys()) and "Receptor" in x.tag]
+        if len(entries) == 0:
+            message = u"Error: El archivo "+filename+u" no es un comprobante válido."                
+            messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
+            self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+            return message
+
+        for elemento in entries:
+            rfc = elemento.get("Rfc") if "Rfc" in elemento.keys() else None
+            if rfc == None:
+                rfc = elemento.get("Rfc") if "Rfc" in elemento.keys() else None
+            if rfc == None:
+                message = u"Error: El archivo "+filename+u" no contiene un RFC."
+                messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
+                self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+                return message
+            if rfc == "CCA160523QGA":
+                return message
+            else:
+                message = u"Error: El RFC del receptor ("+rfc+") en el archivo "+filename+u" no es el correcto."
+                messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
+                self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+                return message
+            
+    def check_xml(self, grupo_comprobacion, messages):
+        import pdb; pdb.set_trace()
+        message = ""
+        errors = False
+        for idx,concepto in enumerate(grupo_comprobacion):            
+            if concepto['archivo'] != None and concepto['archivo'].contentType == "text/xml" and concepto['origen'] == "nacional":
+                message = self.single_xml(idx, concepto['archivo'].data, concepto['archivo'].filename, messages)
+                if message:
+                    errors = True
+                    continue
+            elif concepto['archivo'] != None and concepto['archivo'].contentType == "application/zip" and concepto['origen'] == "nacional":
+                zipi = zipfile.ZipFile(BytesIO(concepto['archivo'].data))
+                if not zipi.namelist():
+                    message = u"Error: El archivo ZIP "+concepto['archivo'].filename+u" no contiene elementos a verificar."
+                    messages.addStatusMessage(message, type="error")
+                    errors = True
+                    return errors
+                xml_files = [(x.filename, zipi.read(x)) for x in zipi.infolist() if "xml" == x.filename[-3:]]
+                '''Dejamos pasar esto por si en realidad pueden comprimir en zip lo que sea para nacionales
+                if not xml_files:
+                    message = u"Error: El archivo ZIP "+concepto['archivo'].filename+u" no contiene XML a verificar."
+                    messages.addStatusMessage(message, type="error")
+                    continue
+                '''
+                for xml_file in xml_files:
+                    message = self.single_xml(idx, xml_file[1], xml_file[0], messages, container=concepto['archivo'].filename)
+                    if message:
+                        #message = message+u" (Contenedor: "++")"
+                        #messages.addStatusMessage(message, type="error")
+                        errors = True
+                        continue
+        return errors
             
     @button.buttonAndHandler(u'Guardar')
     def handleApply(self, action):
@@ -344,7 +432,18 @@ class EditComprobacion(edit.DefaultEditForm):
         data, errors = self.extractData()
         if errors:
             self.status = self.formErrorsMessage
+            #import pdb; pdb.set_trace()
             return
+
+        """ XML VALIDATION begin"""
+        #import pdb; pdb.set_trace()
+        from Products.statusmessages.interfaces import IStatusMessage
+        messages = IStatusMessage(self.request)
+        errores = self.check_xml(data['grupo_comprobacion'], messages)
+        
+        if errores: return
+
+        """ XML VALIDAION end """
 
         # Do something with valid data here
         if data.has_key("relacion"):
@@ -354,6 +453,8 @@ class EditComprobacion(edit.DefaultEditForm):
         if data.has_key("title"):
             self.context.tile = data['title']
         self.context.notas = data['notas']
+        if data.has_key("total_comprobar"):
+            self.context.total_comprobar = data['total_comprobar']
         #self.context.grupo_comprobacion = [] if not self.context.grupo_comprobacion else self.context.grupo_comprobacion
         
         grupo_comprobacion = []
@@ -366,8 +467,13 @@ class EditComprobacion(edit.DefaultEditForm):
         
         for index, item in enumerate(data['grupo_comprobacion']):
             if index < len(grupo_comprobacion):
+                #import pdb; pdb.set_trace()
                 if item['archivo']:
                     grupo_comprobacion[index]['archivo'] = item['archivo']
+                else:
+                    temp_widget_file = self.widgets.values()[2].widgets[index].subform.widgets.values()[-1].value
+                    if temp_widget_file:
+                        grupo_comprobacion[index]['archivo'] = temp_widget_file
                 if item['fecha']:
                     grupo_comprobacion[index]['fecha'] = item['fecha']
                 if item['concepto']:
@@ -390,7 +496,11 @@ class EditComprobacion(edit.DefaultEditForm):
                     item['importe'] = 0.0
                 else:
                    grupo_comprobacion[index]['importe'] = item['importe']                   
-            else:                
+            else:
+                if not item['archivo']:
+                    temp_widget_file = self.widgets.values()[2].widgets[index].subform.widgets.values()[-1].value
+                    if temp_widget_file:
+                        item['archivo'] = temp_widget_file
                 grupo_comprobacion.append(item)
                 
         if len(grupo_comprobacion) > len(data['grupo_comprobacion']):

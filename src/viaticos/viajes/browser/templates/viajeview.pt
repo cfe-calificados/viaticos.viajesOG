@@ -138,7 +138,7 @@
 
 	<dl tal:condition="python:not view.values_setted() and view.requirements()" class="portalMessage error">
 	  <dt>Nota</dt>
-	  <dd>Para registrar la solicitud de gastos, es necesario capturar información de la agencia de viajes.</dd>
+	  <dd>Para solicitar la aprobación del anticipo, es necesario capturar información de la agencia de viajes.</dd>
 	</dl>
       </div>
       

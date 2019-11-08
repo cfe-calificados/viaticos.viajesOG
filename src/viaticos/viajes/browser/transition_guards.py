@@ -41,10 +41,10 @@ class CanSendToAgency(grok.View):
             else:
                 print("No es owner")
                 return False
-        if auth_member.has_role('Manager') and status != "esperando":
+        if auth_member.has_role('Manager') and status != "esperando_agencia":
             print(status,"Es admin, puede hacer transicion")
             return True
-        if status == "pendiente":
+        if status == "revision_aprobador":
             if upward_dic.has_key(auth_member.getUser().getUserName()):
                 if viaje.grupo and auth_member.getUser().getUserName() in viaje.grupo:
                     print("Es jefe del owner, y puede autorizar su propio viaje.")
@@ -53,7 +53,7 @@ class CanSendToAgency(grok.View):
                 return True
             print("Es jefe pero no del owner, no puede hacer transicion")
             return False
-        if status == "esperando" and auth_member.has_role('Manager'):
+        if status == "esperando_agencia" and auth_member.has_role('Manager'):
             print("Es administrador y puede registrar")
             return ((viaje.aerolinea != None and viaje.tarifa != None and viaje.hora_regreso != None and viaje.hora_salida != None) or 'boleto_avion' not in viaje.req) and ((viaje.hotel_nombre != None and viaje.hotel_domicilio != None) or 'hospedaje' not in viaje.req) and ('transporte_terrestre' not in viaje.req or (viaje.trans_empresa != None and viaje.trans_desc != None and viaje.trans_reserv != None and viaje.trans_pago != None)) and ('otro' not in viaje.req or (viaje.otro_empresa != None and viaje.otro_desc != None and viaje.otro_reserv != None and viaje.otro_pago != None)) and (viaje.anti_desc != None and viaje.anti_monto != None)
         print(status)

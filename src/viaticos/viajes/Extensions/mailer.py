@@ -48,7 +48,7 @@ def build_body(brain, owner):
     #import pdb; pdb.set_trace()
     locale.setlocale(locale.LC_TIME, 'es_MX.utf-8')
     body = u"Viajes Turísticos Arcoíris\nPresente\n\n\nPor medio del presente agradecemos se realice la siguiente cotización:\n\n"
-    body += u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo)+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8')+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8')+u"\nNombre: "+owner.getProperty("fullname").decode('utf-8')+u"\nÁrea de adscripción:"+owner.getProperty("coordinacion")+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
+    body += u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo)+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8')+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8')+u"\nNombre: "+owner.getProperty("fullname").decode('utf-8')+u"\nÁrea de adscripción: "+owner.getProperty("coordinacion")+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
     body += u"Hospedaje\nCaracterísticas: "+brain.notas_hospedaje.encode('utf-8').decode('utf-8')+u"\n\n" if 'hospedaje' in brain.req else ""     
     body += u"Transportación terrestre\nEspecificaciones: "+brain.notas_transporte.encode('utf-8').decode('utf-8')+u"\n\n" if 'transporte_terrestre' in brain.req else "" 
     body += u"Otros\nEspecificaciones: "+brain.notas_otro.encode('utf-8').decode('utf-8')+u"\n\n" if 'otro' in brain.req else ""    
@@ -108,7 +108,7 @@ def boss_mail(self, state_change):
         api.portal.send_email(
             recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx",   
             sender="noreply@plone.org",
-            subject="Solcitud de cotización",
+            subject="Solicitud de cotización",
             body=agency_mail,
         )
 
@@ -122,7 +122,7 @@ def agency_mail(self, state_change):
         api.portal.send_email(
             recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx",   
             sender="noreply@plone.org",
-            subject="Solcitud de cotización",
+            subject="Solicitud de cotización",
             body=agency_mail,
         )
         #import pdb; pdb.set_trace()
@@ -132,31 +132,47 @@ def return_to_draft(self, state_change):
     membership = api.portal.get_tool('portal_membership')
     trip = state_change.object
     body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no fue aprobada por la administración o su autorizador. Favor de hacer las ediciones pertinentes antes de confirmar su solicitud. "+URL+state_change.object.virtual_url_path()
+    body2 = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no fue aprobada por la administración o su autorizador. Favor de hacer las ediciones pertinentes antes de confirmar su solicitud."
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     receivers = []
     if trip.grupo:
-        receivers = [x for x in trip.grupo]+([trip.owner_info()['id']] if trip.owner_info()['id'] not in trip.grupo else [])
-    else:
-        receivers.append(trip.owner_info()['id'])    
+        receivers = [x for x in trip.grupo if x != trip.owner_info()['id']]#+([trip.owner_info()['id']] if trip.owner_info()['id'] not in trip.grupo else [])
+        api.portal.send_email(
+            recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),   
+            sender="noreply@plone.org",
+            subject="Solicitud de gastos no aprobada",
+            body=body,
+        )
+    #else:
+    #    receivers.append(trip.owner_info()['id'])
     api.portal.send_email(
-        recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),   
+        recipient=obj_owner.getProperty("email"),   
         sender="noreply@plone.org",
-        subject="Solicitud de gastos no aprobada",
+        subject="Solicitud de gastos rechazada",
         body=body,
     )
+    
 
 def rejected(self, state_change):    
     membership = api.portal.get_tool('portal_membership')
     trip = state_change.object
+    #"No se pudieron satisfacer los requerimientos de su solicitud. Favor de acercarse a la administración..."
     body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no concluyó con éxito su trámite. Favor de hacer las ediciones pertinentes antes de comenzar de nuevo el proceso de solicitud. "+URL+state_change.object.virtual_url_path()
+    body2 = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no concluyó con éxito su trámite. Favor de realizar las ediciones pertinentes antes de comenzar de nuevo el proceso de solicitud."
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     receivers = []
     if trip.grupo:
-        receivers = [x for x in trip.grupo]+([trip.owner_info()['id']] if trip.owner_info()['id'] not in trip.grupo else [])
-    else:
-        receivers.append(trip.owner_info()['id'])
+        receivers = [x for x in trip.grupo if x != trip.owner_info()['id']]#+([trip.owner_info()['id']] if trip.owner_info()['id'] not in trip.grupo else [])
+        api.portal.send_email(
+            recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),   
+            sender="noreply@plone.org",
+            subject="Solicitud de gastos rechazada",
+            body=body2,
+        )
+    #else
+    #receivers.append(trip.owner_info()['id'])
     api.portal.send_email(
-        recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),   
+        recipient=obj_owner.getProperty("email"),   
         sender="noreply@plone.org",
         subject="Solicitud de gastos rechazada",
         body=body,

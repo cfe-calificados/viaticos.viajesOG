@@ -158,11 +158,11 @@ class DescargaComprobacion(BrowserView):
             proc = subprocess.call(["pdflatex", "-interaction=nonstopmode", "-output-directory=latex", "latex/"+name+".tex"])
             if proc:
                 print("TeX compilation unsuccessfull")
-                import pdb; pdb.set_trace()
+                #import pdb; pdb.set_trace()
                 return "Error"
         except Exception as error:
             print(error)
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             return "Error"
         
         proof = open("latex/"+name+".pdf", "rb")
