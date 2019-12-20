@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="viaticos.viajes">
+  <body>
+    <metal:content-core fill-slot="content-core">
+      <h3>No es posible crear más solicitudes de gastos.</h3><br>
+      <h4>Actualmente cuenta con las siguientes comprobaciones de gastos abiertas:</h4>
+      <ul tal:define="comprobaciones python:view.allowed(context.portal_membership.getAuthenticatedMember())">
+	<li tal:repeat="comprobacion comprobaciones">
+	  <a tal:attributes="href python:comprobacion[1]">
+	    ${python: comprobacion[0]}
+	  </a>
+	</li>
+      </ul>
+
+      <br>
+      <h4> Favor de completar su proceso para habilitar nuevamente las solicitudes de gastos.</h4>
+      <p>Si esto es un error, favor de comunicarse con <a href="mailto:abc@calificados.cfe.mx">Administración</a> directamente.</p>
+      
+    </metal:content-core>
+
+  </body>
+
+</html>

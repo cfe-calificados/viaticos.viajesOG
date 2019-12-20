@@ -1,0 +1,65 @@
+[Workflow]
+Id:,comprobacion_workflow
+Title:,Workflow para comprobaciones
+Description:,Permite establecer un flujo para la confirmacion y aprobacion de comprobaciones de gastos.
+Initial state:,bosquejo
+
+[State]
+Id:,bosquejo
+Title:,Bosquejo
+Description:,"Una vez completado, enviar a encargado para aprobar."
+Transitions,guardar
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
+View,				N,	 N,	    N,	 	   N, 	   N,	    Y,	   N,	   N,	   N,		Y
+Access contents information,	N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		Y
+Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		Y
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
+
+[State]
+Id:,revision
+Title:,Por aprobar
+Description:,Pendiente de revisar por encargado.
+Transitions:,"terminar,fallo_bosquejo"
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N
+Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
+Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   Y,	   N,		N
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
+
+[State]
+Id:,aprobado
+Title:,Aprobado
+Description:,Revisado y aprobado por encargado.
+Transitions:,
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N
+Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
+Review portal content,		N,	 N,	    N,	 	   N,	   N,	    Y,	   N,	   N,	   N,		N
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N  
+
+
+[Transition]
+Id:,guardar
+Title:,Guardar
+Description:,Guardar informacion de la comprobacion de gastos. 
+Target state:,revision
+Guard permission:,Request review
+Script after:,viaticos.viajes.Extensions.mailer.test
+
+[Transition]
+Id:,terminar
+Title:,Aprobar
+Description:,Aprobar la informacion de la comprobacion de gastos
+Target state:,aprobado
+Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.test
+
+
+[Transition]
+Id:,fallo_bosquejo
+Title:,No aprobado
+Description:,De vuelta al creador para correccion
+Target state:,bosquejo
+Guard permission:,"Request review, Review portal content"

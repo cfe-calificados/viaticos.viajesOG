@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="viaticos.viajes">
+
+  <metal:block fill-slot="style_slot">
+    <link rel="stylesheet" type="text/css"
+	  href="../++plone++viaticos.viajes/tabs_style.css" />
+  </metal:block>
+
+  <body>
+    <metal:content-core fill-slot="content-core">
+      <div class="codepen-container">
+	<div id="icetab-container">
+    	  <div class="icetab current-tab">Tab1</div><div class="icetab">Tab2</div><div class="icetab">Tab3</div>       
+	</div>
+	
+	<div id="icetab-content">
+    	  <div class="tabcontent tab-active">Tab1 <br>1 lorim ipsum</div> 
+          <div class="tabcontent">Tab2 <br>2 lorim ipsum</div>
+          <div class="tabcontent">Tab3 <br>23 lorim ipsum</div>
+	</div>
+
+    </metal:content-core>
+
+  </body>
+  
+</html>

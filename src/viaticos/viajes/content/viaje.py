@@ -363,6 +363,7 @@ class IViaje(model.Schema):
 from Products.CMFPlone.resources import add_resource_on_request
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 class AddViaje(add.DefaultAddForm):
+    ##vacio
     error_template = ViewPageTemplateFile("../browser/templates/not_allowed.pt")
     portal_type = 'viaje'
     schema = IViaje

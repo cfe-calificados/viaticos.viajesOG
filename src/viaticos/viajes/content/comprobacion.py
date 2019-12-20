@@ -209,7 +209,23 @@ class AddComprobacion(add.DefaultAddForm):
     label = u"Añadir Comprobación de gastos"
     description = u"Proporciona datos para comprobar alguno de tus gastos."    
     #additionalSchemata = [IProp] #try this later
+    form.widget(
+        'grupo_comprobacion',
+        DataGridFieldFactory,
+        pattern_options={
+            'auto_append': False,
+        }
+    )
 
+    def __call__(self):
+        # utility function to add resource to rendered page
+        print("loading JS ADD comprobacion")
+        add_resource_on_request(self.request, 'add_comp')
+        return super(AddComprobacion, self).__call__()
+    
+    def updateWidgets(self):
+        super(AddComprobacion, self).updateWidgets()        
+        self.widgets['grupo_comprobacion'].auto_append = False
     '''
     def updateFields(self):
         super(AddComprobacion, self).updateFields()

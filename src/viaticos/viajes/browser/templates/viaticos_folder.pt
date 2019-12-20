@@ -5,7 +5,7 @@
   <!--metal:block fill-slot="javascript_head_slot">
       <script type="text/javascript"  src="../++/plone++viaticos.viajes/tabs_script.js">
       </script>
-  </metal:block-->
+</metal:block-->
   
   <metal:block fill-slot="style_slot">
     <link rel="stylesheet" type="text/css"
@@ -26,8 +26,8 @@
 	      <!--h3> Solicitudes de gastos </h3-->
 	      <table class="listing"
 		     id="viajes"
-		     tal:define="mis_viajes python:viajes_list[0]; otros_viajes python:viajes_list[1]">
-		<thead >
+		     tal:define="mis_viajes python:viajes_list[0]; otros_viajes python:viajes_list[1]; implant python: view.belongs_implant()">
+		<thead tal:condition="python: not implant">
 		  <tr>
 		    <th class="span" colspan="4" scope="colgroup">
 		      Mis solicitudes de gastos 
@@ -40,7 +40,7 @@
 		    <th>Fecha de modificación</th>
 		  </tr>
 		</thead>
-		<tbody>
+		<tbody tal:condition="python: not implant">
 
 		  <tr tal:repeat="viaje mis_viajes">
 		    <td>
@@ -70,7 +70,7 @@
 		  </tr>
 		</tbody>
 
-		<thead tal:condition="python:view.is_boss()">
+		<thead tal:condition="python:view.is_boss() or implant">
 		  <tr>
 		    <th class="span" colspan="4" scope="colgroup">
 		      Solicitudes de gastos supervisadas
@@ -84,7 +84,7 @@
 		  </tr>
 		</thead>
 
-		<tbody tal:condition="python:view.is_boss()">
+		<tbody tal:condition="python:view.is_boss() or implant">
 
 		  <tr tal:repeat="viaje otros_viajes">
 		    <td>
@@ -113,6 +113,55 @@
 		    </td>
 		  </tr>
 		</tbody>
+	      </table>
+
+	      <!-- FINANZAS -->
+
+	      <table class="listing" tal:define="anticipos python: viajes_list[2]">
+		<thead tal:condition="python:view.belongs_finances()">
+		  <tr>
+		    <th class="span" colspan="4" scope="colgroup">
+		      Solicitudes con Anticipos por aprobar
+		    </th>
+		  </tr>
+		  <tr tal:condition="anticipos">
+		    <th>Título</th>
+		    <th>Propietario</th>
+		    <th>Estado</th>
+		    <th>Fecha de modificación</th>
+		  </tr>
+		</thead>
+
+		<tbody tal:condition="python:view.belongs_finances()">
+
+		  <tr tal:repeat="viaje anticipos">
+		    <td>
+		      <a tal:attributes="href viaje/url;
+					 title viaje/motivo">
+			<!--tal:content="python:talk['title']"-->
+			${python:viaje['title']}
+		      </a>
+		    </td>
+		    <td>
+		      <a tal:attributes="href viaje/creator_url"
+			 tal:content="viaje/creator">
+			Autor
+		      </a>
+		    </td>
+		    <td> <!-- tal:content="talk/audience"-->
+		      ${python:view.get_states[viaje['state']]}
+		    </td>
+		    <td tal:content="viaje/modif_date">
+		      Fecha
+		    </td>
+		  </tr>
+		  <tr tal:condition="not:anticipos">
+		    <td colspan=4>
+		      Aún no hay solicitudes de gastos supervisadas registradas :-(
+		    </td>
+		  </tr>
+		</tbody>
+		<!-- FINANZAS -->
 
 		
 	      </table>
@@ -120,15 +169,18 @@
 	    
 	    
 	  </div>
+
+
+	  <!-- COMPROBACIONES DE GASTOS -->
 	  
           <div class="tabcontent">
 	    <div tal:define="comprobaciones_list python:view.comprobaciones()">
 	      <!--h3> Comprobaciones de gastos </h3-->
 	      <table class="listing"
 		     id="comprobaciones"             
-		     tal:define="mis_comprobaciones python:comprobaciones_list[0]; otras_comprobaciones python:comprobaciones_list[1]"
+		     tal:define="mis_comprobaciones python:comprobaciones_list[0]; otras_comprobaciones python:comprobaciones_list[1]; implant python: view.belongs_implant()"
 		     >
-		<thead>
+		<thead tal:condition="python: not implant">
 		  <tr>
 		    <th class="span" colspan="5" scope="colgroup">
 		      Mis comprobaciones de gastos 
@@ -142,7 +194,7 @@
 		    <th>Fecha de modificación</th>
 		  </tr>
 		</thead>
-		<tbody>
+		<tbody tal:condition="python: not implant">
 		  <tr tal:repeat="comprobacion mis_comprobaciones">
 		    <td>
 		      <a tal:attributes="href comprobacion/url;
@@ -174,7 +226,7 @@
 		  </tr>
 		</tbody>
 
-		<thead tal:condition="python:view.is_boss()">
+		<thead tal:condition="python:view.is_boss() or implant">
 		  <tr>
 		    <th class="span" colspan="5" scope="colgroup">
 		      Comprobaciones de gastos supervisadas
@@ -230,7 +282,7 @@
 	</div>
 
 	<!--div tal:define="url python:view.get_upward_url()" tal:condition="url">
-	  <a tal:attributes="href url"> <input class="context" value="Actualizar Jerarquía" type="button"> </a>
+	    <a tal:attributes="href url"> <input class="context" value="Actualizar Jerarquía" type="button"> </a>
 	</div-->
        
     </metal:content-core>

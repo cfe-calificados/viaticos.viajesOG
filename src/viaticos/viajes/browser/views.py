@@ -15,6 +15,12 @@ import ast
 
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
+
+    def get_status(self):
+        portal = api.portal.get()
+        status = api.content.get_state(obj=portal["viaticos"][self.context.id])
+        return status
+
     def check_group(self, username, grupo):
         if username in grupo:
             return True
@@ -44,9 +50,14 @@ class VistaViaje(DefaultView):
         current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
         return current_user.has_role("Manager") or current_user.has_role("Reader")
 
+    def belongs_implant(self):
+        current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
+        return current_user.has_role("Implant")
+
     def __call__(self):
         auth_member = self.context.portal_membership.getAuthenticatedMember()
-        if auth_member.has_role('Manager'):
+        current_status = self.get_status()
+        if auth_member.has_role('Manager') or (current_status == "anticipo_pendiente" and auth_member.has_role('Finanzas')) or (current_status == "esperando_agencia" and auth_member.has_role('Implant')):
             return super(VistaViaje, self).__call__()
         current_user = auth_member.getUser().getUserName()
         upward_dic = {}
@@ -75,7 +86,7 @@ class VistaViaje(DefaultView):
     
     def requirements(self):
         current_user = self.context.portal_membership.getAuthenticatedMember()
-        return current_user.has_role('Manager')
+        return current_user.has_role('Manager') or current_user.has_role('Implant')
 
     def values_setted(self):
         viaje = self.context        
@@ -95,7 +106,7 @@ class VistaViaje(DefaultView):
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
         #is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == self.context.getOwner().getUserName()
         #needs_ticket = 'boleto_avion' in self.context.req or 'hospedaje' in self.context.req
-        return True if status == "esperando_agencia" and self.is_boss() else False#is_owner else False
+        return True if status == "esperando_agencia" and (self.is_boss() or self.belongs_implant()) else False#is_owner else False
         
     def render_ticket_form(self):
         #import pdb; pdb.set_trace()
@@ -196,11 +207,15 @@ class VistaViaticos(BrowserView):
     def order_by_state_date(self,owned_supervised):
         owned = sorted(sorted(owned_supervised[0], key=lambda k: k['modif_date'], reverse=True), key=lambda k: k['state'])
         supervised = sorted(sorted(owned_supervised[1], key=lambda k: k['modif_date'], reverse=True), key=lambda k: k['state'])
+        if len(owned_supervised) > 2:
+            financed = sorted(sorted(owned_supervised[2], key=lambda k: k['modif_date'], reverse=True), key=lambda k: k['state'])
+            return [owned, supervised, financed]
         return [owned, supervised]
 
     def __call__(self):
+        auth_member = self.context.portal_membership.getAuthenticatedMember()
         sm = getSecurityManager()
-        if not sm.checkPermission(AddPortalContent, self):
+        if not sm.checkPermission(AddPortalContent, self) and not auth_member.has_role('Implant'):
             raise Unauthorized("Contenido inaccesible para usuarios no registrados. Por favor inicie sesión.")
         # utility function to add resource to rendered page
         print("loading CSS")        
@@ -214,6 +229,14 @@ class VistaViaticos(BrowserView):
     def is_boss(self):
         current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
         return current_user.has_role("Manager") or current_user.has_role("Reader")
+
+    def belongs_finances(self):
+        current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
+        return current_user.has_role("Finanzas")
+
+    def belongs_implant(self):
+        current_user = self.context.portal_membership.getAuthenticatedMember().getUser()
+        return current_user.has_role("Implant")
 
     def check_group(self, username, grupo):
         if username in grupo:
@@ -241,18 +264,23 @@ class VistaViaticos(BrowserView):
         return False
 
     def viajes(self):        
-        results = [[],[]]
+        results = [[],[],[]]
+        finances = []
         #brains = api.content.find(context=self.context, portal_type='viaje')#aqui haremos la query mediante el owner o creador.
         auth_member = self.context.portal_membership.getAuthenticatedMember()
         owner_username = auth_member.getUser().getUserName()
         portal_ctl = self.context.portal_catalog
+        portal = api.portal.get()
         membership = getToolByName(self.context, 'portal_membership')
         brains = []
         for x in portal_ctl({'portal_type':'viaje'}):
             obj_tmp = x.getObject()
             obj_owner = obj_tmp.getOwner()
-            if auth_member.has_role('Manager'):
+            if auth_member.has_role('Manager') or auth_member.has_role('Implant'):
                 brains.append(x)
+                continue
+            if auth_member.has_role('Finanzas') and api.content.get_state(obj=portal["viaticos"][x.id]) == "anticipo_pendiente":
+                finances.append(x)
                 continue
             downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
             downward_dic = None
@@ -267,10 +295,10 @@ class VistaViaticos(BrowserView):
             if obj_tmp.grupo:#this is more time of processing :C we try to skip it whenever possible
                 if self.check_group(owner_username, obj_tmp.grupo):
                     brains.append(x)
-        
+                    
         for brain in brains:            
             viaje = brain.getObject()
-            portal = brain.portal_url.getPortalObject()
+            #portal = brain.portal_url.getPortalObject()
             is_owner = owner_username == viaje.getOwner().getUserName() or owner_username in viaje.grupo
             idx = 0 if is_owner else 1
             results[idx].append({
@@ -283,7 +311,24 @@ class VistaViaticos(BrowserView):
                 'url': brain.getURL(),
                 'motivo': viaje.motivo,#,
             })
-            
+
+        anticipos_pendientes = []
+        if finances:            
+            for brain in finances:
+                viaje = brain.getObject()
+                #portal = brain.portal_url.getPortalObject()            
+                anticipos_pendientes.append({
+                    'title': brain.Title,#with url brain.getURL()
+                    'creator': viaje.getOwner().getId(),
+                    'creator_url': portal.absolute_url()+'/author/'+viaje.getOwner().getId(),
+                    'state': self.order[api.content.get_state(obj=portal["viaticos"][viaje.id])],
+                    'modif_date':viaje.modified().strftime("%Y-%m-%d %H:%M:%S"),
+                    'uuid': brain.UID,
+                    'url': brain.getURL(),
+                    'motivo': viaje.motivo,#,
+                })
+        results[2] = anticipos_pendientes
+        #import pdb; pdb.set_trace()
         return self.order_by_state_date(results)
 
     def comprobaciones(self):
@@ -299,7 +344,7 @@ class VistaViaticos(BrowserView):
         #import pdb; pdb.set_trace()
         for x in portal_ctl({'portal_type':'comprobacion'}):
             obj_owner = x.getObject().getOwner()
-            if auth_member.has_role("Manager"):
+            if auth_member.has_role("Manager") or auth_member.has_role("Finanzas") or auth_member.has_role('Implant'):
                 brains.append(x)
                 continue
             downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")
@@ -309,7 +354,7 @@ class VistaViaticos(BrowserView):
             except SyntaxError:
                 print("Missing hierarchy for "+x.Creator)
             if downward_dic == None: continue
-            #import pdb; pdb.set_trace()
+            import pdb; pdb.set_trace()
             if downward_dic.has_key(owner_username) or owner_username == obj_owner.getUserId():
                 brains.append(x)                            
  

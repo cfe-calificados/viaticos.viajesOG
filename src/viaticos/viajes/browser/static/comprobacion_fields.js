@@ -6,7 +6,12 @@ function handleDGFDelete() {
     $(".datagridfield-last-filled-row .insert-row").attr("style", "visibility:visible;");    
 }
 
-$(document).ready(function() {        
+$(document).ready(function() {
+    //console.log("removing undesired events");
+    $("#formfield-form-widgets-grupo_comprobacion").ready(function() {
+	console.log("removing undesired events");
+	$("#formfield-form-widgets-grupo_comprobacion").find("*").off("blur");
+    });
     console.log("removing ommited");
     if ($("input[name='form.widgets.grupo_comprobacion.0.widgets.importe']").attr("type") == "hidden") {
 	console.log("importe");

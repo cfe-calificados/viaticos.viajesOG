@@ -1,5 +1,9 @@
 <?xml version="1.0"?>
 <rolemap>
+  <roles>
+    <role name="Finanzas"/>
+    <role name="Implant"/>
+  </roles>
   <permissions>
   <!-- -*- extra stuff goes here -*- -->
 

@@ -1,0 +1,21 @@
+<html >
+
+
+  <body>
+    
+      <div class="codepen-container">
+	<div id="icetab-container">
+    	  <div class="icetab current-tab">Tab1</div><div class="icetab">Tab2</div><div class="icetab">Tab3</div>       
+	</div>
+	
+	<div id="icetab-content">
+    	  <div class="tabcontent tab-active">Tab1 <br>1 lorim ipsum</div> 
+          <div class="tabcontent">Tab2 <br>2 lorim ipsum</div>
+          <div class="tabcontent">Tab3 <br>23 lorim ipsum</div>
+	</div>
+
+
+
+  </body>
+  
+</html>

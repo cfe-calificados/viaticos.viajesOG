@@ -219,7 +219,7 @@ class IGridForm(form.Schema):
 
     
 #@component.adapter(IGridForm)
-class PruebaForm(form.SchemaForm):
+class PruebaForm2(form.SchemaForm):
     """ Define Form handling
 
     This form can be accessed as http://yoursite/@@ticket-form
@@ -244,5 +244,87 @@ class PruebaForm(form.SchemaForm):
     @button.buttonAndHandler(u"Cancelar")
     def handleCancel(self, action):
         return 
+
+
+from z3c.form.interfaces import IWidgets
+
+class ITabla2(interface.Interface):
+    fecha= schema.Datetime(title=_(u"Fecha"), required=False)
+    concepto = schema.TextLine(title=_(u"Concepto"),required=False)
+
+
+class TablaAddForm(form.EditForm):
+    #template = ViewPageTemplateFile('simple_owneredit.pt', templatePath)
+     fields = field.Fields(ITabla2)
+     #prefix = 'owner'
+
+     def updateWidgets(self):
+         self.widgets = component.getMultiAdapter(
+             (self, self.request, self.getContent()), IWidgets)
+         self.widgets.ignoreContext = True
+         self.widgets.update()
+         
+class IGridForm2(interface.Interface):
+    """ Define form fields """
+
+    #import pdb; pdb.set_trace()
+    
+    hotel_domicilio =  schema.TextLine(
+        title = _(u'Domicilio del hotel'),
+        required = True,
+    )
+
+    
+    grupo_comprobacion = schema.List(
+        title = _(u"Heh"),
+        min_length = 1,
+        value_type = schema.Object(
+            title=_(u'Grupo'),
+            #description=_(u'Prueba de datagrid'),        
+            schema=ITabla2,
+            required=False,
+        ),
+    )
+
+
+class PruebaForm(form.EditForm):
+    fields = field.Fields(IGridForm2).select('hotel_domicilio', 'grupo_comprobacion')
+     #template = ViewPageTemplateFile( 'simple_caredit.pt', templatePath)
+     #prefix = 'car'
+     
+    def updateWidgets(self):
+        self.widgets = component.getMultiAdapter(
+            (self, self.request, self.getContent()), IWidgets)
+        self.widgets.ignoreContext = True
+        self.widgets.update()
+
+    def update(self):
+        self.grupo_comprobacion = TablaAddForm(None, self.request)
+        self.grupo_comprobacion.update()
+        super(PruebaForm, self).update()
+    
+    @button.buttonAndHandler(u'save')
+    def handleApply(self, action):
+        data, errors = self.extractData()
+        import pdb; pdb.set_trace()
+
+    @button.buttonAndHandler(u'cancel')
+    def handleApply(self, action):
+        data, errors = self.extractData()
+        import pdb; pdb.set_trace()
+
+
+class PruebaForm3(form.SchemaForm):
+    """ Define Form handling
+
+    This form can be accessed as http://yoursite/@@ticket-form
+
+    """
+    schema = IGridForm2
+    ignoreContext = True
+
+    label = u"Lalalala"
+    description = u"Probando 1 2 3 "
+    fields = field.Fields(IGridForm2)
 
 
