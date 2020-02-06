@@ -8,6 +8,7 @@ from plone.namedfile.utils import stream_data
 from Products.Five import BrowserView
 from zope.publisher.interfaces import NotFound
 from plone.namedfile.file import NamedBlobFile
+import ast
 
 ## PDF creation
 from datetime import datetime
@@ -34,6 +35,24 @@ def extract_info(obj_comp):
     collected['date_ini'] = collected['grupo_comp_ord'][0]['fecha'].strftime("%d/%m/%Y").decode('utf-8')
     collected['date_fin'] = collected['grupo_comp_ord'][-1]['fecha'].strftime("%d/%m/%Y").decode('utf-8')
     collected['notas'] = obj_comp.notas.decode('utf-8') if obj_comp.notas else ""
+
+    ### Nuevo desmadre para obtener al autorizador
+    #import pdb; pdb.set_trace()
+    upward_dic = {}    
+    try:
+        membership = obj_comp.portal_membership
+        upward = owner_member.getProperty("downward")
+        upward_dic = ast.literal_eval(upward)
+    except Exception:
+        print("Missing hierarchy")
+    ### Termina desmadre
+    
+    boss = "FIRMA DEL COORDINADOR"
+    if upward_dic:
+        boss_member = membership.getMemberById(upward_dic.keys()[0])
+        if boss_member:
+            boss = boss_member.getProperty("fullname").decode('utf-8')
+    collected['boss'] = boss   
     return collected
     
     
@@ -103,7 +122,7 @@ def gen_latex(obj_comp):
         
         \\bigskip"""
         #import pdb; pdb.set_trace()
-        return headers+inner+footer
+        return headers+inner+(footer.replace("FIRMA DEL EMPLEADO", full_data['employee']).replace("FIRMA DEL COORDINADOR", full_data['boss']))
 
 
 

@@ -240,7 +240,7 @@
 		    <th>Fecha de modificación</th>
 		  </tr>
 		</thead>
-		<tbody tal:condition="python:view.is_boss()">
+		<tbody tal:condition="python:view.is_boss() or implant">
 		  <tr tal:repeat="comprobacion otras_comprobaciones">
 		    <td>
 		      <a tal:attributes="href comprobacion/url;

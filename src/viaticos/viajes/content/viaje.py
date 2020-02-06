@@ -371,6 +371,9 @@ class AddViaje(add.DefaultAddForm):
     description = u"Añade información sobre tu salida. "
 
     def allowed(self,user):
+        """
+        Regla de bloqueo nueva: No tener una comprobación abierta de más de 5 días
+        """
         catalog = api.portal.get_tool('portal_catalog')
         brains = catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision"], "Creator": user.getId()})
         #import pdb; pdb.set_trace()

@@ -368,28 +368,30 @@ class EditComprobacion(edit.DefaultEditForm):
             widgets['importe'].required = False
 
     def single_xml(self, idx, data, filename, messages, container=""):
+        user_editor = self.context.portal_membership.getAuthenticatedMember()
+        widget_idx = 2 if user_editor.has_role("Manager") else 1
         message = ""
         root = None
         try:
             root = ET.fromstring(data)
         except:
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             message = u"Error: "+filename+u" no es un archivo XML"
             messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
-            self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+            self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
             return message
 
         if root == None:
             message = u"Error: El archivo "+filename+" no se pudo analizar sintácticamente."
             messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
-            self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+            self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
             return message
 
         entries = [x for x in root.getchildren() if ("Rfc" in x.keys() or "RFC" in x.keys()) and "Receptor" in x.tag]
         if len(entries) == 0:
             message = u"Error: El archivo "+filename+u" no es un comprobante válido."                
             messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
-            self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+            self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
             return message
 
         for elemento in entries:
@@ -399,18 +401,18 @@ class EditComprobacion(edit.DefaultEditForm):
             if rfc == None:
                 message = u"Error: El archivo "+filename+u" no contiene un RFC."
                 messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
-                self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+                self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
             if rfc == "CCA160523QGA":
                 return message
             else:
                 message = u"Error: El RFC del receptor ("+rfc+") en el archivo "+filename+u" no es el correcto."
                 messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
-                self.widgets.values()[2].widgets[idx].subform.widgets.values()[-1].value = None
+                self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
             
     def check_xml(self, grupo_comprobacion, messages):
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         message = ""
         errors = False
         for idx,concepto in enumerate(grupo_comprobacion):            
@@ -444,6 +446,8 @@ class EditComprobacion(edit.DefaultEditForm):
             
     @button.buttonAndHandler(u'Guardar')
     def handleApply(self, action):
+        user_editor = self.context.portal_membership.getAuthenticatedMember()
+        widget_idx = 2 if user_editor.has_role("Manager") else 1
         #import pdb; pdb.set_trace()
         data, errors = self.extractData()
         if errors:
@@ -487,7 +491,7 @@ class EditComprobacion(edit.DefaultEditForm):
                 if item['archivo']:
                     grupo_comprobacion[index]['archivo'] = item['archivo']
                 else:
-                    temp_widget_file = self.widgets.values()[2].widgets[index].subform.widgets.values()[-1].value
+                    temp_widget_file = self.widgets.values()[widget_idx].widgets[index].subform.widgets.values()[-1].value
                     if temp_widget_file:
                         grupo_comprobacion[index]['archivo'] = temp_widget_file
                 if item['fecha']:
@@ -514,7 +518,7 @@ class EditComprobacion(edit.DefaultEditForm):
                    grupo_comprobacion[index]['importe'] = item['importe']                   
             else:
                 if not item['archivo']:
-                    temp_widget_file = self.widgets.values()[2].widgets[index].subform.widgets.values()[-1].value
+                    temp_widget_file = self.widgets.values()[widget_idx].widgets[index].subform.widgets.values()[-1].value
                     if temp_widget_file:
                         item['archivo'] = temp_widget_file
                 grupo_comprobacion.append(item)

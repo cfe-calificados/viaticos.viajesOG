@@ -57,7 +57,8 @@ class VistaViaje(DefaultView):
     def __call__(self):
         auth_member = self.context.portal_membership.getAuthenticatedMember()
         current_status = self.get_status()
-        if auth_member.has_role('Manager') or (current_status == "anticipo_pendiente" and auth_member.has_role('Finanzas')) or (current_status == "esperando_agencia" and auth_member.has_role('Implant')):
+        #DO WE WANT THOSE TWO WATCHING OVER OLD REQUESTS? if auth_member.has_role('Manager') or (current_status == "anticipo_pendiente" and auth_member.has_role('Finanzas')) or (current_status == "esperando_agencia" and auth_member.has_role('Implant')):
+        if auth_member.has_role('Manager') or auth_member.has_role('Finanzas') or auth_member.has_role('Implant'):
             return super(VistaViaje, self).__call__()
         current_user = auth_member.getUser().getUserName()
         upward_dic = {}
@@ -127,7 +128,7 @@ class VistaComprobacion(DefaultView):
 
     def __call__(self):
         auth_member = self.context.portal_membership.getAuthenticatedMember()        
-        if auth_member.has_role('Manager'):
+        if auth_member.has_role('Manager') or auth_member.has_role('Finanzas') or auth_member.has_role('Implant'):
             return super(VistaComprobacion, self).__call__()
         current_user = auth_member.getUser().getUserName()
         upward_dic = None
@@ -165,6 +166,7 @@ class VistaComprobacion(DefaultView):
         return self.context.grupo_comprobacion.index(concepto)
 
     def calc_saldo(self):
+        #import pdb; pdb.set_trace()
         tupla_totales = []
         conceptos = self.context.grupo_comprobacion
         total = self.context.total_comprobar*-1
@@ -354,7 +356,7 @@ class VistaViaticos(BrowserView):
             except SyntaxError:
                 print("Missing hierarchy for "+x.Creator)
             if downward_dic == None: continue
-            import pdb; pdb.set_trace()
+            #import pdb; pdb.set_trace()
             if downward_dic.has_key(owner_username) or owner_username == obj_owner.getUserId():
                 brains.append(x)                            
  
@@ -367,8 +369,8 @@ class VistaViaticos(BrowserView):
             viaje = None
             catalog = api.portal.get_tool('portal_catalog')
             if not comprobacion.relacion.isBroken():            
-                brains = catalog(path={'query': comprobacion.relacion.to_path, 'depth': 0})
-                viaje = brains[0].getObject()
+                brains_comp = catalog(path={'query': comprobacion.relacion.to_path, 'depth': 0})
+                viaje = brains_comp[0].getObject()
                 
             results[idx].append({
                 'title': brain.Title,#with url brain.getURL()
