@@ -212,3 +212,9 @@ class DescargaComprobacion(BrowserView):
         return stream_data(blob)
         #return blob
         #return flow
+
+
+class Redireccion(BrowserView):
+    def __call__(self):
+        print("redirigiendoooo")
+        return self.request.response.redirect("http://rh.cfecalificados.mx:8088/rh")

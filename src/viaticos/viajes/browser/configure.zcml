@@ -144,6 +144,15 @@
       layer="zope.interface.Interface"
       class=".object_actions.DescargaComprobacion"     
       permission="zope2.View"
+	/>
+
+
+     <browser:page
+      name="redireccion"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".object_actions.Redireccion"     
+      permission="zope2.View"
      />
 
 

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<object name="Document">
+   <property name="view_methods" purge="False">
+    <element value="redireccion"/>    
+   </property>
+ <property name="global_allow" purge="True">True</property>
+</object>
