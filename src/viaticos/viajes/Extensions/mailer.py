@@ -5,6 +5,7 @@ import ast
 import locale
 from plone.app.textfield.interfaces import ITransformer
 import socket
+import datetime as dt
 
 """ Get name of SERVER """
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -48,7 +49,7 @@ def build_body(brain, owner):
     #import pdb; pdb.set_trace()
     locale.setlocale(locale.LC_TIME, 'es_MX.utf-8')
     body = u"Viajes Turísticos Arcoíris\nPresente\n\n\nPor medio del presente agradecemos se realice la siguiente cotización:\n\n"
-    body += u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo)+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8')+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8')+u"\nNombre: "+owner.getProperty("fullname").decode('utf-8')+u"\nÁrea de adscripción: "+owner.getProperty("coordinacion")+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
+    body += u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo).capitalize()+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u"\nNombre: "+owner.getProperty("fullname").decode('utf-8')+u"\nÁrea de adscripción: "+owner.getProperty("coordinacion").capitalize()+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
     body += u"Hospedaje\nCaracterísticas: "+brain.notas_hospedaje.encode('utf-8').decode('utf-8')+u"\n\n" if 'hospedaje' in brain.req else ""     
     body += u"Transportación terrestre\nEspecificaciones: "+brain.notas_transporte.encode('utf-8').decode('utf-8')+u"\n\n" if 'transporte_terrestre' in brain.req else "" 
     body += u"Otros\nEspecificaciones: "+brain.notas_otro.encode('utf-8').decode('utf-8')+u"\n\n" if 'otro' in brain.req else ""    
@@ -91,24 +92,26 @@ def boss_mail(self, state_change):
         downward_dic = get_bosses(obj_owner.getUserName(), grupo)
     
     agency_mail,boss_mail = build_body(state_change.object,obj_owner)
-    receivers = []#+["administracion@calificados.cfe.mx"]
+    receivers = []#+["administracion@calificados.cfe.mx", "cesar.banos@calificados.cfe.mx", "zulema.osorio@calificados.cfe.mx"]
     
     for boss in downward_dic:
         jefe = membership.getMemberById(boss)
         receivers.append(jefe.getProperty("email"))
 
+    ## Envio correo coordinador
     api.portal.send_email(
         recipient=";".join(receivers),
         sender="noreply@plone.org",
-        subject="Solicitud de gastos: "+state_change.object.title.encode('utf-8').decode('utf-8'),
+        subject=u"Solicitud de gastos: "+state_change.object.title.encode('utf-8').decode('utf-8'),
         body=boss_mail,
     )
 
+    # Envio correo agencia
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx",   
+            recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
-            subject="Solicitud de cotización",
+            subject=u"Solicitud de cotización",
             body=agency_mail,
         )
 
@@ -120,9 +123,9 @@ def agency_mail(self, state_change):
     agency_mail,boss_mail = build_body(state_change.object,obj_owner)
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx",   
+            recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
-            subject="Solicitud de cotización",
+            subject=u"Solicitud de cotización",
             body=agency_mail,
         )
         #import pdb; pdb.set_trace()
@@ -140,17 +143,26 @@ def return_to_draft(self, state_change):
         api.portal.send_email(
             recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),   
             sender="noreply@plone.org",
-            subject="Solicitud de gastos no aprobada",
+            subject=u"Solicitud de gastos no aprobada",
             body=body,
         )
-    #else:
-    #    receivers.append(trip.owner_info()['id'])
+    # Envio de rechazo al usuario solicitante
     api.portal.send_email(
-        recipient=obj_owner.getProperty("email"),   
+        recipient=obj_owner.getProperty("email"),#+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",      
         sender="noreply@plone.org",
-        subject="Solicitud de gastos rechazada",
-        body=body,
+        subject=u"Solicitud de gastos rechazada",
+        body=body2,
     )
+
+    # Envio correo agencia
+    if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
+        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización número: (NÚMERO).\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+        api.portal.send_email(
+            recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            sender="noreply@plone.org",
+            subject=u"Solicitud de cotización",
+            body=agency_mail,
+        )
     
 
 def rejected(self, state_change):    
@@ -161,22 +173,51 @@ def rejected(self, state_change):
     body2 = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no concluyó con éxito su trámite. Favor de realizar las ediciones pertinentes antes de comenzar de nuevo el proceso de solicitud."
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     receivers = []
+    bosses = []
+    
+    downward = obj_owner.getProperty("downward")
+    downward_dic = {}
+    try:
+        downward_dic = ast.literal_eval(downward)
+    except SyntaxError:
+        print("Missing hierarchy for "+obj_owner.getUserName())
+    grupo = state_change.object.grupo
+    if trip.grupo:        
+        downward_dic = get_bosses(obj_owner.getUserName(), grupo)    
+
+
+    for boss in downward_dic:
+        jefe = membership.getMemberById(boss)
+        bosses.append(jefe.getProperty("email"))
+        
+        
     if trip.grupo:
         receivers = [x for x in trip.grupo if x != trip.owner_info()['id']]#+([trip.owner_info()['id']] if trip.owner_info()['id'] not in trip.grupo else [])
         api.portal.send_email(
-            recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),   
+            recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]+bosses),   
             sender="noreply@plone.org",
-            subject="Solicitud de gastos rechazada",
+            subject=u"Solicitud de gastos rechazada",
             body=body2,
         )
-    #else
-    #receivers.append(trip.owner_info()['id'])
+
+
     api.portal.send_email(
-        recipient=obj_owner.getProperty("email"),   
+        recipient=";".join([obj_owner.getProperty("email")]+bosses),   
         sender="noreply@plone.org",
-        subject="Solicitud de gastos rechazada",
+        subject=u"Solicitud de gastos rechazada",
         body=body,
     )
+
+    # Envio correo agencia
+    if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
+        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización número: (NÚMERO).\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+        api.portal.send_email(
+            recipient="dummy@foo.com",#+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            sender="noreply@plone.org",
+            subject=u"Solicitud de cotización",
+            body=agency_mail,
+        )
+    
 
 def comp_save(self, state_change):
     comp = state_change.object
@@ -211,7 +252,7 @@ def comp_reg(self, state_change):
     api.portal.send_email(
     recipient=obj_owner.getProperty("email"),   
         sender="noreply@plone.org",
-        subject="Aprobada: "+comp.title.encode('utf-8').decode('utf-8'),
+        subject=u"Aprobada: "+comp.title.encode('utf-8').decode('utf-8'),
         body=body,
     )
 
@@ -224,13 +265,34 @@ def comp_fail(self, state_change):
     api.portal.send_email(
         recipient=obj_owner.getProperty("email"),   
         sender="noreply@plone.org",
-        subject="Rechazada: "+comp.title.encode('utf-8').decode('utf-8'),
+        subject=u"Rechazada: "+comp.title.encode('utf-8').decode('utf-8'),
         body=body,
     )
 
 
 def finances_mail(self, state_change):
     print("se envía correo a finanzas")
+    #import pdb; pdb.set_trace()
+    trip = state_change.object
+    membership = api.portal.get_tool('portal_membership')
+    obj_owner = membership.getMemberById(trip.owner_info()['id'])
+    body = u"Coordinación de Finanzas\nPresente\n\nPor medio del presente agradecemos se realice el depósito de anticipo por un monto de "+str(trip.anti_monto)+u" con motivo de:\n\n"+trip.anti_desc+u"\n\n\nEn caso de rechazar la solicitud favor de dar clic en el siguiente link "+URL+state_change.object.virtual_url_path()+u".\n\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\nAtentamente\n\nAdministración\n\ncfe_calificados"        
+    api.portal.send_email(
+        recipient="dummy@mail.com", #liliana.garcia@calificados.cfe.mx   
+        sender="noreply@plone.org",
+        subject=u"Anticipo pendiente de aprobación: "+trip.title.encode('utf-8').decode('utf-8'),
+        body=body,
+    )
 
 def finances_rejected(self, state_change):
     print("se envía correo a admon. de no autorización de anticipo")
+    trip = state_change.object
+    membership = api.portal.get_tool('portal_membership')
+    obj_owner = membership.getMemberById(trip.owner_info()['id'])
+    body = u"Coordinación de Administración\nPresente\n\nPor medio del presente le comunicamos que se rechazó la solicitud de anticipo por un monto de "+trip.anti_monto+u" con motivo de:\n\n"+trip.anti_desc+u"\n\nPara revisar la información de la solicitud, pruebe visitar el siguiente enlace: "+URL+state_change.object.virtual_url_path()+u"\n\nPara cualquier duda o comentario comunicarse con Liliana Garcia a la extensión 21411.\n\nAtentamente\n\nAdministración\ncfe_calificados"
+    api.portal.send_email(
+    recipient="dummy@mail.com", #administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx 
+        sender="noreply@plone.org",
+        subject=u"Anticipo rechazado: "+trip.title.encode('utf-8').decode('utf-8'),
+        body=body,
+    )
