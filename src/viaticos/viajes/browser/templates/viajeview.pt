@@ -419,6 +419,8 @@
 	      <div class="col-xs-6 col-md-6" tal:condition="context/anti_monto">
 		<p>Monto total de anticipo</p>
 		<div class="documentDescription" tal:content="structure view/w/anti_monto/render"></div>
+		<p>Desglose de anticipo</p>
+		<pre tal:content="context/anti_desc"></pre>
 	      </div>
 
 	      <br>
