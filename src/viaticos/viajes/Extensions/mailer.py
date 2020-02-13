@@ -278,7 +278,7 @@ def finances_mail(self, state_change):
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     body = u"Coordinación de Finanzas\nPresente\n\nPor medio del presente agradecemos se realice el depósito de anticipo por un monto de "+str(trip.anti_monto)+u" con motivo de:\n\n"+trip.anti_desc+u"\n\n\nEn caso de rechazar la solicitud favor de dar clic en el siguiente link "+URL+state_change.object.virtual_url_path()+u".\n\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\nAtentamente\n\nAdministración\n\ncfe_calificados"        
     api.portal.send_email(
-        recipient="agencia_viajes@foo.com", #liliana.garcia@calificados.cfe.mx   
+        recipient="finanzas@foo.com", #liliana.garcia@calificados.cfe.mx   
         sender="noreply@plone.org",
         subject=u"Anticipo pendiente de aprobación: "+trip.title.encode('utf-8').decode('utf-8'),
         body=body,
@@ -289,9 +289,9 @@ def finances_rejected(self, state_change):
     trip = state_change.object
     membership = api.portal.get_tool('portal_membership')
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
-    body = u"Coordinación de Administración\nPresente\n\nPor medio del presente le comunicamos que se rechazó la solicitud de anticipo por un monto de "+trip.anti_monto+u" con motivo de:\n\n"+trip.anti_desc+u"\n\nPara revisar la información de la solicitud, pruebe visitar el siguiente enlace: "+URL+state_change.object.virtual_url_path()+u"\n\nPara cualquier duda o comentario comunicarse con Liliana Garcia a la extensión 21411.\n\nAtentamente\n\nAdministración\ncfe_calificados"
+    body = u"Coordinación de Administración\nPresente\n\nPor medio del presente le comunicamos que se rechazó la solicitud de anticipo por un monto de "+str(trip.anti_monto)+u" con motivo de:\n\n"+trip.anti_desc+u"\n\nPara revisar la información de la solicitud, pruebe visitar el siguiente enlace: "+URL+state_change.object.virtual_url_path()+u"\n\nPara cualquier duda o comentario comunicarse con Liliana Garcia a la extensión 21411.\n\nAtentamente\n\nAdministración\ncfe_calificados"
     api.portal.send_email(
-    recipient="agencia_viajes@foo.com", #administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx 
+    recipient="finanzas@foo.com", #administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx 
         sender="noreply@plone.org",
         subject=u"Anticipo rechazado: "+trip.title.encode('utf-8').decode('utf-8'),
         body=body,
