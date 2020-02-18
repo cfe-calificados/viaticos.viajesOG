@@ -543,6 +543,6 @@ class EditComprobacion(edit.DefaultEditForm):
         """User cancelled. Redirect back to the front page.
         """
         self.status = "Cancelado por el usuario."
-        self.request.response.redirect(self.context.absolute_url())
+        self.request.response.redirect(self.context.absolute_url())        
 
     
