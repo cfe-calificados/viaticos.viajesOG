@@ -19,7 +19,8 @@
    <element value="resumen_comprobacion"/>
  </property>
  <property name="default_view_fallback">False</property>
- <property name="add_permission">cmf.AddPortalContent</property>
+ <!--property name="add_permission">cmf.AddPortalContent</property-->
+ <property name="add_permission">viaticos.viajes.puede_crear_comprobacion</property>
  <property name="klass">plone.dexterity.content.Item</property>
   <property name="schema">viaticos.viajes.content.comprobacion.IComprobacion</property>
  <!-- property name="klass">plone.dexterity.content.Item</property -->

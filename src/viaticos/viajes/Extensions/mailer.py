@@ -296,3 +296,7 @@ def finances_rejected(self, state_change):
         subject=u"Anticipo rechazado: "+trip.title.encode('utf-8').decode('utf-8'),
         body=body,
     )
+
+
+def implant_mail(self, state_change):
+    print("se envía correo a implant solicitando depósito de anticipo. También a usuario con montos aceptados de su comprobación.")

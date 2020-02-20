@@ -14,6 +14,9 @@ function coloring(){
 	    else if(texto.includes("anticipo_pendiente")){
 		$(this).attr("style", "color:green;");
 	    }
+	    else if(texto.includes("transferencia_anticipo")){
+		$(this).attr("style", "color:#32a8a0;");
+	    }
 	});
 }
 

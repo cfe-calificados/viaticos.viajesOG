@@ -43,13 +43,27 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N, 	 
 Id:,anticipo_pendiente
 Title:,Anticipo pendiente
 Description:,Anticipo por autorizar.
-Transitions:,"registrar,fallo_anticipo"
+Transitions:,"confirmar_anticipo,fallo_anticipo"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N, 	  Y,	    Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N,	  Y,	    Y,
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
 Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    N,
 Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N, 	    N,
+
+
+[State]
+Id:,transferencia_anticipo
+Title:,Transferencia anticipo
+Description:,Esperando transferencia de anticipo.
+Transitions:,registrar
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N, 	  Y,	    Y,
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N,	  Y,	    Y,
+Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    N,
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N, 	    N,
+
 
 [State]
 Id:,final
@@ -88,6 +102,15 @@ Target state:,anticipo_pendiente
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.finances_mail
+
+[Transition]
+Id:,confirmar_anticipo
+Title:,Confirmar anticipo
+Description:,Confirmar montos de anticipo solicitados
+Target state:,transferencia_anticipo
+Guard expression:, here/@@can-send-to-agency
+Guard permission:,Review portal content	
+Script after:,viaticos.viajes.Extensions.mailer.implant_mail
 
 [Transition]
 Id:,registrar

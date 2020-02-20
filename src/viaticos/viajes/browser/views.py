@@ -201,8 +201,8 @@ class VistaViaticos(BrowserView):
     """ Una vista para listar solicitudes y comprobaciones de gastos
     """
 
-    order = {'borrador': 1, 'revision_aprobador': 2, 'esperando_agencia':3, 'anticipo_pendiente':4, 'final':5}
-    get_states = {1:'borrador', 2:'revision_aprobador', 3:'esperando_agencia', 4:'anticipo_pendiente', 5:'final'}
+    order = {'borrador': 1, 'revision_aprobador': 2, 'esperando_agencia':3, 'anticipo_pendiente':4, 'transferencia_anticipo': 5, 'final':6}
+    get_states = {1:'borrador', 2:'revision_aprobador', 3:'esperando_agencia', 4:'anticipo_pendiente', 5:'transferencia_anticipo', 6:'final'}
     orden = {'bosquejo': 1,'revision': 2, 'aprobado': 3}
     get_comp = {1:'bosquejo', 2:'revision', 3:'aprobado'} 
 
@@ -281,7 +281,7 @@ class VistaViaticos(BrowserView):
             if auth_member.has_role('Manager') or auth_member.has_role('Implant'):
                 brains.append(x)
                 continue
-            if auth_member.has_role('Finanzas') and api.content.get_state(obj=portal["viaticos"][x.id]) == "anticipo_pendiente":
+            if auth_member.has_role('Finanzas') and api.content.get_state(obj=portal["viaticos"][x.id]) in ["anticipo_pendiente", "transferencia_anticipo"]:
                 finances.append(x)
                 continue
             downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")

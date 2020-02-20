@@ -5,7 +5,13 @@
     <role name="Implant"/>
   </roles>
   <permissions>
-  <!-- -*- extra stuff goes here -*- -->
+    <!-- -*- extra stuff goes here -*- -->
+    <permission name="viaticos.viajes: Crear comprobacion"
+                acquire="True">
+      <role name="Manager"/>
+      <role name="Site Administrator"/>      
+      <role name="Finanzas"/>
+    </permission>
 
   </permissions>
 </rolemap>
