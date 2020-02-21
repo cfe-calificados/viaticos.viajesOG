@@ -21,6 +21,16 @@ $(document).ready(function() {
 	    }
 	).parent().remove();
     }
+
+    if ($("input[name='form.widgets.grupo_comprobacion.0.widgets.aprobado']").attr("type") == "hidden") {
+	console.log("aprobado");
+	$("thead > tr > th > span").filter(
+	    function() {
+		return $(this).text() == "Monto aprobado";
+	    }
+	).parent().remove();
+    }
+    
     if (!$("input[name='form.widgets.grupo_comprobacion.0.widgets.anticipo-empty-marker']").length) {
 	console.log("tipo");
 	$("thead > tr > th > span").filter(

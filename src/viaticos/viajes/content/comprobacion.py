@@ -102,6 +102,8 @@ class ITable(interface.Interface):
     #directives.write_permission(importe='cmf.ManagePortal')
     importe = schema.Float(title=u"Importe",required=True, default=0.0)    
     comprobado = schema.Float(title=u"Monto comprobado", default=0.0, required=True)
+
+    aprobado = schema.Float(title=u"Monto aprobado", default=0.0, required=True)
     
     #directives.omitted(IEditForm, 'anticipo')
     #directives.write_permission(anticipo='cmf.ManagePortal')
@@ -156,11 +158,17 @@ class IComprobacion(model.Schema):
         required = False
     )
 
+    directives.write_permission(notas="viaticos.viajes.puede_hacer_notas")
     notas = schema.Text(
-        title = _(u'Notas'),
+        title = _(u'Notas del solicitante'),
         required = False
     )
 
+    directives.write_permission(notas_finanzas="viaticos.viajes.puede_crear_comprobacion")
+    notas_finanzas = schema.Text(
+        title = _(u'Notas de Finanzas'),
+        required = False
+    )
     
     directives.widget(
         'grupo_comprobacion',
@@ -353,7 +361,7 @@ class EditComprobacion(edit.DefaultEditForm):
     def datagridUpdateWidgets(self, subform, widgets, widget):
         #subform.fields = subform.fields.omit('importe')
         #subform.fields = subform.fields.omit('anticipo')
-        if self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Manager"):
+        if self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Manager") or self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Finanzas"):
             return
         if subform.fields.items():
             #import pdb; pdb.set_trace()
@@ -361,15 +369,19 @@ class EditComprobacion(edit.DefaultEditForm):
             subform.fields['importe'].required = False
             subform.fields['anticipo'].mode = 'hidden'
             subform.fields['anticipo'].required = False
+            subform.fields['aprobado'].mode = 'hidden'
+            subform.fields['aprobado'].required = False
         if widgets.items():
             widgets['anticipo'].mode = 'hidden'
             widgets['anticipo'].required = False
             widgets['importe'].mode = 'hidden'
             widgets['importe'].required = False
+            widgets['aprobado'].mode = 'hidden'
+            widgets['aprobado'].required = False
 
     def single_xml(self, idx, data, filename, messages, container=""):
         user_editor = self.context.portal_membership.getAuthenticatedMember()
-        widget_idx = 2 if user_editor.has_role("Manager") else 1
+        widget_idx = 3 if user_editor.has_role("Manager") else 1
         message = ""
         root = None
         try:
@@ -447,7 +459,7 @@ class EditComprobacion(edit.DefaultEditForm):
     @button.buttonAndHandler(u'Guardar')
     def handleApply(self, action):
         user_editor = self.context.portal_membership.getAuthenticatedMember()
-        widget_idx = 2 if user_editor.has_role("Manager") else 1
+        widget_idx = 3 if user_editor.has_role("Manager") else 1
         #import pdb; pdb.set_trace()
         data, errors = self.extractData()
         if errors:
@@ -472,7 +484,10 @@ class EditComprobacion(edit.DefaultEditForm):
             self.context.relacion = rel_full #tal vez deberia ser la misma aunque intente cambiarse
         if data.has_key("title"):
             self.context.tile = data['title']
-        self.context.notas = data['notas']
+        if data.has_key("notas"):
+            self.context.notas = data['notas']
+        if data.has_key("notas_finanzas"):
+            self.context.notas_finanzas = data['notas_finanzas']
         if data.has_key("total_comprobar"):
             self.context.total_comprobar = data['total_comprobar']
         #self.context.grupo_comprobacion = [] if not self.context.grupo_comprobacion else self.context.grupo_comprobacion
@@ -515,7 +530,13 @@ class EditComprobacion(edit.DefaultEditForm):
                 if not item.has_key("importe"):
                     item['importe'] = 0.0
                 else:
-                   grupo_comprobacion[index]['importe'] = item['importe']                   
+                   grupo_comprobacion[index]['importe'] = item['importe']
+
+                if not item.has_key("aprobado"):
+                    item['aprobado'] = 0.0
+                else:
+                    grupo_comprobacion[index]['aprobado'] = item['aprobado']
+                    
             else:
                 if not item['archivo']:
                     temp_widget_file = self.widgets.values()[widget_idx].widgets[index].subform.widgets.values()[-1].value

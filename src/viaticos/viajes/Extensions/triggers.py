@@ -79,8 +79,9 @@ def generate(viaje, n_grupo=1):
     desc_monto = [[elem.strip() for elem in x.split(":")] for x in viaje.anti_desc.split("\n")]
     grupo = []
     for x in desc_monto:
+        print("adding new tuple")
         #import pdb; pdb.set_trace()
-        grupo.append({'descripcion': u'Descripción', 'fecha': datetime.now(), 'concepto': x[0], 'importe': float(x[1])/n_grupo, 'archivo': None, 'comprobado':0.0, 'anticipo':u'anticipo', 'clave':8, 'origen':'nacional'})
+        grupo.append({'descripcion': u'Descripción', 'fecha': datetime.now(), 'concepto': x[0], 'importe': float(x[1])/n_grupo, 'archivo': None, 'comprobado':0.0, 'anticipo':u'anticipo', 'clave':8, 'origen':'nacional', 'aprobado':0.0})
     return grupo#[{'descripcion': u'Descripción', 'fecha': datetime.now(), 'concepto': u'Concepto', 'importe': 0.0, 'archivo': None}]
 
 def create_comprobaciones(portal, trip, rel_full):

@@ -10,6 +10,12 @@
        title="viaticos.viajes: Crear comprobacion"
        />
 
+    <permission
+       id="viaticos.viajes.puede_hacer_notas"
+       title="viaticos.viajes: Hacer notas comprobacion"
+       />
+
+
 
   </configure>
 

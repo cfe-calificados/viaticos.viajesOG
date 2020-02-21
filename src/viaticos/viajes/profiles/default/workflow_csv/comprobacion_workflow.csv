@@ -23,7 +23,7 @@ Transitions:,"terminar,fallo_bosquejo"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
-Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    N,
 Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    Y,
 Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N,	  Y,	    Y,	
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,

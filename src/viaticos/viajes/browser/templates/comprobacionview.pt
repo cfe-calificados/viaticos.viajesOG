@@ -50,8 +50,14 @@
 
       <br>
       <div tal:condition="context/notas">
-	<p><b>Notas</b></p>
+	<p><b>Notas del solicitante</b></p>
 	<p tal:content="structure view/w/notas/render"></p>
+      </div>
+
+      <br>
+      <div tal:condition="context/notas_finanzas">
+	<p><b>Notas de Finanzas</b></p>
+	<p tal:content="structure view/w/notas_finanzas/render"></p>
       </div>
 
       

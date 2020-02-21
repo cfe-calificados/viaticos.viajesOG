@@ -100,19 +100,19 @@ def gen_latex(obj_comp):
         \\begin{tabularx}{\\textwidth}{|| >{\\centering\\arraybackslash}X | >{\\centering\\arraybackslash}X | >{\\centering\\arraybackslash}X | >{\\centering\\arraybackslash}X | >{\\centering\\arraybackslash}X | >{\\centering\\arraybackslash}X | >{\\centering\\arraybackslash}X ||}
         \\hline
         \\rowcolor{califiverde}
-        \\begin{center} \\textbf{Fecha} \\end{center} & \\begin{center} \\textbf{No. de factura} \\end{center} & \\begin{center} \\textbf{Clave del gasto} \\end{center} & \\begin{center} \\textbf{Importe} \\end{center} & \\begin{center} \\textbf{I.V.A} \\end{center} & \\begin{center} \\textbf{Total} \\end{center} & \\begin{center} \\textbf{Descripción} \\end{center} \\\\
+        \\begin{center} \\textbf{Fecha} \\end{center} & \\begin{center} \\textbf{Clave del gasto} \\end{center} & \\begin{center} \\textbf{Aprobado} \\end{center} & \\begin{center} \\textbf{I.V.A} \\end{center} & \\begin{center} \\textbf{Total} \\end{center} & \\begin{center} \\textbf{Descripción} \\end{center} \\\\
         \\hline \\hline"""
         totales = [0.0,0.0,0.0]
         for concepto in full_data['grupo_comp_ord']:
-            iva = round(concepto['importe']*0.16, 2) if concepto['origen'] == 'nacional' else 0.0
-            total_concepto = iva+concepto['importe']
-            inner += concepto['fecha'].strftime("%d/%m/%Y") +" & "+ u"3300"+" & "+ str(concepto['clave']) +" & \\$" + str(concepto['importe']) +" & "+ "\\$"+str(iva) + " & "+"\\$"+str(total_concepto)+" & "+concepto['concepto']
-            totales = [totales[x]+y for x,y in enumerate([concepto['importe'], iva, total_concepto])]
+            iva = round(concepto['aprobado']*0.16, 2) if concepto['origen'] == 'nacional' else 0.0
+            total_concepto = concepto['aprobado']
+            inner += concepto['fecha'].strftime("%d/%m/%Y") +" & "+ str(concepto['clave']) +" & \\$" + str(round(concepto['aprobado']-(concepto['aprobado']*0.16), 2) if concepto['origen'] == 'nacional' else concepto['aprobado']) +" & "+ "\\$"+str(iva) + " & "+"\\$"+str(total_concepto)+" & "+concepto['concepto']
+            totales = [totales[x]+y for x,y in enumerate([round(concepto['aprobado']-(concepto['aprobado']*0.16), 2), iva, total_concepto])]
             inner += "\\\\ \n\\hline"
 
         inner += u"""
         \\hline
-        \\multicolumn{1}{||c}{} & \\multicolumn{1}{c}{} & \\multicolumn{1}{c|}{\\textbf{Total}} & """
+         \\multicolumn{1}{c}{} & \\multicolumn{1}{c|}{\\textbf{Total}} & """
         inner += "\\$"+str(totales[0])+" & \\$"+str(totales[1])+ " & \\multicolumn{1}{c}{\\$"+str(totales[2])+u"""} & \\multicolumn{1}{c||}{}\\\\"""
         inner += u"""
         \\end{tabularx}
@@ -149,7 +149,7 @@ class ResetComprobacion(DefaultView):
         full_grupo = list(viaje.grupo)+([trip_owner] if trip_owner not in viaje.grupo else [])
         nuevas = generate(viaje, len(full_grupo))
         self.context.grupo_comprobacion = nuevas
-        print("done")
+        print("done", nuevas)
         
         
 
