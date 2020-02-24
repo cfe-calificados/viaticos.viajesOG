@@ -101,7 +101,7 @@ def create_comprobaciones(portal, trip, rel_full):
             if "Reviewer" not in roles: roles.append("Reviewer")
             if "Manager" in roles: roles.remove("Manager")
             comp_tmp.manage_setLocalRoles(employee, roles)
-            comp_tmp.manage_setLocalRoles(old_comp_owner.getId(), ["Manager"]) #1
+            comp_tmp.manage_setLocalRoles(old_comp_owner.getId(), ["Finanzas"]) #1
             comp_tmp.reindexObjectSecurity()
             pct = getToolByName(comp_tmp, 'portal_catalog')
             brain = pct({'portal_type': 'comprobacion', 'id': comp_tmp.id})[0]
@@ -146,7 +146,7 @@ def create_comprobacion(self, state_change):
             if "Reviewer" not in roles: roles.append("Reviewer")
             if "Manager" in roles: roles.remove("Manager")
             obj.manage_setLocalRoles(trip.getOwner().getId(), roles)
-            obj.manage_setLocalRoles(old_comp_owner.getId(), ["Manager"]) #1
+            obj.manage_setLocalRoles(old_comp_owner.getId(), ["Finanzas"]) #1
             obj.reindexObjectSecurity()
             pct = getToolByName(obj, 'portal_catalog')
             brain = pct({'portal_type': 'comprobacion', 'id': obj.id})[0]
