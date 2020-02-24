@@ -91,7 +91,7 @@ def create_comprobaciones(portal, trip, rel_full):
     #import pdb; pdb.set_trace()
     for employee in full_grupo:
         try:            
-            comp_tmp = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto/len(full_grupo),notas=u"", grupo_comprobacion=generate(trip, len(full_grupo)), container=portal.viaticos)            
+            comp_tmp = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto/len(full_grupo), notas=u"", notas_finanzas=u"", grupo_comprobacion=generate(trip, len(full_grupo)), container=portal.viaticos)            
             new_owner = api.user.get(username=employee).getUser()
             old_comp_owner = comp_tmp.getOwner() #1
             comp_tmp.changeOwnership(new_owner, recursive=False)
@@ -128,7 +128,7 @@ def create_comprobacion(self, state_change):
         users_mail(self, state_change)
         return
     try:
-        obj = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto,notas=u"", grupo_comprobacion=generate(trip), container=portal.viaticos)#api.content.create(safe_id=True,type="comprobacion", relacion=trip, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), fecha=datetime.now(), importe=0, descripcion=u"Descripción", archivo=None, container=portal.viaticos) #None#
+        obj = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto, notas=u"", notas_finanzas=u"",grupo_comprobacion=generate(trip), container=portal.viaticos)#api.content.create(safe_id=True,type="comprobacion", relacion=trip, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), fecha=datetime.now(), importe=0, descripcion=u"Descripción", archivo=None, container=portal.viaticos) #None#
     except Exception as error:
         print(error)
         import pdb; pdb.set_trace()
