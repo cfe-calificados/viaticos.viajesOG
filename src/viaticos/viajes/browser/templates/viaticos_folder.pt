@@ -117,8 +117,8 @@
 
 	      <!-- FINANZAS -->
 
-	      <table class="listing" tal:define="anticipos python: viajes_list[2]">
-		<thead tal:condition="python:view.belongs_finances()">
+	      <table class="listing" tal:define="anticipos python: viajes_list[2]; finances python: view.belongs_finances()">
+		<thead tal:condition="finances">
 		  <tr>
 		    <th class="span" colspan="4" scope="colgroup">
 		      Solicitudes con Anticipos por aprobar
@@ -132,7 +132,7 @@
 		  </tr>
 		</thead>
 
-		<tbody tal:condition="python:view.belongs_finances()">
+		<tbody tal:condition="finances">
 
 		  <tr tal:repeat="viaje anticipos">
 		    <td>
@@ -178,7 +178,7 @@
 	      <!--h3> Comprobaciones de gastos </h3-->
 	      <table class="listing"
 		     id="comprobaciones"             
-		     tal:define="mis_comprobaciones python:comprobaciones_list[0]; otras_comprobaciones python:comprobaciones_list[1]; implant python: view.belongs_implant()"
+		     tal:define="mis_comprobaciones python:comprobaciones_list[0]; otras_comprobaciones python:comprobaciones_list[1]; implant python: view.belongs_implant(); finances python: view.belongs_finances()"
 		     >
 		<thead tal:condition="python: not implant">
 		  <tr>
@@ -226,7 +226,7 @@
 		  </tr>
 		</tbody>
 
-		<thead tal:condition="python:view.is_boss() or implant">
+		<thead tal:condition="python:view.is_boss() or implant or finances">
 		  <tr>
 		    <th class="span" colspan="5" scope="colgroup">
 		      Comprobaciones de gastos supervisadas
@@ -240,7 +240,7 @@
 		    <th>Fecha de modificación</th>
 		  </tr>
 		</thead>
-		<tbody tal:condition="python:view.is_boss() or implant">
+		<tbody tal:condition="python:view.is_boss() or implant or finances">
 		  <tr tal:repeat="comprobacion otras_comprobaciones">
 		    <td>
 		      <a tal:attributes="href comprobacion/url;
