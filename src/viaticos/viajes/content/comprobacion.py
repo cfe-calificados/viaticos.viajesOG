@@ -169,6 +169,12 @@ class IComprobacion(model.Schema):
         title = _(u'Notas de Finanzas'),
         required = False
     )
+
+    directives.write_permission(notas_implant="viaticos.viajes.implant_escribe")
+    notas_implant = schema.Text(
+        title = _(u'Notas de Implant'),
+        required = False
+    )
     
     directives.widget(
         'grupo_comprobacion',
@@ -381,7 +387,7 @@ class EditComprobacion(edit.DefaultEditForm):
 
     def single_xml(self, idx, data, filename, messages, container=""):
         user_editor = self.context.portal_membership.getAuthenticatedMember()
-        widget_idx = 3 if user_editor.has_role("Manager") else 1
+        widget_idx = 4 if user_editor.has_role("Manager") else 1
         message = ""
         root = None
         try:
@@ -459,7 +465,7 @@ class EditComprobacion(edit.DefaultEditForm):
     @button.buttonAndHandler(u'Guardar')
     def handleApply(self, action):
         user_editor = self.context.portal_membership.getAuthenticatedMember()
-        widget_idx = 3 if user_editor.has_role("Manager") else 1
+        widget_idx = 4 if user_editor.has_role("Manager") else 1
         #import pdb; pdb.set_trace()
         data, errors = self.extractData()
         if errors:
@@ -488,6 +494,8 @@ class EditComprobacion(edit.DefaultEditForm):
             self.context.notas = data['notas']
         if data.has_key("notas_finanzas"):
             self.context.notas_finanzas = data['notas_finanzas']
+        if data.has_key("notas_implant"):
+            self.context.notas_implant = data['notas_implant']
         if data.has_key("total_comprobar"):
             self.context.total_comprobar = data['total_comprobar']
         #self.context.grupo_comprobacion = [] if not self.context.grupo_comprobacion else self.context.grupo_comprobacion

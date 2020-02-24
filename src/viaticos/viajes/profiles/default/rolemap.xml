@@ -12,11 +12,19 @@
       <role name="Site Administrator"/>      
       <role name="Finanzas"/>
     </permission>
+    
     <permission name="viaticos.viajes: Hacer notas comprobacion"
                 acquire="True">
       <role name="Manager"/>
       <role name="Site Administrator"/>      
       <role name="Owner"/>
+    </permission>
+
+    <permission name="viaticos.viajes: Implant escribe"
+                acquire="True">
+      <role name="Manager"/>
+      <role name="Site Administrator"/>      
+      <role name="Implant"/>
     </permission>
     
 

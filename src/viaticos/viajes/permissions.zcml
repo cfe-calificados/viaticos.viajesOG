@@ -15,6 +15,11 @@
        title="viaticos.viajes: Hacer notas comprobacion"
        />
 
+    <permission	
+       id="viaticos.viajes.implant_escribe"
+       title="viaticos.viajes: Implant escribe"
+       />		       
+
 
 
   </configure>
