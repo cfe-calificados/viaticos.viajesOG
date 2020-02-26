@@ -421,7 +421,7 @@ class EditComprobacion(edit.DefaultEditForm):
                 messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
                 self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
-            if rfc == "CCA160523QGA":
+            if rfc == "SCA1701255W0":
                 return message
             else:
                 message = u"Error: El RFC del receptor ("+rfc+") en el archivo "+filename+u" no es el correcto."
@@ -431,6 +431,8 @@ class EditComprobacion(edit.DefaultEditForm):
             
     def check_xml(self, grupo_comprobacion, messages):
         #import pdb; pdb.set_trace()
+        user_editor = self.context.portal_membership.getAuthenticatedMember()
+        widget_idx = 4 if user_editor.has_role("Manager") else 1
         message = ""
         errors = False
         for idx,concepto in enumerate(grupo_comprobacion):            
@@ -460,6 +462,12 @@ class EditComprobacion(edit.DefaultEditForm):
                         #messages.addStatusMessage(message, type="error")
                         errors = True
                         continue
+            elif concepto['archivo'] != None and concepto['archivo'].contentType != "application/zip" and concepto['origen'] == "nacional":
+                message = u"Error: El archivo "+concepto['archivo'].filename+u" debe ser un comprimido ZIP que contenga un par o más de XML|PDF de factura."
+                messages.addStatusMessage(message, type="error")
+                self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
+                errors = True
+                continue
         return errors
             
     @button.buttonAndHandler(u'Guardar')
