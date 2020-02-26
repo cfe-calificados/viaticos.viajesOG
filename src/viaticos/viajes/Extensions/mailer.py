@@ -6,6 +6,7 @@ import locale
 from plone.app.textfield.interfaces import ITransformer
 import socket
 import datetime as dt
+from plone.uuid.interfaces import IUUID
 
 """ Get name of SERVER """
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -42,14 +43,25 @@ def complete(reqs):
 def complete_m(motivo):
     trade = {"convenio_modificatorio": "un convenio modificatorio", "contacto":u"el contacto inicial con un cliente", "info":u"una adquisición de información", "propuesta":u"una propuesta comercial", "negociacion":u"una negociación", "contrato":u"una firma de contrato", "proceso":u"un proceso de entrega de servicio", "visita_tec":u"una visita técnica", "servicio_cliente":u"una visita de servicio al cliente", "evento":u"una asistencia a un congreso, foro o evento especializado", "capacitacion":u"una capacitación", "otro":u"un requerimiento de su área"}
     return trade[motivo]
-    
+
+def complete_names(grupo):
+    out = []
+    if not grupo: return out
+    membership = api.portal.get_tool('portal_membership')
+    for employee_id in grupo:
+        try:
+            out.append(membership.getMemberById(employee_id).getProperty("fullname").decode('utf-8'))
+        except:
+            out.append(employee_id)
+    return out
+
 def build_body(brain, owner):
     transformer = ITransformer(brain)
     #owner = users.getUserById(brain.owner_info()['id'])
     #import pdb; pdb.set_trace()
     locale.setlocale(locale.LC_TIME, 'es_MX.utf-8')
     body = u"Viajes Turísticos Arcoíris\nPresente\n\n\nPor medio del presente agradecemos se realice la siguiente cotización:\n\n"
-    body += u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo).capitalize()+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u"\nNombre: "+owner.getProperty("fullname").decode('utf-8')+u"\nÁrea de adscripción: "+owner.getProperty("coordinacion").capitalize()+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
+    body += u"Nombre (e identificador): "+brain.Title()+u" ("+str(IUUID(brain, None)).decode()+")\n\n"+u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo).capitalize()+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+(u"\nNombres: " if brain.grupo else u"\nNombre: ")+owner.getProperty("fullname").decode('utf-8')+u", ".join(complete_names(brain.grupo))+u"\nÁrea de adscripción: "+owner.getProperty("coordinacion").capitalize()+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
     body += u"Hospedaje\nCaracterísticas: "+brain.notas_hospedaje.encode('utf-8').decode('utf-8')+u"\n\n" if 'hospedaje' in brain.req else ""     
     body += u"Transportación terrestre\nEspecificaciones: "+brain.notas_transporte.encode('utf-8').decode('utf-8')+u"\n\n" if 'transporte_terrestre' in brain.req else "" 
     body += u"Otros\nEspecificaciones: "+brain.notas_otro.encode('utf-8').decode('utf-8')+u"\n\n" if 'otro' in brain.req else ""    
@@ -156,7 +168,7 @@ def return_to_draft(self, state_change):
 
     # Envio correo agencia
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
-        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización número: (NÚMERO).\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.Title()+u" ("+str(IUUID(brain, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
             recipient="agencia_viajes@foo.com",#+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
@@ -210,7 +222,7 @@ def rejected(self, state_change):
 
     # Envio correo agencia
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
-        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización número: (NÚMERO).\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.Title()+u" ("+str(IUUID(brain, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
             recipient="agencia_viajes@foo.com",#+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",

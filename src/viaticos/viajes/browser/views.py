@@ -122,6 +122,11 @@ class VistaViaje(DefaultView):
         auth_member = self.context.portal_membership.getAuthenticatedMember()
         return self.context.getOwner().getUserName() != self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() or auth_member.has_role('Manager')
 
+    def completar_nombre(self, identificador):
+        pt_m = self.context.portal_membership        
+        user_located = pt_m.getMemberById(identificador)        
+        return user_located.getProperty("fullname") if user_located else identificador
+
 
 class VistaComprobacion(DefaultView):
     """ Vista por defecto para comprobacion de gastos """

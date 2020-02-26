@@ -205,7 +205,7 @@ class IVistaViajeros(form.Schema):
     #form.widget(grupo=AjaxSelectFieldWidget)
     grupo = schema.Tuple(
         title=_(u'Grupo'),
-        description=u"Solicitud de gastos de varios empleados. Guardados | Por eliminar",    
+        description=u"Solicitud de gastos de varios empleados. Disponibles | Por agregar",    
         value_type=schema.Choice(
             source=get_allowed_voca,
         ),
@@ -273,9 +273,7 @@ class VistaViajeros(form.SchemaForm):
             self.status = self.formErrorsMessage
             return
         l_data = list(data['grupo'])
-        ctx_list = list(self.context.grupo)
-        for employee in l_data:
-            ctx_list.remove(employee)
+        ctx_list = [x for x in l_data if x != self.context.getOwner().getId()]
         self.context.grupo = tuple(ctx_list)
         self.request.response.redirect(self.context.absolute_url())
 

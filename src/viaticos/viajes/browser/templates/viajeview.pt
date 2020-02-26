@@ -214,7 +214,7 @@
 
 	  <div tal:condition="context/grupo">
 	    <p>Grupo</p>
-	    <div class="documentDescription" tal:content="structure view/w/grupo/render"></div>
+	    <div class="documentDescription" tal:repeat="empleado context/grupo">${python: view.completar_nombre(empleado)}</div>
 	  </div>
 	  
 
