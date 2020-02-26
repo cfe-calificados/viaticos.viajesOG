@@ -367,7 +367,7 @@ class EditComprobacion(edit.DefaultEditForm):
     def datagridUpdateWidgets(self, subform, widgets, widget):
         #subform.fields = subform.fields.omit('importe')
         #subform.fields = subform.fields.omit('anticipo')
-        if self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Manager") or self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Finanzas"):
+        if self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Manager") or self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Finanzas") or self.context.portal_membership.getAuthenticatedMember().getUser().has_role("Implant"): #implant?
             return
         if subform.fields.items():
             #import pdb; pdb.set_trace()

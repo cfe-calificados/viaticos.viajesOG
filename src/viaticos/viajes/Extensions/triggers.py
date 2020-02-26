@@ -11,7 +11,7 @@ import ast
 """ Get name of SERVER """
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
-URL="http://"+s.getsockname()[0]+":8080/"
+URL="http://"+s.getsockname()[0]+":8080/"#"http://viaticos.cfecalificados.mx:8080/"
 s.close()
 
 def get_bosses(username, grupo):

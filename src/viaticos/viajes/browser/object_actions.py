@@ -32,9 +32,12 @@ def extract_info(obj_comp):
     collected['area'] = Coordinaciones.getTerm(owner_member.getProperty("coordinacion")).title
     collected['date_comp'] = datetime.now().strftime("%A %d de %B de %Y").decode('utf-8')
     collected['grupo_comp_ord'] = sorted(obj_comp.grupo_comprobacion, key=lambda(x): x['fecha'])
-    collected['date_ini'] = collected['grupo_comp_ord'][0]['fecha'].strftime("%d/%m/%Y").decode('utf-8')
-    collected['date_fin'] = collected['grupo_comp_ord'][-1]['fecha'].strftime("%d/%m/%Y").decode('utf-8')
-    collected['notas'] = obj_comp.notas.decode('utf-8') if obj_comp.notas else ""
+    collected['fecha_mod'] = obj_comp.modified().strftime("%d/%m/%Y")
+    collected['date_ini'] = viaje.fecha_salida.strftime("%d/%m/%Y")#collected['grupo_comp_ord'][0]['fecha'].strftime("%d/%m/%Y").decode('utf-8')
+    collected['date_fin'] = viaje.fecha_regreso.strftime("%d/%m/%Y")#collected['grupo_comp_ord'][-1]['fecha'].strftime("%d/%m/%Y").decode('utf-8')
+    collected['notas'] = obj_comp.notas.encode('utf-8').decode('utf-8') if obj_comp.notas else ""
+    collected['notas_finanzas'] = obj_comp.notas_finanzas.encode('utf-8').decode('utf-8') if obj_comp.notas_finanzas else ""
+    collected['notas_implant'] = obj_comp.notas_implant.encode('utf-8').decode('utf-8') if obj_comp.notas_implant else ""
 
     ### Nuevo desmadre para obtener al autorizador
     #import pdb; pdb.set_trace()
@@ -74,7 +77,7 @@ def gen_latex(obj_comp):
     inner += u"""
     \\vfill\\null
     \\columnbreak
-    \\flushright{Periodo del """+full_data['date_ini']+" al "+full_data['date_fin']+"}"
+    \\flushright{Periodo del """+full_data['date_ini']+" al "+full_data['date_fin']+u"\\\\ Fecha de comprobación: "+full_data['fecha_mod']+"}"
     inner += u"""
     \\end{multicols}
 
@@ -90,7 +93,20 @@ def gen_latex(obj_comp):
     if full_data['notas']:
         inner += u"""
         \\noindent\\fbox{
-        \\parbox{\\textwidth}{\\textbf{Notas:} """+full_data['notas']+"}}"
+        \\parbox{\\textwidth}{\\textbf{Notas del solicitante:} """+full_data['notas']+"}}"
+
+    if full_data['notas_finanzas']:
+        inner += u"""
+        \\\\~\\\\
+        \\noindent\\fbox{
+        \\parbox{\\textwidth}{\\textbf{Notas de Finanzas:} """+full_data['notas_finanzas']+"}}"
+
+    if full_data['notas_implant']:
+        inner += u"""
+        \\\\~\\\\
+        \\noindent\\fbox{
+        \\parbox{\\textwidth}{\\textbf{Notas de Implant:} """+full_data['notas_implant']+"}}"
+        
     
     if full_data['grupo_comp_ord']:
         inner += u"""

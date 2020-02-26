@@ -8,7 +8,7 @@ function coloring(){
 	    else if(texto.includes("revision_aprobador") || texto.includes("bosquejo")){
 		$(this).attr("style", "color:#eb6123;");
 	    }
-	    else if(texto.includes("esperando_agencia") || texto.includes("revision")){
+	    else if(texto.includes("esperando_agencia") || texto.includes("revision_finanzas") || texto.includes("revision_implant")){
 		$(this).attr("style", "color:blue;");
 	    }
 	    else if(texto.includes("anticipo_pendiente")){

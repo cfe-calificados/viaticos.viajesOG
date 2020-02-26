@@ -48,6 +48,7 @@
 
       </div>
 
+      <hr>
       <br>
       <div tal:condition="context/notas">
 	<p><b>Notas del solicitante</b></p>
@@ -58,6 +59,12 @@
       <div tal:condition="context/notas_finanzas">
 	<p><b>Notas de Finanzas</b></p>
 	<p tal:content="structure view/w/notas_finanzas/render"></p>
+      </div>
+
+      <br>
+      <div tal:condition="context/notas_implant">
+	<p><b>Notas de Implant</b></p>
+	<p tal:content="structure view/w/notas_implant/render"></p>
       </div>
 
       
@@ -99,6 +106,11 @@
 	    </th>
 
 	    <th class="header">
+              <span>Monto aprobado</span>
+              <span class="required">*</span>
+	    </th>
+
+	    <th class="header">
               <span>Tipo</span>
               <span class="required">*</span>
 	    </th>
@@ -118,6 +130,7 @@
 	    <td tal:content="python:concepto['descripcion']">descripcion</td>
 	    <td tal:content="python:concepto['importe']">importe</td>
 	    <td tal:content="python:concepto['comprobado']">comprobado</td>
+	    <td tal:content="python:concepto['aprobado']">aprobado</td>
 	    <td tal:content="python: 'Por reembolso' if concepto['anticipo'] == 'reembolso' else 'Por anticipo'">anticipo</td>
 	    <td tal:condition="concepto/archivo" tal:define="file nocall:concepto/archivo">	      
 	      <a tal:define="idx python:view.get_file_idx(concepto)" tal:attributes="href string:${context/absolute_url}/view/++widget++form.widgets.grupo_comprobacion.${idx}.widgets.archivo/@@download/${file/filename}">		

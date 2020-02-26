@@ -10,7 +10,7 @@ import datetime as dt
 """ Get name of SERVER """
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
-URL="http://"+s.getsockname()[0]+":8080/"
+URL="http://"+s.getsockname()[0]+":8080/"#"http://viaticos.cfecalificados.mx:8080/"
 s.close()
 
 
@@ -300,3 +300,7 @@ def finances_rejected(self, state_change):
 
 def implant_mail(self, state_change):
     print("se envía correo a implant solicitando depósito de anticipo. También a usuario con montos aceptados de su comprobación.")
+
+
+def implant_comp(self, state_change):
+    print("Se envía correo a implant solicitando carga de facturas de hospedaje y vuelo.")

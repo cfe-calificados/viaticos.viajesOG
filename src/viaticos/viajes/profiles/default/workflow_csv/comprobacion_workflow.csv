@@ -12,14 +12,15 @@ Transitions,guardar
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   N,	   N,		N,	  Y,	    Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N,	  Y,	    Y,
-Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N,	  Y,	    Y,
+Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N,	  N,	    N,
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N, 	    N,
 
+
 [State]
-Id:,revision
-Title:,Por aprobar
-Description:,Pendiente de revisar por encargado.
-Transitions:,"terminar,fallo_bosquejo"
+Id:,revision_finanzas
+Title:,Revision finanzas
+Description:,Pendiente de revisar por finanzas.
+Transitions:,"enviar_a_implant,fallo_bosquejo"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
@@ -27,6 +28,22 @@ Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,
 Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    Y,
 Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N,	  Y,	    Y,	
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+
+
+
+[State]
+Id:,revision_implant
+Title:,Revision implant
+Description:,Pendiente de revisar por implant.
+Transitions:,"terminar,fallo_bosquejo"
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
+Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    Y,
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    Y,
+Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N,	  Y,	    Y,	
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+
 
 [State]
 Id:,aprobado
@@ -45,9 +62,17 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N, 	 
 Id:,guardar
 Title:,Guardar
 Description:,Guardar informacion de la comprobacion de gastos. 
-Target state:,revision
+Target state:,revision_finanzas
 Guard permission:,Modify portal content
 Script after:,viaticos.viajes.Extensions.mailer.comp_save
+
+[Transition]
+Id:,enviar_a_implant
+Title:,Enviar a implant
+Description:,Aprobar la informacion de la comprobacion de gastos
+Target state:,revision_implant
+Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.implant_comp
 
 [Transition]
 Id:,terminar

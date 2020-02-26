@@ -73,10 +73,14 @@ footer = u"""
   
 \\end{multicols}
 
+
+\\par\\noindent\\rule{\\textwidth}{0.4pt}
+\subsubsection*{PARA USO DE FINANZAS}
+
 \\begin{multicols}{2}
 
   \\begin{Form}
-    \\subsubsection*{DATOS PARA EFECTUAR EL PAGO}
+    \\subsubsection*{Datos para efectuar el pago}
     \\begin{tabbing}
       xxxxxxxxxx: \\= \\kill  % This is needed for the right tab width
       Cuenta No.:           \\> \\TextField[bordercolor=,name=cuenta,width=3cm,charsize=10pt,format={this.getField('cuenta').textFont='SegoeMarker';}]
