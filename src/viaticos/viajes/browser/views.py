@@ -181,12 +181,12 @@ class VistaComprobacion(DefaultView):
         tupla_totales.append(0.0)
         for concepto in conceptos:
             if concepto['anticipo'] == "reembolso":
-                tupla_totales[1] += concepto['comprobado']
+                tupla_totales[1] += concepto['aprobado']
                 continue
-            if concepto['importe'] <= concepto['comprobado']:
+            if concepto['importe'] <= concepto['aprobado']:
                 tupla_totales[0] += concepto['importe']
             else:
-                tupla_totales[0] += concepto['comprobado']
+                tupla_totales[0] += concepto['aprobado']
         
         return tupla_totales+['{:,}'.format(tupla_totales[0]+tupla_totales[1])]
 
