@@ -40,7 +40,7 @@ def complete(reqs):
     return [trade[x] for x in reqs]
 
 def complete_m(motivo):
-    trade = {"contacto":u"el contacto inicial con un cliente", "info":u"una adquisición de información", "propuesta":u"una propuesta comercial", "negociacion":u"una negociación", "contrato":u"una firma de contrato", "proceso":u"un proceso de entrega de servicio", "visita_tec":u"una visita técnica", "servicio_cliente":u"una visita de servicio al cliente", "evento":u"una asistencia a un congreso, foro o evento especializado", "capacitacion":u"una capacitación", "otro":u"un requerimiento de su área"}
+    trade = {"convenio_modificatorio": "un convenio modificatorio", "contacto":u"el contacto inicial con un cliente", "info":u"una adquisición de información", "propuesta":u"una propuesta comercial", "negociacion":u"una negociación", "contrato":u"una firma de contrato", "proceso":u"un proceso de entrega de servicio", "visita_tec":u"una visita técnica", "servicio_cliente":u"una visita de servicio al cliente", "evento":u"una asistencia a un congreso, foro o evento especializado", "capacitacion":u"una capacitación", "otro":u"un requerimiento de su área"}
     return trade[motivo]
     
 def build_body(brain, owner):

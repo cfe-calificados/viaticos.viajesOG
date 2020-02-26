@@ -39,17 +39,19 @@ OpcionesRequerimientos = SimpleVocabulary(
 )
 
 OpcionesMotivo = SimpleVocabulary(
-    [SimpleTerm(value=u'contacto', title=_(u'Contacto inicial')),
-     SimpleTerm(value=u'info', title=_(u'Adquirir información')),
-     SimpleTerm(value=u'propuesta', title=_(u'Propuesta comercial')),
-     SimpleTerm(value=u'negociacion', title=_(u'Negociación')),
-     SimpleTerm(value=u'contrato', title=_(u'Firma de contrato')),
-     SimpleTerm(value=u'proceso', title=_(u'Proceso de entrega de servicio')),
-     SimpleTerm(value=u'visita_tec', title=_(u'Visita técnica')),
-     SimpleTerm(value=u'servicio_cliente', title=_(u'Servicio al cliente')),
-     SimpleTerm(value=u'evento', title=_(u'Congreso, foro o evento especializado')),
-     SimpleTerm(value=u'capacitacion', title=_(u'Capacitación')),
-     SimpleTerm(value=u'otro', title=_(u'Otro')),
+    [
+        SimpleTerm(value=u'convenio_modificatorio', title=_(u'Convenio modificatorio')),
+        SimpleTerm(value=u'contacto', title=_(u'Contacto inicial')),
+        SimpleTerm(value=u'info', title=_(u'Adquirir información')),
+        SimpleTerm(value=u'propuesta', title=_(u'Propuesta comercial')),
+        SimpleTerm(value=u'negociacion', title=_(u'Negociación')),
+        SimpleTerm(value=u'contrato', title=_(u'Firma de contrato')),
+        SimpleTerm(value=u'proceso', title=_(u'Proceso de entrega de servicio')),
+        SimpleTerm(value=u'visita_tec', title=_(u'Visita técnica')),
+        SimpleTerm(value=u'servicio_cliente', title=_(u'Servicio al cliente')),
+        SimpleTerm(value=u'evento', title=_(u'Congreso, foro o evento especializado')),
+        SimpleTerm(value=u'capacitacion', title=_(u'Capacitación')),
+        SimpleTerm(value=u'otro', title=_(u'Otro')),
     ]
 )
 

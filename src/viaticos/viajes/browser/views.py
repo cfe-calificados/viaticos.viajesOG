@@ -95,9 +95,10 @@ class VistaViaje(DefaultView):
                                      
 
     def is_pending_state(self):
+        auth_member = self.context.portal_membership.getAuthenticatedMember()
         portal = api.portal.get()
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
-        return True if status == "revision_aprobador" and self.is_boss() else False
+        return True if (status == "revision_aprobador" and self.is_boss()) or auth_member.has_role('Manager') else False
         
         
     def is_transact_state(self):
@@ -118,7 +119,8 @@ class VistaViaje(DefaultView):
         return form
 
     def valid_registration(self):
-        return self.context.getOwner().getUserName() != self.context.portal_membership.getAuthenticatedMember().getUser().getUserName()
+        auth_member = self.context.portal_membership.getAuthenticatedMember()
+        return self.context.getOwner().getUserName() != self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() or auth_member.has_role('Manager')
 
 
 class VistaComprobacion(DefaultView):

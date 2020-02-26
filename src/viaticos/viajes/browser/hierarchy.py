@@ -22,6 +22,8 @@ from plone.app.z3cform.widget import AjaxSelectFieldWidget
 from zope.interface import provider
 import ast
 from zope.schema.interfaces import IContextSourceBinder
+from zope.component import getUtility
+from zope.schema.interfaces import IVocabularyFactory
 
 Coordinaciones = SimpleVocabulary(
     [SimpleTerm(value=u'administracion', title=_(u'Administración')),
@@ -191,9 +193,10 @@ def get_allowed_grupo(context):
     return tuple(allowed_group(context))
 
 @provider(IContextSourceBinder)
-def get_allowed_voca(context):
-    #from plone.app.vocabularies import Users
-    #return Users
+def get_allowed_voca(context):    
+    factory = getUtility(IVocabularyFactory, 'plone.app.vocabularies.Users')
+    if context.portal_membership.getAuthenticatedMember().has_role('Manager'):
+        return factory(context)
     if context == None or context.grupo == None: return None
     return SimpleVocabulary(make_terms([[x,x] for x in allowed_group(context)]))
 
