@@ -210,7 +210,7 @@ class VistaViaticos(BrowserView):
 
     order = {'borrador': 1, 'revision_aprobador': 2, 'esperando_agencia':3, 'anticipo_pendiente':4, 'transferencia_anticipo': 5, 'final':6}
     get_states = {1:'borrador', 2:'revision_aprobador', 3:'esperando_agencia', 4:'anticipo_pendiente', 5:'transferencia_anticipo', 6:'final'}
-    orden = {'bosquejo': 1,'revision_finanzas': 2, 3:'revision_implant', 'aprobado': 4}
+    orden = {'bosquejo': 1,'revision_finanzas': 2, 'revision_implant': 3, 'aprobado': 4}
     get_comp = {1:'bosquejo', 2:'revision_finanzas', 3:'revision_implant', 4:'aprobado'} 
 
     def order_by_state_date(self,owned_supervised):

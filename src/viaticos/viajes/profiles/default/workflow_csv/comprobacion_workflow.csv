@@ -14,6 +14,8 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   N,	   N,		N,	  Y,	    Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N,	  Y,	    Y,
 Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N,	  N,	    N,
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N, 	    N,
+Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
+List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
 
 
 [State]
@@ -28,7 +30,8 @@ Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,
 Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    Y,
 Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N,	  Y,	    Y,	
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
-
+Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
+List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
 
 
 [State]
@@ -43,6 +46,8 @@ Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,
 Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  Y,	    Y,
 Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N,	  Y,	    Y,	
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
+List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
 
 
 [State]
@@ -56,6 +61,8 @@ Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
 Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N, 	  N,	    N,
+Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
+List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
 
 
 [Transition]
