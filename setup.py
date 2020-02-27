@@ -48,6 +48,12 @@ setup(
         'plone.app.dexterity',
         # My own requirements
         #'collective.wtf==1.0b9',
+        'Products.DCWorkflow==2.2.4',
+        'collective.wtf',
+        'plone.directives.form',
+        'plone.formwidget.autocomplete',
+        'collective.z3cform.datagridfield==1.5.0',
+        'eea.facetednavigation'
     ],
     extras_require={
         'test': [
