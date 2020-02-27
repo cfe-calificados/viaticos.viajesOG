@@ -47,7 +47,7 @@ setup(
         'plone.restapi',
         'plone.app.dexterity',
         # My own requirements
-        #'collective.wtf==1.0b9',
+        #'collective.wtf==1.0b9', probably not needed
         'Products.DCWorkflow==2.2.4',
         'collective.wtf',
         'plone.directives.form',
