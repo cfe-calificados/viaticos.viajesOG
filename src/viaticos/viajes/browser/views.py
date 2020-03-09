@@ -11,10 +11,18 @@ from AccessControl import Unauthorized
 from Products.CMFCore.permissions import AddPortalContent
 #sorting
 from operator import itemgetter as get_item
-import ast        
+import ast
+
+from datetime import datetime
 
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
+
+    def can_save(self):
+        horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
+        print(horas_diff)
+        not('anticipo' in self.context.req and horas_diff < 48) ###AQUI NOS QUEDAMOSSS
+        return not('anticipo' in self.context.req and horas_diff < 48)
 
     def get_status(self):
         portal = api.portal.get()
@@ -57,7 +65,7 @@ class VistaViaje(DefaultView):
     def __call__(self):
         auth_member = self.context.portal_membership.getAuthenticatedMember()
         current_status = self.get_status()
-        #DO WE WANT THOSE TWO WATCHING OVER OLD REQUESTS? if auth_member.has_role('Manager') or (current_status == "anticipo_pendiente" and auth_member.has_role('Finanzas')) or (current_status == "esperando_agencia" and auth_member.has_role('Implant')):
+        #DO WE WANT THOSE TWO WATCHING OVER OLD REQUESTS? if auth_member.has_role('Manager') or (current_status == "anticipo pendiente" and auth_member.has_role('Finanzas')) or (current_status == "esperando agencia" and auth_member.has_role('Implant')):
         if auth_member.has_role('Manager') or auth_member.has_role('Finanzas') or auth_member.has_role('Implant'):
             return super(VistaViaje, self).__call__()
         current_user = auth_member.getUser().getUserName()
@@ -98,7 +106,7 @@ class VistaViaje(DefaultView):
         auth_member = self.context.portal_membership.getAuthenticatedMember()
         portal = api.portal.get()
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
-        return True if (status == "revision_aprobador" and self.is_boss()) or auth_member.has_role('Manager') else False
+        return True if (status == "revision aprobador" and self.is_boss()) or auth_member.has_role('Manager') else False
         
         
     def is_transact_state(self):
@@ -108,7 +116,7 @@ class VistaViaje(DefaultView):
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
         #is_owner = self.context.portal_membership.getAuthenticatedMember().getUser().getUserName() == self.context.getOwner().getUserName()
         #needs_ticket = 'boleto_avion' in self.context.req or 'hospedaje' in self.context.req
-        return True if status == "esperando_agencia" and (self.is_boss() or self.belongs_implant()) else False#is_owner else False
+        return True if status == "esperando agencia" and (self.is_boss() or self.belongs_implant()) else False#is_owner else False
         
     def render_ticket_form(self):
         #import pdb; pdb.set_trace()
@@ -208,10 +216,10 @@ class VistaViaticos(BrowserView):
     """ Una vista para listar solicitudes y comprobaciones de gastos
     """
 
-    order = {'borrador': 1, 'revision_aprobador': 2, 'esperando_agencia':3, 'anticipo_pendiente':4, 'transferencia_anticipo': 5, 'final':6}
-    get_states = {1:'borrador', 2:'revision_aprobador', 3:'esperando_agencia', 4:'anticipo_pendiente', 5:'transferencia_anticipo', 6:'final'}
-    orden = {'bosquejo': 1,'revision_finanzas': 2, 'revision_implant': 3, 'aprobado': 4}
-    get_comp = {1:'bosquejo', 2:'revision_finanzas', 3:'revision_implant', 4:'aprobado'} 
+    order = {'borrador': 1, 'revision aprobador': 2, 'esperando agencia':3, 'anticipo pendiente':4, 'transferencia en proceso': 5, 'final':6}
+    get_states = {1:'borrador', 2:'revision aprobador', 3:'esperando agencia', 4:'anticipo pendiente', 5:'transferencia en proceso', 6:'final'}
+    orden = {'bosquejo': 1,'revision finanzas': 2, 'revision implant': 3, 'aprobado': 4}
+    get_comp = {1:'bosquejo', 2:'revision finanzas', 3:'revision implant', 4:'aprobado'} 
 
     def order_by_state_date(self,owned_supervised):
         owned = sorted(sorted(owned_supervised[0], key=lambda k: k['modif_date'], reverse=True), key=lambda k: k['state'])
@@ -288,7 +296,7 @@ class VistaViaticos(BrowserView):
             if auth_member.has_role('Manager') or auth_member.has_role('Implant'):
                 brains.append(x)
                 continue
-            if auth_member.has_role('Finanzas') and api.content.get_state(obj=portal["viaticos"][x.id]) in ["anticipo_pendiente", "transferencia_anticipo"]:
+            if auth_member.has_role('Finanzas') and api.content.get_state(obj=portal["viaticos"][x.id]) in ["anticipo pendiente", "transferencia en proceso"]:
                 finances.append(x)
                 continue
             downward = membership.getMemberById(obj_owner.getUserId()).getProperty("downward")

@@ -310,9 +310,14 @@ def finances_rejected(self, state_change):
     )
 
 
+def implant_registry(self, state_change):
+    print("se envía correo a implant solicitando registro de información para viaje.")
+    #fanny.cruz@redhuman.com.mx
+
 def implant_mail(self, state_change):
     print("se envía correo a implant solicitando depósito de anticipo. También a usuario con montos aceptados de su comprobación.")
-
+    #fanny.cruz@redhuman.com.mx
 
 def implant_comp(self, state_change):
     print("Se envía correo a implant solicitando carga de facturas de hospedaje y vuelo.")
+    #fanny.cruz@redhuman.com.mx

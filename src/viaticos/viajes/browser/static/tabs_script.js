@@ -5,16 +5,16 @@ function coloring(){
 	    if(texto.includes("borrador")){
 		$(this).attr("style", "color:red;");
 	    }
-	    else if(texto.includes("revision_aprobador") || texto.includes("bosquejo")){
+	    else if(texto.includes("revision aprobador") || texto.includes("bosquejo")){
 		$(this).attr("style", "color:#eb6123;");
 	    }
-	    else if(texto.includes("esperando_agencia") || texto.includes("revision_finanzas") || texto.includes("revision_implant")){
+	    else if(texto.includes("esperando agencia") || texto.includes("revision finanzas") || texto.includes("revision implant")){
 		$(this).attr("style", "color:blue;");
 	    }
-	    else if(texto.includes("anticipo_pendiente")){
+	    else if(texto.includes("anticipo pendiente")){
 		$(this).attr("style", "color:green;");
 	    }
-	    else if(texto.includes("transferencia_anticipo")){
+	    else if(texto.includes("transferencia en proceso")){
 		$(this).attr("style", "color:#32a8a0;");
 	    }
 	});

@@ -16,7 +16,7 @@ Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N  
 
 [State]
-Id:,revision_aprobador
+Id:,"revision aprobador"
 Title:,Revision aprobador
 Description:,Pendiente de revision.
 Transitions:,"aprobar_solicitud,fallo_borrador"
@@ -28,7 +28,7 @@ Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
-Id:,esperando_agencia
+Id:,"esperando agencia"
 Title:,Esperando agencia
 Description:,Esperando registro de informacion de agencia.
 Transitions:,"enviar_anticipo,fallo_tramite"
@@ -40,7 +40,7 @@ Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,
 Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N, 	  N,
 
 [State]
-Id:,anticipo_pendiente
+Id:,"anticipo pendiente"
 Title:,Anticipo pendiente
 Description:,Anticipo por autorizar.
 Transitions:,"confirmar_anticipo,fallo_anticipo"
@@ -53,8 +53,8 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  
 
 
 [State]
-Id:,transferencia_anticipo
-Title:,Transferencia anticipo
+Id:,"transferencia en proceso"
+Title:,Transferencia en proceso
 Description:,Esperando transferencia de anticipo.
 Transitions:,registrar
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
@@ -81,7 +81,7 @@ Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,
 Id:,guardar_borrador
 Title:,Guardar borrador
 Description:,Confirmar informacion del viaje. 
-Target state:,revision_aprobador
+Target state:,"revision aprobador"
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Request review
 Script after:,viaticos.viajes.Extensions.mailer.boss_mail
@@ -90,15 +90,16 @@ Script after:,viaticos.viajes.Extensions.mailer.boss_mail
 Id:,aprobar_solicitud
 Title:,Aprobar solicitud
 Description:,Automatico
-Target state:,esperando_agencia
+Target state:,"esperando agencia"
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.implant_registry
 
 [Transition]
 Id:,enviar_anticipo
 Title:,Enviar anticipo
 Description:,Autorizar montos de anticipo
-Target state:,anticipo_pendiente
+Target state:,"anticipo pendiente"
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.finances_mail
@@ -107,7 +108,7 @@ Script after:,viaticos.viajes.Extensions.mailer.finances_mail
 Id:,confirmar_anticipo
 Title:,Confirmar anticipo
 Description:,Confirmar montos de anticipo solicitados
-Target state:,transferencia_anticipo
+Target state:,"transferencia en proceso"
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Review portal content	
 Script after:,viaticos.viajes.Extensions.mailer.implant_mail
@@ -144,7 +145,7 @@ Script after:,viaticos.viajes.Extensions.mailer.rejected
 Id:,fallo_anticipo
 Title:,Anticipo no aprobado
 Description:,"Anticipo no autorizado, por revisar montos."
-Target state:,esperando_agencia
+Target state:,"esperando agencia"
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.finances_rejected
 

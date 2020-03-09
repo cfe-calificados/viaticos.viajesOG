@@ -125,10 +125,16 @@
 
   <body>
     <metal:content-core fill-slot="content-core">
-      <dl tal:define="info_state python: view.get_info_state()" tal:condition="python:info_state" class="portalMessage warning">
+      <dl tal:define="info_state python: view.get_info_state()" tal:condition="python: view.can_save() and info_state" class="portalMessage warning">
 	<dt>Estado</dt>
 	<dd>${python: info_state}</dd>
       </dl>
+
+      <dl tal:condition="python: not view.can_save()" class="portalMessage error">
+	<dt>Estado</dt>
+	<dd> No es posible guardar tu solicitud de gastos debido a que el anticipo debe solicitarse con al menos 48 horas de antelación. Favor de contactar a <a href="mailto:administracion@califciados.cfe.mx">Administración</a>. </dd>
+      </dl>
+      
       <!--INFO SOBRE ESTADO DEL REGISTRO -->      
       <div tal:condition="python:view.is_transact_state()">
 	<dl tal:condition="python:view.values_setted()" class="portalMessage info">
