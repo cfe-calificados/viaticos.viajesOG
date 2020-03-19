@@ -115,6 +115,14 @@
      permission="zope2.View"
      />
 
+  <browser:page
+     name="can-send-to-admin"
+     for="*"
+     layer="zope.interface.Interface"
+     class=".transition_guards.CanSendToAdmin"     
+     permission="zope2.View"
+     />
+
     <browser:page
      for="viaticos.viajes.content.viaje.IViaje"
      name="delete-traveler"

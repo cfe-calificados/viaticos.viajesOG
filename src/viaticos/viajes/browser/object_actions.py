@@ -9,6 +9,7 @@ from Products.Five import BrowserView
 from zope.publisher.interfaces import NotFound
 from plone.namedfile.file import NamedBlobFile
 import ast
+from plone.app.textfield.interfaces import ITransformer
 
 ## PDF creation
 from datetime import datetime
@@ -16,6 +17,11 @@ import locale
 from su_pre_fixes import *
 import os, subprocess
 from hierarchy import Coordinaciones
+
+
+def complete_m(motivo):
+    trade = {"convenio_modificatorio": "un convenio modificatorio", "contacto":u"el contacto inicial con un cliente", "info":u"una adquisición de información", "propuesta":u"una propuesta comercial", "negociacion":u"una negociación", "contrato":u"una firma de contrato", "proceso":u"un proceso de entrega de servicio", "visita_tec":u"una visita técnica", "servicio_cliente":u"una visita de servicio al cliente", "evento":u"una asistencia a un congreso, foro o evento especializado", "capacitacion":u"una capacitación", "otro":u"un requerimiento de su área"}
+    return trade[motivo]
 
 def extract_info(obj_comp):
     locale.setlocale(locale.LC_TIME, 'es_MX.utf-8')
@@ -38,6 +44,9 @@ def extract_info(obj_comp):
     collected['notas'] = obj_comp.notas.encode('utf-8').decode('utf-8') if obj_comp.notas else ""
     collected['notas_finanzas'] = obj_comp.notas_finanzas.encode('utf-8').decode('utf-8') if obj_comp.notas_finanzas else ""
     collected['notas_implant'] = obj_comp.notas_implant.encode('utf-8').decode('utf-8') if obj_comp.notas_implant else ""
+    collected['motivo'] = complete_m(viaje.motivo)
+    transformer = ITransformer(viaje)    
+    collected['objetivo'] = transformer(viaje.objetivo, 'text/plain')
 
     ### Nuevo desmadre para obtener al autorizador
     #import pdb; pdb.set_trace()
@@ -106,6 +115,20 @@ def gen_latex(obj_comp):
         \\\\~\\\\
         \\noindent\\fbox{
         \\parbox{\\textwidth}{\\textbf{Notas de Implant:} """+full_data['notas_implant']+"}}"
+
+
+    if full_data['motivo']:
+        inner += u"""
+        \\textbf{Motivo:} """+full_data['motivo']+u"""\\\\
+        
+        """
+
+
+    if full_data['objetivo']:
+        inner += u"""
+        \\textbf{Objetivo:} """+full_data['objetivo']+u"""\\\\
+        
+        """
         
     
     if full_data['grupo_comp_ord']:

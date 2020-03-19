@@ -18,10 +18,14 @@ from datetime import datetime
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
 
+    def can_ask(self):
+        horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
+        print(horas_diff)        
+        return horas_diff < 0
+
     def can_save(self):
         horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
         print(horas_diff)
-        not('anticipo' in self.context.req and horas_diff < 48) ###AQUI NOS QUEDAMOSSS
         return not('anticipo' in self.context.req and horas_diff < 48)
 
     def get_status(self):
@@ -216,8 +220,8 @@ class VistaViaticos(BrowserView):
     """ Una vista para listar solicitudes y comprobaciones de gastos
     """
 
-    order = {'borrador': 1, 'revision aprobador': 2, 'esperando agencia':3, 'anticipo pendiente':4, 'transferencia en proceso': 5, 'final':6}
-    get_states = {1:'borrador', 2:'revision aprobador', 3:'esperando agencia', 4:'anticipo pendiente', 5:'transferencia en proceso', 6:'final'}
+    order = {'borrador': 1, 'revision aprobador': 2, 'registro por verificar':2.5, 'esperando agencia':3, 'anticipo pendiente':4, 'transferencia en proceso': 5, 'final':6}
+    get_states = {1:'borrador', 2:'revision aprobador', 2.5:'registro por verificar', 3:'esperando agencia', 4:'anticipo pendiente', 5:'transferencia en proceso', 6:'final'}
     orden = {'bosquejo': 1,'revision finanzas': 2, 'revision implant': 3, 'aprobado': 4}
     get_comp = {1:'bosquejo', 2:'revision finanzas', 3:'revision implant', 4:'aprobado'} 
 

@@ -8,12 +8,25 @@ Initial state:,borrador
 Id:,borrador
 Title:,Borrador
 Description:,Una vez completado, el encargado lo aprobara para solicitud.
-Transitions,guardar_borrador
+Transitions,"guardar_borrador, guardar_pasado"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   N,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
-Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N  
+Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
+
+
+[State]
+Id:,"registro por verificar"
+Title:,Por verificar
+Description:,Pendiente de revision de administracion.
+Transitions:,"registrar, fallo_borrador"
+Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Reader,Editor, Owner,  Contributor,	Reviewer
+View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N
+Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
+Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N
+Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N  
 
 [State]
 Id:,"revision aprobador"
@@ -85,6 +98,16 @@ Target state:,"revision aprobador"
 Guard expression:, here/@@can-send-to-agency
 Guard permission:,Request review
 Script after:,viaticos.viajes.Extensions.mailer.boss_mail
+
+[Transition]
+Id:,guardar_pasado
+Title:,Solicitar registro
+Description:,Solicitar registro para comenzar comprobacion. 
+Target state:,"registro por verificar"
+Guard expression:, here/@@can-send-to-admin
+Guard permission:,Request review
+Script after:,viaticos.viajes.Extensions.mailer.registry_past
+
 
 [Transition]
 Id:,aprobar_solicitud

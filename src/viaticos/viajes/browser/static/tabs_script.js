@@ -5,7 +5,7 @@ function coloring(){
 	    if(texto.includes("borrador")){
 		$(this).attr("style", "color:red;");
 	    }
-	    else if(texto.includes("revision aprobador") || texto.includes("bosquejo")){
+	    else if(texto.includes("revision aprobador") || texto.includes("bosquejo") || texto.includes("registro por verificar")){
 		$(this).attr("style", "color:#eb6123;");
 	    }
 	    else if(texto.includes("esperando agencia") || texto.includes("revision finanzas") || texto.includes("revision implant")){

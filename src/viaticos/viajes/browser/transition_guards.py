@@ -70,3 +70,39 @@ class CanSendToAgency(grok.View):
 
     def render(self):
         return "can-send-to-agency"
+
+
+
+class CanSendToAdmin(grok.View):
+    grok.context(IViaje)
+    grok.name("can-send-to-admin")
+    grok.require("zope2.View")
+
+    def __call__(self):
+        print("im a transition guard and i'm getting called!!")
+        portal = api.portal.get()
+        pm = getToolByName(self.context, 'portal_membership')
+        auth_member = pm.getAuthenticatedMember()
+        viaje = self.context
+        status = api.content.get_state(obj=portal["viaticos"][viaje.id])
+        obj_owner = viaje.getOwner()
+
+        if status == "borrador":
+            if auth_member.getUser().getUserName() == obj_owner.getUserName():
+                print("Es owner")
+                horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
+                print(horas_diff)
+                if 'anticipo' in viaje.req and horas_diff < -24:                    
+                    catalog = api.portal.get_tool('portal_catalog')
+                    brains = [x for x in catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision finanzas", "revision implant"], "Creator": auth_member.getUser().getId()}) if (datetime.now()-x.created.asdatetime().replace(tzinfo=None)).days > 5]
+                    return not brains
+            
+        if auth_member.has_role('Manager'):
+            print(status,"Es admin, puede hacer transicion")
+            return True
+
+        return False
+        
+
+    def render(self):
+        return "can-send-to-admin"
