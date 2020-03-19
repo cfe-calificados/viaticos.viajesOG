@@ -35,16 +35,19 @@ class CanSendToAgency(grok.View):
         #import pdb; pdb.set_trace()
         #Switch
         if status == "borrador":
+            horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
+            print(horas_diff)
             if auth_member.getUser().getUserName() == obj_owner.getUserName():
-                print("Es owner")
-                horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
-                print(horas_diff)
+                print("Es owner")                
                 if 'anticipo' in viaje.req and horas_diff < 48 :                    
                     return False
                 catalog = api.portal.get_tool('portal_catalog')
                 brains = [x for x in catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision finanzas", "revision implant"], "Creator": auth_member.getUser().getId()}) if (datetime.now()-x.created.asdatetime().replace(tzinfo=None)).days > 5]
                 return not brains
                     
+            elif auth_member.has_role('Manager') and horas_diff < 48 and horas_diff > 0:
+                print(status,"Es admin, puede hacer transicion")
+                return True
             else:
                 print("No es owner")
                 return False
@@ -88,19 +91,21 @@ class CanSendToAdmin(grok.View):
         obj_owner = viaje.getOwner()
 
         if status == "borrador":
+            horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
+            print(horas_diff)
             if auth_member.getUser().getUserName() == obj_owner.getUserName():
-                print("Es owner")
-                horas_diff = (self.context.fecha_salida-datetime.now()).total_seconds()/3600
-                print(horas_diff)
+                print("Es owner")                
                 if 'anticipo' in viaje.req and horas_diff < -24:                    
                     catalog = api.portal.get_tool('portal_catalog')
                     brains = [x for x in catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision finanzas", "revision implant"], "Creator": auth_member.getUser().getId()}) if (datetime.now()-x.created.asdatetime().replace(tzinfo=None)).days > 5]
                     return not brains
-            
-        if auth_member.has_role('Manager'):
-            print(status,"Es admin, puede hacer transicion")
-            return True
 
+            elif 'anticipo' in viaje.req and horas_diff < -24:                    
+                if auth_member.has_role('Manager'):
+                    print(status,"Es admin, puede hacer transicion")
+                    return True
+
+        print(status, "falta tiempo para que sea un viaje pasado")
         return False
         
 

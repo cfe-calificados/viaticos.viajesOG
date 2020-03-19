@@ -38,7 +38,7 @@ def get_bosses(username, grupo):
 def users_mail(self, state_change, comp=None):
     membership = api.portal.get_tool('portal_membership')
     trip = state_change.object
-    body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' fue aprobada por la administración o su autorizador, habiendo completado su registro. Intente visitar este enlace "+URL+state_change.object.virtual_url_path()+u" para consultar la información resultante del proceso."+(u"Pruebe visitar la comprobación de gastos iniciada gracias a este registro: "+URL+comp.absolute_url() if comp else "")
+    body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' fue aprobada por la administración o su autorizador, habiendo completado su registro. Intente visitar este enlace "+URL+state_change.object.virtual_url_path()+u" para consultar la información resultante del proceso."+(u" Pruebe visitar la comprobación de gastos iniciada gracias a este registro: "+URL+comp.absolute_url() if comp else "")
     body2 = u"Estimado usuario,\n se le informa por este medio que la solicitud de gastos que supervisa con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' ha concluido su registro. Intente visitar este enlace "+URL+state_change.object.virtual_url_path()+u" para consultar la información resultante del proceso."+(u"Pruebe visitar la comprobación de gastos iniciada gracias a este registro: "+URL+comp.absolute_url() if comp else "")
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     receivers = []
@@ -76,6 +76,8 @@ def users_mail(self, state_change, comp=None):
     )
 
 def generate(viaje, n_grupo=1):
+    if not viaje.anti_desc:
+        return []
     desc_monto = [[elem.strip() for elem in x.split(":")] for x in viaje.anti_desc.split("\n")]
     grupo = []
     for x in desc_monto:
@@ -91,7 +93,7 @@ def create_comprobaciones(portal, trip, rel_full):
     #import pdb; pdb.set_trace()
     for employee in full_grupo:
         try:            
-            comp_tmp = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto/len(full_grupo), notas=u"", notas_finanzas=u"",notas_implant=u"", grupo_comprobacion=generate(trip, len(full_grupo)), container=portal.viaticos)            
+            comp_tmp = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=(trip.anti_monto/len(full_grupo) if trip.anti_monto else 0.0), notas=u"", notas_finanzas=u"",notas_implant=u"", grupo_comprobacion=generate(trip, len(full_grupo)), container=portal.viaticos)            
             new_owner = api.user.get(username=employee).getUser()
             old_comp_owner = comp_tmp.getOwner() #1
             comp_tmp.changeOwnership(new_owner, recursive=False)
@@ -128,7 +130,7 @@ def create_comprobacion(self, state_change):
         users_mail(self, state_change)
         return
     try:
-        obj = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=trip.anti_monto, notas=u"", notas_finanzas=u"", notas_implant=u"", grupo_comprobacion=generate(trip), container=portal.viaticos)#api.content.create(safe_id=True,type="comprobacion", relacion=trip, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), fecha=datetime.now(), importe=0, descripcion=u"Descripción", archivo=None, container=portal.viaticos) #None#
+        obj = api.content.create(safe_id=True,type="comprobacion", relacion=rel_full, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), total_comprobar=(trip.anti_monto if trip.anti_monto else 0.0), notas=u"", notas_finanzas=u"", notas_implant=u"", grupo_comprobacion=generate(trip), container=portal.viaticos)#api.content.create(safe_id=True,type="comprobacion", relacion=trip, title=u"Comprobación de "+trip.title.encode('utf-8').decode('utf-8'), fecha=datetime.now(), importe=0, descripcion=u"Descripción", archivo=None, container=portal.viaticos) #None#
     except Exception as error:
         print(error)
         import pdb; pdb.set_trace()

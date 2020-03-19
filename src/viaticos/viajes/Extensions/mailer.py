@@ -61,7 +61,7 @@ def build_body(brain, owner):
     #import pdb; pdb.set_trace()
     locale.setlocale(locale.LC_TIME, 'es_MX.utf-8')
     body = u"Viajes Turísticos Arcoíris\nPresente\n\n\nPor medio del presente agradecemos se realice la siguiente cotización:\n\n"
-    body += u"Nombre (e identificador): "+brain.Title()+u" ("+str(IUUID(brain, None)).decode()+")\n\n"+u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo).capitalize()+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+(u"\nNombres: " if brain.grupo else u"\nNombre: ")+owner.getProperty("fullname").decode('utf-8')+u", ".join(complete_names(brain.grupo))+u"\nÁrea de adscripción: "+owner.getProperty("coordinacion").capitalize()+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
+    body += u"Nombre (e identificador): "+brain.title+u" ("+str(IUUID(brain, None)).decode()+")\n\n"+u"Vuelo\nDestino: "+brain.ciudad.encode('utf-8').decode('utf-8')+u", "+brain.estado.encode('utf-8').decode('utf-8')+u", "+brain.pais.encode('utf-8').decode('utf-8')+u"\nMotivo: "+complete_m(brain.motivo).capitalize()+u"\nFecha de salida: "+brain.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u"\nFecha de regreso: "+brain.fecha_regreso.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+(u"\nNombres: " if brain.grupo else u"\nNombre: ")+owner.getProperty("fullname").decode('utf-8')+u", ".join(complete_names(brain.grupo))+u"\nÁrea de adscripción: "+owner.getProperty("coordinacion").capitalize()+u"\n\nNotas de avión:\n"+brain.notas_avion.encode('utf-8').decode('utf-8')+u"\n\n" if 'boleto_avion' in brain.req else ""
     body += u"Hospedaje\nCaracterísticas: "+brain.notas_hospedaje.encode('utf-8').decode('utf-8')+u"\n\n" if 'hospedaje' in brain.req else ""     
     body += u"Transportación terrestre\nEspecificaciones: "+brain.notas_transporte.encode('utf-8').decode('utf-8')+u"\n\n" if 'transporte_terrestre' in brain.req else "" 
     body += u"Otros\nEspecificaciones: "+brain.notas_otro.encode('utf-8').decode('utf-8')+u"\n\n" if 'otro' in brain.req else ""    
@@ -143,7 +143,7 @@ def agency_mail(self, state_change):
         #import pdb; pdb.set_trace()
 
 
-def return_to_draft(self, state_change):    
+def return_to_draft(self, state_change):
     membership = api.portal.get_tool('portal_membership')
     trip = state_change.object
     body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' no fue aprobada por la administración o su autorizador. Favor de hacer las ediciones pertinentes antes de confirmar su solicitud. "+URL+state_change.object.virtual_url_path()
@@ -164,11 +164,11 @@ def return_to_draft(self, state_change):
         sender="noreply@plone.org",
         subject=u"Solicitud de gastos rechazada",
         body=body2,
-    )
-
+    )        
+    
     # Envio correo agencia
-    if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
-        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.Title()+u" ("+str(IUUID(brain, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+    if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req and state_change.old_state.id != 'registro por verificar':
+        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.title+u" ("+str(IUUID(trip, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
             recipient="agencia_viajes@foo.com",#+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
@@ -222,7 +222,7 @@ def rejected(self, state_change):
 
     # Envio correo agencia
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
-        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.Title()+u" ("+str(IUUID(brain, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+        agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.title+u" ("+str(IUUID(trip, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
             recipient="agencia_viajes@foo.com",#+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
@@ -257,6 +257,8 @@ def comp_save(self, state_change):
     )
 
 def comp_reg(self, state_change):
+    print("se envia correo a angel redhuman") #pending
+    print("se envía correo con montos aprobados a usuario") #pending
     comp = state_change.object
     membership = api.portal.get_tool('portal_membership')
     obj_owner = membership.getMemberById(comp.owner_info()['id'])
@@ -288,7 +290,7 @@ def finances_mail(self, state_change):
     trip = state_change.object
     membership = api.portal.get_tool('portal_membership')
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
-    body = u"Coordinación de Finanzas\nPresente\n\nPor medio del presente agradecemos se realice el depósito de anticipo por un monto de "+str(trip.anti_monto)+u" con motivo de:\n\n"+trip.anti_desc+u"\n\n\nEn caso de rechazar la solicitud favor de dar clic en el siguiente link "+URL+state_change.object.virtual_url_path()+u".\n\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\nAtentamente\n\nAdministración\n\ncfe_calificados"        
+    body = u"Coordinación de Finanzas\nPresente\n\nPor medio del presente agradecemos se realice el depósito de anticipo por un monto de "+str(trip.anti_monto)+u" con motivo de la solicitud: "+trip.title+u", del colaborador: "+obj_owner.getProperty("fullname").decode('utf-8')+u".\nCon los siguientes conceptos:\n\n"+trip.anti_desc+u"\n\n\nEn caso de rechazar la solicitud, favor de dar clic en el siguiente link "+URL+state_change.object.virtual_url_path()+u" para acceder a la plataforma y efectuar la operación.\n\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\nAtentamente\n\nAdministración\n\ncfe_calificados"        
     api.portal.send_email(
         recipient="finanzas@foo.com", #liliana.garcia@calificados.cfe.mx   
         sender="noreply@plone.org",
@@ -310,14 +312,47 @@ def finances_rejected(self, state_change):
     )
 
 
+def registry_past(self, state_change):
+    print("se envía correo a administración solicitando registro de viaje pasado")
+
+
 def implant_registry(self, state_change):
-    print("se envía correo a implant solicitando registro de información para viaje.")
-    #fanny.cruz@redhuman.com.mx
+    print("se envía correo a implant solicitando registro de información para viaje.")    
+
+    trip = state_change.object
+    body = u"Se solicita el registro de la información de la agencia de viajes para la solicitud de gastos: "+trip.title.encode('utf-8').decode('utf-8')+u". Del colaborador: "+trip.getOwner().getProperty("fullname").decode('utf-8')+u".\n"
+    body +=u"\nIntente visitar el siguiente enlace: "+URL+trip.virtual_url_path()+u" para continuar con el proceso de registro de la solicitud."
+    body += u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+    api.portal.send_email(
+        recipient="implant@implant.com.mx",#"fanny.cruz@redhuman.com.mx",
+        sender="noreply@plone.org",
+        subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+trip.title.encode('utf-8').decode('utf-8'),
+        body=body,
+    )
 
 def implant_mail(self, state_change):
-    print("se envía correo a implant solicitando depósito de anticipo. También a usuario con montos aceptados de su comprobación.")
+    print("se envía correo a implant solicitando depósito de anticipo.")
     #fanny.cruz@redhuman.com.mx
+    trip = state_change.object
+    body = u"Por medio del presente, se solicita el depósito de anticipo para la solicitud de gastos: "+trip.title.encode('utf-8').decode('utf-8')+u". Del colaborador: "+trip.getOwner().getProperty("fullname").decode('utf-8')+u".\nCon los siguientes conceptos:\n\n"+trip.anti_desc+u"\nTotal: "+trip.anti_monto+u"\n\n"
+    body +=u"\nIntente visitar el siguiente enlace: "+URL+trip.virtual_url_path()+u" para continuar con el proceso de registro de la solicitud."
+    body += u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+    api.portal.send_email(
+        recipient="implant@implant.com.mx",#"fanny.cruz@redhuman.com.mx",
+        sender="noreply@plone.org",
+        subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+trip.title.encode('utf-8').decode('utf-8'),
+        body=body,
+    )
 
 def implant_comp(self, state_change):
     print("Se envía correo a implant solicitando carga de facturas de hospedaje y vuelo.")
+    comp = state_change.object
+    obj_owner = comp.getOwner()
+    body = u"Por medio del presente, se solicita la revisión de la "+comp.title.encode('utf-8').decode('utf-8')+u", del colaborador: "+obj_owner.getProperty("fullname").decode('utf-8')+u".\nAsimismo, de ser necesaria, la captura de las facturas de hospedaje y vuelo. Puede corroborar tal información en la siguiente liga: "+URL+comp.virtual_url_path()+u"\n"
+    api.portal.send_email(
+        recipient="implant@implant.com.mx",#"fanny.cruz@redhuman.com.mx",
+        sender="noreply@plone.org",
+        subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+comp.title.encode('utf-8').decode('utf-8'),
+        body=body,
+    )
     #fanny.cruz@redhuman.com.mx
