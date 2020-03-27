@@ -294,8 +294,8 @@ def comp_reg(self, state_change):
         api.portal.send_email(
             recipient="red.angel@foo.mx",#"angel.espinosa@redhuman.com.mx",   
             sender="noreply@plone.org",
-            subject=u"Aprobada: "+comp.title.encode('utf-8').decode('utf-8'),
-            body=body,
+            subject=u"[Plataforma RH - Viáticos] Reembolso: "+comp.title.encode('utf-8').decode('utf-8'),
+            body=body_angel,
         )
     body = u"Estimado usuario,\n\nLe comunicamos que su "+comp.title.encode('utf-8').decode('utf-8')+u" fue aprobada. Favor de dirigirse a "+URL+state_change.object.virtual_url_path()+u" para visualizar la información revisada y los montos aprobados de su comprobación."        
     api.portal.send_email(
