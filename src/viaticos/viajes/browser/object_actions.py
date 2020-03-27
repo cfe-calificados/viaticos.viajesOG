@@ -46,7 +46,7 @@ def extract_info(obj_comp):
     collected['notas_implant'] = obj_comp.notas_implant.encode('utf-8').decode('utf-8') if obj_comp.notas_implant else ""
     collected['motivo'] = complete_m(viaje.motivo)
     transformer = ITransformer(viaje)    
-    collected['objetivo'] = transformer(viaje.objetivo, 'text/plain')
+    collected['objetivo'] = transformer(viaje.objetivo, 'text/plain') if viaje.objetivo else ""
 
     ### Nuevo desmadre para obtener al autorizador
     #import pdb; pdb.set_trace()
