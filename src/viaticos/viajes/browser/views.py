@@ -33,6 +33,9 @@ class VistaViaje(DefaultView):
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
         return status
 
+    def is_draft(self):
+        return self.get_status == "borrador"
+
     def check_group(self, username, grupo):
         if username in grupo:
             return True
