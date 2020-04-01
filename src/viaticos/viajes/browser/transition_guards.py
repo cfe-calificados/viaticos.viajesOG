@@ -45,7 +45,7 @@ class CanSendToAgency(grok.View):
                 brains = [x for x in catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision finanzas", "revision implant"], "Creator": auth_member.getUser().getId()}) if (datetime.now()-x.created.asdatetime().replace(tzinfo=None)).days > 5]
                 return not brains
                     
-            elif auth_member.has_role('Manager') and horas_diff < 48 and horas_diff > 0:
+            elif auth_member.has_role('Manager') and horas_diff > 0:
                 print(status,"Es admin, puede hacer transicion")
                 return True
             else:
