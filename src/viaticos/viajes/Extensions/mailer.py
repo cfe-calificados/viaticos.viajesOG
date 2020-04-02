@@ -350,6 +350,7 @@ def finances_rejected(self, state_change):
 def registry_past(self, state_change):
     print("se envía correo a administración solicitando registro de viaje pasado") #pending
     trip = state_change.object
+    transformer = ITransformer(trip)
     membership = api.portal.get_tool('portal_membership')
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     locale.setlocale(locale.LC_TIME, 'es_MX.utf-8')
