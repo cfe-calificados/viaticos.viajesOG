@@ -131,7 +131,7 @@
       </dl>
 
       <dl tal:condition="python: not view.can_save() and not view.can_ask() and view.is_draft()" class="portalMessage error">
-	<dt>Estado ${python: not view.can_save() and not view.can_ask()} y ${python: view.is_draft()}</dt>
+	<dt>Estado</dt>
 	<dd> No es posible guardar tu solicitud de gastos debido a que el anticipo debe solicitarse con al menos 48 horas de antelación. Favor de contactar a <a href="mailto:administracion@califciados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx">Administración</a>. </dd>
       </dl>
 
