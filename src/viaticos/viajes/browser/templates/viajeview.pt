@@ -130,12 +130,12 @@
 	<dd>${python: info_state}</dd>
       </dl>
 
-      <dl tal:condition="python: not view.can_save() and not view.can_ask()" tal:condition="python: view.is_draft()" class="portalMessage error">
-	<dt>Estado</dt>
+      <dl tal:condition="python: not view.can_save() and not view.can_ask() and view.is_draft()" class="portalMessage error">
+	<dt>Estado ${python: not view.can_save() and not view.can_ask()} y ${python: view.is_draft()}</dt>
 	<dd> No es posible guardar tu solicitud de gastos debido a que el anticipo debe solicitarse con al menos 48 horas de antelación. Favor de contactar a <a href="mailto:administracion@califciados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx">Administración</a>. </dd>
       </dl>
 
-      <dl tal:condition="python: view.can_ask()" tal:condition="python: view.is_draft()" class="portalMessage warning">
+      <dl tal:condition="python: view.can_ask() and view.is_draft()" class="portalMessage warning">
 	<dt>Estado</dt>
 	<dd> Toda solicitud de gastos pasada debe ser registrada por la  <a href="mailto:administracion@califciados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx">Administración</a> de CFE Calificados antes de comenzar con su proceso de comprobación de gastos. Si ya han pasado 24 horas de la finalización de su viaje, en la barra de herramientas encontrará la opción de enviarla para su aprobación.</dd>
       </dl>
