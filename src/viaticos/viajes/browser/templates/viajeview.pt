@@ -219,6 +219,22 @@
 	    <p>Notas de hospedaje</p>
 	    <div class="documentDescription" tal:content="structure view/w/notas_hospedaje/render"></div>
 	  </div>
+	  <div tal:condition="context/notas_transporte">
+	  <hr>
+	  </div>
+
+	  <div tal:condition="context/notas_transporte">
+	    <p>Notas de transporte terrestre</p>
+	    <div class="documentDescription" tal:content="structure view/w/notas_transporte/render"></div>
+	  </div>
+	  <div tal:condition="context/notas_otro">
+	  <hr>
+	  </div>
+
+	  <div tal:condition="context/notas_otro">
+	    <p>Notas del requerimiento extra</p>
+	    <div class="documentDescription" tal:content="structure view/w/notas_otro/render"></div>
+	  </div>
 	  <div tal:condition="context/grupo">
 	  <hr>
 	  </div>
