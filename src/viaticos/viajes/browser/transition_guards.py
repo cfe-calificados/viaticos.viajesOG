@@ -95,12 +95,12 @@ class CanSendToAdmin(grok.View):
             print(horas_diff)
             if auth_member.getUser().getUserName() == obj_owner.getUserName():
                 print("Es owner")                
-                if 'anticipo' in viaje.req and horas_diff < -24:                    
+                if horas_diff < -24:                    
                     catalog = api.portal.get_tool('portal_catalog')
                     brains = [x for x in catalog.queryCatalog({"portal_type": "comprobacion", "review_state": ["bosquejo","revision finanzas", "revision implant"], "Creator": auth_member.getUser().getId()}) if (datetime.now()-x.created.asdatetime().replace(tzinfo=None)).days > 5]
                     return not brains
 
-            elif 'anticipo' in viaje.req and horas_diff < -24:                    
+            elif horas_diff < -24:                    
                 if auth_member.has_role('Manager'):
                     print(status,"Es admin, puede hacer transicion")
                     return True
