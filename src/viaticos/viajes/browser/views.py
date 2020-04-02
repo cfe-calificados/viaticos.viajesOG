@@ -34,7 +34,7 @@ class VistaViaje(DefaultView):
         return status
 
     def is_draft(self):
-        return self.get_status == "borrador"
+        return self.get_status() == "borrador"
 
     def check_group(self, username, grupo):
         if username in grupo:
