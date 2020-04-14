@@ -178,7 +178,7 @@ class ResetComprobacion(DefaultView):
         self.request.response.redirect(self.context.absolute_url())
 
     def reset_comprobacion(self):
-        print("reinicializando: "+self.context.title.decode('utf-8'))
+        print(u"reinicializando: "+self.context.title.decode('utf-8'))
         catalog = api.portal.get_tool('portal_catalog')
         viaje = None
         if not self.context.relacion.isBroken():            
