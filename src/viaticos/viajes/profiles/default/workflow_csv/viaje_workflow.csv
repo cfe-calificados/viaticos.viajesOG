@@ -14,7 +14,15 @@ View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   N,	   N,		N
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N
-
+"List folder contents",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   
+"Modify view template",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   
+"plone.app.event: Import Ical", N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   
+"Copy or Move",	  	 	N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   
+"Sharing page: Delegate Contributor role", N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   
+"Sharing page: Delegate Editor role", N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   	
+"Sharing page: Delegate Reader role", N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   	
+"Sharing page: Delegate Reviewer role", N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   
+"Sharing page: Delegate roles", N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N	   
 
 [State]
 Id:,"registro por verificar"
