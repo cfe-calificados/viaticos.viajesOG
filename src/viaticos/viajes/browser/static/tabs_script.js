@@ -20,9 +20,23 @@ function coloring(){
 	});
 }
 
+var waitForEl = function(selector, callback) {
+    if (jQuery(selector).length) {
+	callback();
+    } else {
+	setTimeout(function() {
+	    waitForEl(selector, callback);
+	}, 100);
+    }
+};
+
 $(window).load(function(){
     //hiding hideous elements
-    $("#plone-contentmenu-actions").hide();
+
+    waitForEl("#plone-contentmenu-actions", function() {
+	// work the magic
+	$("#plone-contentmenu-actions").hide();
+    });
     $("#viewlet-below-content").hide();
     coloring();
     
