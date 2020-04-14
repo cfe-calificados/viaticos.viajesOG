@@ -24,8 +24,9 @@
 	      $("#plone-contentmenu-actions").hide();
 	  });
 
-	  
-	  //$(".plonetoolbar-workfow-transition.actionSeparator").hide();
+	  $("#contentview-local_roles").hide();
+	  $("#plone-contentmenu-actions").hide();
+	  $(".plonetoolbar-workfow-transition.actionSeparator").hide();
 	  if ($(".portalMessage.error", $(".form")).length != 0) {
 	      console.log("hurdur");
 	      show_hide_form();
