@@ -22,7 +22,7 @@ function coloring(){
 
 $(document).ready(function(){
     //hiding hideous elements
-    $("#plone-contentmenu-actions").hide();
+    $("#plone-contentmenu-actions").ready(function(){$(this).hide();});
     $("#viewlet-below-content").hide();
     coloring();
     
