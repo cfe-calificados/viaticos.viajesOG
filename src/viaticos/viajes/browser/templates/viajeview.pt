@@ -4,11 +4,15 @@
   <metal:block fill-slot="javascript_head_slot">
     <script type="text/javascript">      
       $(document).ready(function() {
-      if ($(".portalMessage.error", $(".form")).length != 0) {
-      console.log("hurdur");
-      show_hide_form();
-      }
-      
+	  //hiding hideous things
+	  $("#plone-contentmenu-actions").hide();
+	  $("#contentview-local_roles").hide();
+	  $(".plonetoolbar-workfow-transition.actionSeparator").hide();
+	  if ($(".portalMessage.error", $(".form")).length != 0) {
+	      console.log("hurdur");
+	      show_hide_form();
+	  }
+	  
       });
       
       function show_hide_form() {

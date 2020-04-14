@@ -21,6 +21,8 @@ function coloring(){
 }
 
 $(document).ready(function(){
+    //hiding hideous elements
+    $("#plone-contentmenu-actions").hide();
     $("#viewlet-below-content").hide();
     coloring();
     
