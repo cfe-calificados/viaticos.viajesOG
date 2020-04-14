@@ -32,11 +32,15 @@ var waitForEl = function(selector, callback) {
 
 $(window).load(function(){
     //hiding hideous elements
-
-    waitForEl("#plone-contentmenu-actions", function() {
-	// work the magic
-	$("#plone-contentmenu-actions").hide();
-    });
+    if(!$("body").hasClass("userrole-manager")){
+	waitForEl("#plone-contentmenu-actions", function() {
+	    // work the magic
+	    $("#plone-contentmenu-actions").hide();
+	});
+	waitForEl("#contentview-folderContents", function() {
+	    $("#contentview-folderContents").remove();
+	});
+    }
     $("#viewlet-below-content").hide();
     coloring();
     
