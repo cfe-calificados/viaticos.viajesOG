@@ -20,9 +20,9 @@ function coloring(){
 	});
 }
 
-$(document).ready(function(){
+$(window).load(function(){
     //hiding hideous elements
-    $("#plone-contentmenu-actions").ready(function(){$(this).hide();});
+    $("#plone-contentmenu-actions").hide();
     $("#viewlet-below-content").hide();
     coloring();
     
