@@ -102,17 +102,17 @@ def gen_latex(obj_comp):
     if full_data['notas']:
         inner += u"""
         \\noindent\\fbox{
-        \\parbox{\\textwidth}{\\textbf{Notas del solicitante:} """+full_data['notas']+"}}"
+        \\parbox{\\textwidth}{\\textbf{Notas del solicitante:} """+full_data['notas']+"}}"+"""
+        \\\\~\\\\"""
 
     if full_data['notas_finanzas']:
-        inner += u"""
-        \\\\~\\\\
+        inner += u"""        
         \\noindent\\fbox{
-        \\parbox{\\textwidth}{\\textbf{Notas de Finanzas:} """+full_data['notas_finanzas']+"}}"
+        \\parbox{\\textwidth}{\\textbf{Notas de Finanzas:} """+full_data['notas_finanzas']+"}}"+"""
+        \\\\~\\\\"""
 
     if full_data['notas_implant']:
         inner += u"""
-        \\\\~\\\\
         \\noindent\\fbox{
         \\parbox{\\textwidth}{\\textbf{Notas de Implant:} """+full_data['notas_implant']+"}}"
 
