@@ -16,6 +16,14 @@ Modify portal content,		N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   N,	   N,		N,
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N, 	    N,
 Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
 List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
+"Modify view template",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"plone.app.event: Import Ical", N,	 N,	    N,		   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Copy or Move",	  	 	N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Sharing page: Delegate Contributor role", N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Editor role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reader role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reviewer role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate roles",  	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
 
 
 [State]
@@ -32,6 +40,14 @@ Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N,	  Y,	
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
 Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
 List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
+"Modify view template",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"plone.app.event: Import Ical", N,	 N,	    N,		   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Copy or Move",	  	 	N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Sharing page: Delegate Contributor role", N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Editor role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reader role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reviewer role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate roles",  	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
 
 
 [State]
@@ -48,6 +64,14 @@ Request review,			N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   Y,	   N,		N,	  Y,	
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
 Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
 List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
+"Modify view template",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"plone.app.event: Import Ical", N,	 N,	    N,		   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Copy or Move",	  	 	N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Sharing page: Delegate Contributor role", N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Editor role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reader role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reviewer role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate roles",  	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
 
 
 [State]
@@ -63,6 +87,14 @@ Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,
 Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N, 	  N,	    N,
 Add portal content, 		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  N,	    Y,
 List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,		N,	  Y,	    Y,
+"Modify view template",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"plone.app.event: Import Ical", N,	 N,	    N,		   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Copy or Move",	  	 	N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,	    N,
+"Sharing page: Delegate Contributor role", N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Editor role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reader role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate Reviewer role",	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
+"Sharing page: Delegate roles",  	   N,	    N,	    	   N, 	   N,	    Y, 	   N,	   N,	   N,	   	N,	  N,	    N,	    N,
 
 
 [Transition]
