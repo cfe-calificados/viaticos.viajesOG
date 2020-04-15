@@ -70,6 +70,7 @@ Id:,guardar
 Title:,Guardar
 Description:,Guardar informacion de la comprobacion de gastos. 
 Target state:,revision finanzas
+Guard expression:, here/@@can-save-draft
 Guard permission:,Modify portal content
 Script after:,viaticos.viajes.Extensions.mailer.comp_save
 

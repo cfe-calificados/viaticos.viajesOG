@@ -161,7 +161,15 @@
       layer="zope.interface.Interface"
       class=".object_actions.Redireccion"     
       permission="zope2.View"
-     />
+      />
+
+     <browser:page
+	 name="can-save-draft"
+	 for="*"
+	 layer="zope.interface.Interface"
+	 class=".transition_guards.CanSaveDraft"     
+	 permission="zope2.View"
+	 />
 
 
 
