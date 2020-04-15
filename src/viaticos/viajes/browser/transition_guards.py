@@ -3,6 +3,7 @@
 from five import grok
 
 from viaticos.viajes.content.viaje import IViaje
+from viaticos.viajes.content.comprobacion import IComprobacion
 
 from Products.CMFCore.utils import getToolByName
 
@@ -111,3 +112,38 @@ class CanSendToAdmin(grok.View):
 
     def render(self):
         return "can-send-to-admin"
+
+
+class CanSaveDraft(grok.View):
+    grok.context(IComprobacion)
+    grok.name("can-save-draft")
+    grok.require("zope2.View")
+
+    def __call__(self):
+        print("im a transition guard and i'm getting called!!")
+        portal = api.portal.get()
+        pm = getToolByName(self.context, 'portal_membership')
+        auth_member = pm.getAuthenticatedMember()
+        comprobacion = self.context
+        status = api.content.get_state(obj=portal["viaticos"][comprobacion.id])
+        obj_owner = comprobacion.getOwner()
+
+        if auth_member.has_role('Manager'):
+            print(status,"Es admin, puede hacer transicion")
+            return True
+
+        if status == "bosquejo":
+            if not comprobacion.grupo_comprobacion:
+                return False
+            for x in comprobacion.grupo_comprobacion:
+                if x.has_key("archivo") and x['archivo'] != None:
+                    continue
+                else:
+                    return False
+            return True
+        
+        return False
+        
+
+    def render(self):
+        return "can-save-draft"
