@@ -231,6 +231,18 @@ class AddComprobacion(add.DefaultAddForm):
         }
     )
 
+    def notify_creation_via_mail(self, comprobacion):
+        try:
+            body = u"Estimado colaborador,\nSe le informa por este medio que le ha sido asignada la comprobación de gastos con título: "+comprobacion.title.decode('utf-8')+u". Favor de ingresar al siguiente enlace "+comprobacion.absolute_url()+u", con el fin de completar la información que se le solicita para completar el registro de esta nueva entrada de comprobación.\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+            api.portal.send_email(
+                recipient=comprobacion.getOwner().getProperty("email"),   
+                sender="noreply@plone.org",
+                subject=u"[Plataforma RH - Viáticos] Comprobación de gastos asignada",
+                body=body,
+            )
+        except Exception as error:
+            print("Algo salió mal en el envío del correo al usuario de comprobación.")            
+            
     def __call__(self):
         # utility function to add resource to rendered page
         print("loading JS ADD comprobacion")
@@ -301,6 +313,7 @@ class AddComprobacion(add.DefaultAddForm):
         brain.manage_setLocalRoles(employee, roles)
         brain.setCreators([employee])
         brain.reindexObjectSecurity()
+        self.notify_creation_via_mail(new_obj)
         return new_obj    
     
 class EditComprobacion(edit.DefaultEditForm):    
@@ -352,7 +365,7 @@ class EditComprobacion(edit.DefaultEditForm):
         self.actions["cancelar"].addClass("standalone")
 
     
-    def datagridInitialise(self, subform, widget):
+    #def datagridInitialise(self, subform, widget):
         #import pdb; pdb.set_trace()        
         #subform.fields = subform.fields.omit('importe')
         #subform.fields = subform.fields.omit('anticipo')
