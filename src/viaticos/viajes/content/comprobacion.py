@@ -233,15 +233,16 @@ class AddComprobacion(add.DefaultAddForm):
 
     def notify_creation_via_mail(self, comprobacion):
         try:
-            body = u"Estimado colaborador,\nSe le informa por este medio que le ha sido asignada la comprobación de gastos con título: "+comprobacion.title.decode('utf-8')+u". Favor de ingresar al siguiente enlace "+comprobacion.absolute_url()+u", con el fin de completar la información que se le solicita para completar el registro de esta nueva entrada de comprobación.\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
+            body = u"Estimado colaborador,\nSe le informa por este medio que le ha sido asignada la comprobación de gastos con título: "+comprobacion.title+u". Favor de ingresar al siguiente enlace "+comprobacion.absolute_url()+u", con el fin de completar la información que se le solicita para completar el registro de esta nueva entrada de comprobación.\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
             api.portal.send_email(
                 recipient=comprobacion.getOwner().getProperty("email"),   
                 sender="noreply@plone.org",
                 subject=u"[Plataforma RH - Viáticos] Comprobación de gastos asignada",
                 body=body,
             )
-        except Exception as error:
-            print("Algo salió mal en el envío del correo al usuario de comprobación.")            
+        except Exception as error:            
+            print("Algo salió mal en el envío del correo al usuario de comprobación.")
+            print(error)
             
     def __call__(self):
         # utility function to add resource to rendered page
