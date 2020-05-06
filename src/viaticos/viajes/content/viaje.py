@@ -152,6 +152,7 @@ class IViaje(model.Schema):
 
     notas_otro = schema.Text(
         title = _(u'Notas del requerimiento extra'),
+        description=u"Nota: Favor de especificar los montos requeridos. (Gasolina, casetas, ...)",
         required = False
     )
 

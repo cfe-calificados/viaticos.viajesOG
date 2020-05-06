@@ -200,6 +200,7 @@ class VistaComprobacion(DefaultView):
                 continue
             if concepto['importe'] <= concepto['aprobado']:
                 tupla_totales[0] += concepto['importe']
+                tupla_totales[1] += concepto['aprobado']-concepto['importe']
             else:
                 tupla_totales[0] += concepto['aprobado']
         
