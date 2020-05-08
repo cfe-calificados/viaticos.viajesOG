@@ -17,7 +17,7 @@ from zope.schema.interfaces import IContextAwareDefaultFactory
 from z3c.form.interfaces import IAddForm
 from z3c.form.interfaces import IEditForm
 #for add template purposes
-from plone.dexterity.browser import add
+from plone.dexterity.browser import add, edit
 
 ##for validation purposes
 from zope.interface import Invalid
@@ -98,9 +98,10 @@ class IViaje(model.Schema):
 
     directives.widget(req=CheckBoxFieldWidget)
     req = schema.List(title=_(u'Requerimientos'),
-                               description=u"Nota: Solicitar anticipo con 48 horas de antelación a su salida seleccionada.",
-                               required=True,
-                               value_type=schema.Choice(source=OpcionesRequerimientos),
+                      description=u"Nota: Solicitar anticipo con 48 horas de antelación a su salida seleccionada.",
+                      required=False,
+                      default=[],
+                      value_type=schema.Choice(source=OpcionesRequerimientos),
     )
 
         
@@ -397,6 +398,17 @@ class AddViaje(add.DefaultAddForm):
     
     
     
-    
-class AddViajesss(add.DefaultAddView):
-    form = None
+class EditViaje(edit.DefaultEditForm):
+    schema = IViaje
+    label = u"Editar solicitud de gastos "
+    description = u"Modifica la información sobre tu salida."
+    error_template = ViewPageTemplateFile("../browser/templates/not_editable.pt")
+
+
+    def __call__(self):
+        # utility function to add resource to rendered page
+        #add_resource_on_request(self.request, 'exercise2')
+        print("loading JS")
+        add_resource_on_request(self.request, 'estaticos')
+        #import pdb; pdb.set_trace()
+        return super(EditViaje, self).__call__()

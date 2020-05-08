@@ -67,6 +67,7 @@ def calc_meals(obj):
     return monto
 
 def calc_desglose(obj):
+    print("here i come")
     multiplier = 1
     if obj.grupo:
         addition = 1
@@ -90,15 +91,15 @@ def calc_desglose(obj):
             buff += u"Desayuno día "+str(diff_1)+": "+str(250*multiplier)+"\n"
             verif[0] += 1
             group += 250 
-        if (start.hour, start.minute) >= (9,1)  and verif[1] <= diff and (start.hour, start.minute) < (19,0):
+        elif (start.hour, start.minute) >= (9,1)  and verif[1] <= diff and (start.hour, start.minute) < (19,0):
             buff += u"Comida día "+str(diff_1)+": "+str(300*multiplier)+"\n"
             verif[1] += 1
             group += 300
-        if (start.hour, start.minute) >= (19,0) and verif[2] <= diff:
+        elif (start.hour, start.minute) >= (19,0) and verif[2] <= diff:
             buff += u"Cena día "+str(diff_1)+": "+str(200*multiplier)+"\n"
             verif[2] += 1
             group += 200            
-        if group and (start.hour, start.minute) >= (19,0):
+        if group and ((start.hour, start.minute) >= (19,0) or start+dt.timedelta(minutes=5) > end_date):
             desglose += u"Comidas día "+str(diff_1)+": "+str(group*multiplier)+"\n"
             group = 0
             buff = u""
