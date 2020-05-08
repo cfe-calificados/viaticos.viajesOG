@@ -94,7 +94,7 @@ class ITable(interface.Interface):
     )    
 
 
-    fecha = schema.Date(title=u"Fecha", required=True)
+    fecha = schema.Date(title=u"Fecha del gasto", required=True)
     clave = schema.Choice(title = _(u'Clave de gasto'), vocabulary=claves_vcb, required=True, default=None)
     concepto = schema.TextLine(title=u"Concepto",required=True)
     descripcion = schema.Text(title=u"Descripción",required=True)

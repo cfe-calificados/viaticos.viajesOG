@@ -62,6 +62,14 @@
      permission="cmf.ModifyPortalContent"
      />
 
+  <!-- Edit form for viaje -->
+  <browser:page
+     for="viaticos.viajes.content.viaje.IViaje"
+     name="editar"
+     class="viaticos.viajes.content.viaje.EditViaje"
+     permission="cmf.ModifyPortalContent"
+     />
+
      <!-- Add form for viaje -->
   <browser:page
      for="*"
