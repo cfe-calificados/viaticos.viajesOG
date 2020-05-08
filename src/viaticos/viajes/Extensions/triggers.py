@@ -38,8 +38,8 @@ def get_bosses(username, grupo):
 def users_mail(self, state_change, comp=None):
     membership = api.portal.get_tool('portal_membership')
     trip = state_change.object
-    body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' fue aprobada por la administración o su autorizador, habiendo completado su registro. Intente visitar este enlace "+URL+state_change.object.virtual_url_path()+u" para consultar la información resultante del proceso."+(u" Pruebe visitar la comprobación de gastos iniciada gracias a este registro: "+URL+comp.absolute_url() if comp else "")
-    body2 = u"Estimado usuario,\n se le informa por este medio que la solicitud de gastos que supervisa con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' ha concluido su registro. Intente visitar este enlace "+URL+state_change.object.virtual_url_path()+u" para consultar la información resultante del proceso."+(u"Pruebe visitar la comprobación de gastos iniciada gracias a este registro: "+URL+comp.absolute_url() if comp else "")
+    body = u"Estimado usuario,\n se le informa por este medio que su solicitud de gastos con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' fue aprobada por la administración o su autorizador, habiendo completado su registro. Intente visitar este enlace "+URL+state_change.object.virtual_url_path()+u" para consultar la información resultante del proceso."+(u" Pruebe visitar la comprobación de gastos iniciada gracias a este registro: "+comp.absolute_url() if comp else "")
+    body2 = u"Estimado usuario,\n se le informa por este medio que la solicitud de gastos que supervisa con título: '"+trip.title.encode('utf-8').decode('utf-8')+u"' ha concluido su registro. Intente visitar este enlace "+URL+state_change.object.virtual_url_path()+u" para consultar la información resultante del proceso."+(u"Pruebe visitar la comprobación de gastos iniciada gracias a este registro: "+comp.absolute_url() if comp else "")
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     receivers = []
     bosses = []
