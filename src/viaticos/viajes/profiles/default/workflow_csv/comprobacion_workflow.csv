@@ -54,7 +54,7 @@ List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,
 Id:,revision implant
 Title:,Revision implant
 Description:,Pendiente de revisar por implant.
-Transitions:,"terminar,fallo_bosquejo"
+Transitions:,"terminar,fallo_bosquejo,devolver_finanzas"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
@@ -78,7 +78,7 @@ List folder contents,		N, 	 N, 	    N, 		   N, 	   Y,	    N, 	   N,	   N, 	   N,
 Id:,aprobado
 Title:,Aprobado
 Description:,Revisado y aprobado por encargado.
-Transitions:,
+Transitions:,"deshacer_registro"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   N,		N,	  Y,	    Y,
@@ -130,4 +130,24 @@ Description:,De vuelta al creador para correccion
 Target state:,bosquejo
 Guard permission:,Request review
 Script after:,viaticos.viajes.Extensions.mailer.comp_fail
+
+
+
+
+[Transition]
+Id:,deshacer_registro
+Title:,Deshacer registro
+Description:,"Deshacer accion de registro de Implant o finanzas."
+Target state:,"revision finanzas"
+Guard permission:,Delete objects
+Script after:,viaticos.viajes.Extensions.mailer.comp_save
+
+
+[Transition]
+Id:,devolver_finanzas
+Title:,Devolver a Finanzas
+Description:,"Deshacer accion de Finanzas."
+Target state:,"revision finanzas"
+Guard permission:,Delete objects
+Script after:,viaticos.viajes.Extensions.mailer.comp_save
 
