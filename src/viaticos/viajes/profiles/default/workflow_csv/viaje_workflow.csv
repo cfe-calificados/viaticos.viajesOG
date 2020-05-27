@@ -70,7 +70,7 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N
 Id:,"esperando agencia"
 Title:,Esperando agencia
 Description:,Esperando registro de informacion de agencia.
-Transitions:,"enviar_anticipo,fallo_tramite"
+Transitions:,"enviar_anticipo,fallo_tramite,devolver_aprobador"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N,	  Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N,	  Y,
@@ -113,7 +113,7 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  
 Id:,"transferencia en proceso"
 Title:,Transferencia en proceso
 Description:,Esperando transferencia de anticipo.
-Transitions:,registrar
+Transitions:,"registrar,fallo_transferencia"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Finanzas, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N, 	  Y,	    Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N,	  Y,	    Y,
@@ -135,12 +135,12 @@ Delete objects,    		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  
 Id:,final
 Title:,Registrado
 Description:,Solicitud registrada.
-Transitions:,
+Transitions:,"deshacer_registro"
 Permissions,			Acquire, Anonymous, Authenticated, Member, Manager, Owner, Editor, Reader, Contributor,	Reviewer, Implant
 View,				N,	 N,	    N,	 	   N, 	   Y,	    Y,	   N,	   Y,	   Y,		N, 	  Y,
 Access contents information,	N,	 N,	    N,	 	   N,	   Y,	    Y,	   N,	   Y,	   Y,		N,	  Y,	  
 Modify portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,	  
-Review portal content,		N,	 N,	    N,	 	   N,	   N,	    N,	   N,	   N,	   N,		N,	  N,
+Review portal content,		N,	 N,	    N,	 	   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N,
 "List folder contents",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N, 	   
 "Modify view template",		N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N, 
 "plone.app.event: Import Ical", N,	 N,	    N,		   N,	   Y,	    N,	   N,	   N,	   N,		N,	  N, 
@@ -234,3 +234,30 @@ Target state:,"esperando agencia"
 Guard permission:,Review portal content
 Script after:,viaticos.viajes.Extensions.mailer.finances_rejected
 
+
+
+
+[Transition]
+Id:,fallo_transferencia,
+Title:,Transferencia fallida
+Description:,"De vuelta a la aprobacion de anticipo."
+Target state:,"anticipo pendiente"
+Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.finances_mail
+
+
+[Transition]
+Id:,devolver_aprobador
+Title:,Devolver a aprobador
+Description:,"Deshacer accion de aprobacion de coordinador."
+Target state:,"revision aprobador"
+Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.boss_mail
+
+[Transition]
+Id:,deshacer_registro
+Title:,Deshacer registro
+Description:,"Deshacer accion de registro de Finanzas."
+Target state:,"transferencia en proceso"
+Guard permission:,Review portal content
+Script after:,viaticos.viajes.Extensions.mailer.implant_mail
