@@ -20,150 +20,150 @@
 
   <!-- Vista resumen de solicitud de gastos -->
   <browser:page
-     name="resumen_gasto"
-     for="*"
-     layer="zope.interface.Interface"
-     class=".views.VistaViaje"
-     template="templates/viajeview.pt"
-     permission="zope2.View"
-     />
+      name="resumen_gasto"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".views.VistaViaje"
+      template="templates/viajeview.pt"
+      permission="zope2.View"
+      />
 
   <!-- Vista resumen comprobacion de gastos -->
   <browser:page
-     name="resumen_comprobacion"
-     for="*"
-     layer="zope.interface.Interface"
-     class=".views.VistaComprobacion"
-     template="templates/comprobacionview.pt"
-     permission="zope2.View"
-     />
+      name="resumen_comprobacion"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".views.VistaComprobacion"
+      template="templates/comprobacionview.pt"
+      permission="zope2.View"
+      />
 
   <!-- Form test -->
   <browser:page
-     for="Products.CMFCore.interfaces.ISiteRoot"
-     name="ticket-form"
-     permission="zope2.View"
-     class=".form.TicketForm"
-     />
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="ticket-form"
+      permission="zope2.View"
+      class=".form.TicketForm"
+      />
 
   <!-- Form test 2 -->
   <browser:page
-     for="Products.CMFCore.interfaces.ISiteRoot"
-     name="datagrid-form"
-     permission="zope2.View"
-     class=".test.PruebaForm"
-     />
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      name="datagrid-form"
+      permission="zope2.View"
+      class=".test.PruebaForm"
+      />
 
   <!-- Edit form for comprobacion -->
   <browser:page
-     for="viaticos.viajes.content.comprobacion.IComprobacion"
-     name="editar"
-     class="viaticos.viajes.content.comprobacion.EditComprobacion"
-     permission="cmf.ModifyPortalContent"
-     />
+      for="viaticos.viajes.content.comprobacion.IComprobacion"
+      name="editar"
+      class="viaticos.viajes.content.comprobacion.EditComprobacion"
+      permission="cmf.ModifyPortalContent"
+      />
 
   <!-- Edit form for viaje -->
   <browser:page
-     for="viaticos.viajes.content.viaje.IViaje"
-     name="editar"
-     class="viaticos.viajes.content.viaje.EditViaje"
-     permission="cmf.ModifyPortalContent"
-     />
+      for="viaticos.viajes.content.viaje.IViaje"
+      name="editar"
+      class="viaticos.viajes.content.viaje.EditViaje"
+      permission="cmf.ModifyPortalContent"
+      />
 
-     <!-- Add form for viaje -->
+  <!-- Add form for viaje -->
   <browser:page
-     for="*"
-     name="agregar_comprobacion"
-     class="viaticos.viajes.content.comprobacion.AddComprobacion"
-     permission="cmf.ModifyPortalContent"
-     />
+      for="*"
+      name="agregar_comprobacion"
+      class="viaticos.viajes.content.comprobacion.AddComprobacion"
+      permission="cmf.ModifyPortalContent"
+      />
 
   <!-- test 3 -->
   <browser:page
-     name="prueba"
-     for="*"
-     class=".test.Prueba"
-     template="templates/prueba.pt"
-     permission="zope2.View"
-     />
+      name="prueba"
+      for="*"
+      class=".test.Prueba"
+      template="templates/prueba.pt"
+      permission="zope2.View"
+      />
 
-    <!-- ADD form for comprobacion -->
+  <!-- ADD form for comprobacion -->
   <browser:page
-     for="*"
-     name="agregar_viaje"
-     class="viaticos.viajes.content.viaje.AddViaje"
-     permission="cmf.AddPortalContent"
-     />
+      for="*"
+      name="agregar_viaje"
+      class="viaticos.viajes.content.viaje.AddViaje"
+      permission="cmf.AddPortalContent"
+      />
   
 
   <!-- Vista sobreescritura de folder de viaticos -->
-   <browser:page
-     name="vista_viaticos"
-     for="*"
-     layer="zope.interface.Interface"
-     class=".views.VistaViaticos"
-     template="templates/viaticos_folder.pt"
-     permission="zope2.View"
+  <browser:page
+      name="vista_viaticos"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".views.VistaViaticos"
+      template="templates/viaticos_folder.pt"
+      permission="zope2.View"
       />
 
-     <!-- Form test 2 -->
+  <!-- Form test 2 -->
   <browser:page
-     for="*"
-     name="upward-form"
-     permission="cmf.ManagePortal"
-     class=".hierarchy.VistaJerarquia"
-     template="templates/hierarchy.pt"
-     />
-
-  <browser:page
-     name="can-send-to-agency"
-     for="*"
-     layer="zope.interface.Interface"
-     class=".transition_guards.CanSendToAgency"     
-     permission="zope2.View"
-     />
+      for="*"
+      name="upward-form"
+      permission="cmf.ManagePortal"
+      class=".hierarchy.VistaJerarquia"
+      template="templates/hierarchy.pt"
+      />
 
   <browser:page
-     name="can-send-to-admin"
-     for="*"
-     layer="zope.interface.Interface"
-     class=".transition_guards.CanSendToAdmin"     
-     permission="zope2.View"
-     />
+      name="can-send-to-agency"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".transition_guards.CanSendToAgency"     
+      permission="zope2.View"
+      />
 
-    <browser:page
-     for="viaticos.viajes.content.viaje.IViaje"
-     name="delete-traveler"
-     permission="zope2.View"
-     class=".hierarchy.VistaViajeros"     
-     />
+  <browser:page
+      name="can-send-to-admin"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".transition_guards.CanSendToAdmin"     
+      permission="zope2.View"
+      />
 
-     <browser:page
+  <browser:page
+      for="viaticos.viajes.content.viaje.IViaje"
+      name="delete-traveler"
+      permission="zope2.View"
+      class=".hierarchy.VistaViajeros"     
+      />
+
+  <browser:page
       name="make-transitions"
       for="*"
       layer="zope.interface.Interface"
       class=".chronos.TestChronos"     
       permission="zope2.View"
-	/>
+      />
 
-     <browser:page
+  <browser:page
       name="reset_list"
       for="viaticos.viajes.content.comprobacion.IComprobacion"
       layer="zope.interface.Interface"
       class=".object_actions.ResetComprobacion"     
       permission="zope2.View"
-	/>
+      />
 
-     <browser:page
+  <browser:page
       name="descarga_comprobacion"
       for="viaticos.viajes.content.comprobacion.IComprobacion"
       layer="zope.interface.Interface"
       class=".object_actions.DescargaComprobacion"     
       permission="zope2.View"
-	/>
+      />
 
 
-     <browser:page
+  <browser:page
       name="redireccion"
       for="*"
       layer="zope.interface.Interface"
@@ -171,13 +171,21 @@
       permission="zope2.View"
       />
 
-     <browser:page
-	 name="can-save-draft"
-	 for="*"
-	 layer="zope.interface.Interface"
-	 class=".transition_guards.CanSaveDraft"     
-	 permission="zope2.View"
-	 />
+  <browser:page
+      name="can-save-draft"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".transition_guards.CanSaveDraft"     
+      permission="zope2.View"
+      />
+
+    <browser:page
+      name="bulk_user_registration"
+      for="*"
+      layer="zope.interface.Interface"
+      class=".tools.UserCSVForm"     
+      permission="zope2.View"
+      />
 
 
 
