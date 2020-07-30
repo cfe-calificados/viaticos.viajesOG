@@ -33,7 +33,7 @@ def extract_info(obj_comp):
     owner_member = obj_comp.getOwner()
     collected = {}
     collected['employee'] = owner_member.getProperty("fullname").decode('utf-8')
-    collected['n_employee'] = u"311154"#owner_member.getProperty("n_employee")
+    collected['n_employee'] = owner_member.getProperty("numero_empleado")#u"311154"#
     collected['trip_title'] = viaje.Title().decode('utf-8')
     collected['area'] = Coordinaciones.getTerm(owner_member.getProperty("coordinacion")).title
     collected['date_comp'] = datetime.now().strftime("%A %d de %B de %Y").decode('utf-8')
