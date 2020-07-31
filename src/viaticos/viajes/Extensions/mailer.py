@@ -137,7 +137,7 @@ def boss_mail(self, state_change):
     # Envio correo agencia
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="agencia_viajes@foo.com"+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
@@ -151,7 +151,7 @@ def agency_mail(self, state_change):
     agency_mail,boss_mail = build_body(state_change.object,obj_owner)
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="agencia_viajes@foo.com"+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
@@ -186,7 +186,7 @@ def return_to_draft(self, state_change):
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req and state_change.old_state.id != 'registro por verificar':
         agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.title+u" ("+str(IUUID(trip, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
-            recipient="agencia_viajes@foo.com"+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
@@ -240,7 +240,7 @@ def rejected(self, state_change):
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
         agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.title+u" ("+str(IUUID(trip, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
-            recipient="agencia_viajes@foo.com"+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
@@ -279,6 +279,16 @@ def comp_save(self, state_change):
         subject=u"[Plataforma RH - Viáticos] Revisión: "+comp.title.encode('utf-8').decode('utf-8'),
         body=body_finances,
     )
+    #Agregar lo siguiente en la transicion de bosquejo a revision finanzas
+    #import pdb; pdb.set_trace()
+    if state_change.transition.id == "guardar":
+        viaje = comp.relacion.to_object
+        if 'boleto_avion' in viaje.req and 2 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
+            comp.grupo_comprobacion.append({'descripcion': viaje.aerolinea, 'fecha': viaje.hora_salida.date(), 'concepto': u'Boleto avión: '+viaje.aerolinea, 'importe': viaje.tarifa, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'anticipo', 'clave':2, 'origen':'nacional', 'aprobado':0.0})
+
+        if 'hospedaje' in viaje.req and 7 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
+            comp.grupo_comprobacion.append({'descripcion': viaje.hotel_domicilio, 'fecha': viaje.fecha_salida.date(), 'concepto': u'Hospedaje: '+viaje.hotel_nombre, 'importe': 0.0, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'anticipo', 'clave':7, 'origen':'nacional', 'aprobado':0.0})
+    
 
 def comp_reg(self, state_change):
 
@@ -293,7 +303,7 @@ def comp_reg(self, state_change):
         print("se envia correo a angel redhuman")
         body_angel = u"Se solicita realizar el reembolso por un monto de $"+str("%.2f" % totales[1])+u" a favor de "+obj_owner.getProperty("fullname").decode('utf-8')+u"; lo anterior con motivo de la comprobación realizada del viaje a "+trip.ciudad.encode('utf-8').decode('utf-8')+u", "+trip.estado.encode('utf-8').decode('utf-8')+u", "+trip.pais.encode('utf-8').decode('utf-8')+u", de fecha "+trip.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u".\n\n"+u"Mucho agradeceremos que una vez realizada se marque copia a Zulema Osorio y Liliana Garcia para su conocimiento.\n\n"+u"Saludos."
         api.portal.send_email(
-            recipient="angel.espinosa@redhuman.com.mx",#"red.angel@foo.mx",#
+            recipient="fanny_cruz@redhuman.com.mx",#"red.angel@foo.mx",#
             sender="noreply@plone.org",
             subject=u"[Plataforma RH - Viáticos] Reembolso: "+comp.title.encode('utf-8').decode('utf-8'),
             body=body_angel,
@@ -341,7 +351,7 @@ def finances_rejected(self, state_change):
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     body = u"Coordinación de Administración\nPresente\n\nPor medio del presente le comunicamos que se rechazó la solicitud de anticipo por un monto de "+str(trip.anti_monto)+u" con motivo de:\n\n"+trip.anti_desc+u"\n\nPara revisar la información de la solicitud, pruebe visitar el siguiente enlace: "+URL+state_change.object.virtual_url_path()+u"\n\nPara cualquier duda o comentario comunicarse con Liliana Garcia a la extensión 21411.\n\nAtentamente\n\nAdministración\ncfe_calificados"
     api.portal.send_email(
-        recipient="administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",#"finanzas@foo.com", #
+        recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx; fanny.cruz@redhuman.com.mx",#"finanzas@foo.com", #
         sender="noreply@plone.org",
         subject=u"Anticipo rechazado: "+trip.title.encode('utf-8').decode('utf-8'),
         body=body,
