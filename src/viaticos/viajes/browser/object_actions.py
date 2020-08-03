@@ -34,7 +34,7 @@ def extract_info(obj_comp):
     collected = {}
     collected['employee'] = owner_member.getProperty("fullname").decode('utf-8')
     collected['n_employee'] = owner_member.getProperty("numero_empleado")#u"311154"#
-    collected['trip_title'] = viaje.Title().decode('utf-8')
+    collected['trip_title'] = viaje.Title().decode('utf-8')+" en "+viaje.ciudad+", "+(viaje.pais if viaje.pais != u'Mexico' else u'México')
     collected['area'] = Coordinaciones.getTerm(owner_member.getProperty("coordinacion")).title
     collected['date_comp'] = datetime.now().strftime("%A %d de %B de %Y").decode('utf-8')
     collected['grupo_comp_ord'] = sorted(obj_comp.grupo_comprobacion, key=lambda(x): x['fecha'])
