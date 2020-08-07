@@ -281,6 +281,7 @@ def comp_save(self, state_change):
     )
     #Agregar lo siguiente en la transicion de bosquejo a revision finanzas
     #import pdb; pdb.set_trace()
+    """
     if state_change.transition.id == "guardar":
         viaje = comp.relacion.to_object
         if 'boleto_avion' in viaje.req and 2 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
@@ -288,7 +289,7 @@ def comp_save(self, state_change):
 
         if 'hospedaje' in viaje.req and 7 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
             comp.grupo_comprobacion.append({'descripcion': viaje.hotel_domicilio, 'fecha': viaje.fecha_salida.date(), 'concepto': u'Hospedaje: '+viaje.hotel_nombre, 'importe': 0.0, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'anticipo', 'clave':7, 'origen':'nacional', 'aprobado':0.0})
-    
+    """
 
 def comp_reg(self, state_change):
 
@@ -412,4 +413,10 @@ def implant_comp(self, state_change):
         subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+comp.title.encode('utf-8').decode('utf-8'),
         body=body,
     )
+    viaje = comp.relacion.to_object
+    if 'boleto_avion' in viaje.req and 2 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
+        comp.grupo_comprobacion.append({'descripcion': viaje.aerolinea, 'fecha': viaje.hora_salida.date(), 'concepto': u'Boleto avión: '+viaje.aerolinea, 'importe': viaje.tarifa, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'anticipo', 'clave':2, 'origen':'nacional', 'aprobado':0.0})
+
+    if 'hospedaje' in viaje.req and 7 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
+        comp.grupo_comprobacion.append({'descripcion': viaje.hotel_domicilio, 'fecha': viaje.fecha_salida.date(), 'concepto': u'Hospedaje: '+viaje.hotel_nombre, 'importe': 0.0, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'anticipo', 'clave':7, 'origen':'nacional', 'aprobado':0.0})
     #fanny.cruz@redhuman.com.mx

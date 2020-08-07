@@ -31,7 +31,7 @@ class UserCSVForm(form.SchemaForm):
             line = [x.strip() for x in line]
             print line
             try:
-                properties = dict(username = line[0],fullname = line[3], email = line[1], numero_empleado= line[4])
+                properties = dict(username = line[0],fullname = line[3], email = line[1], numero_empleado= line[4], rfc=line[5] if len(line) > 5 else "")
                 member = regtool.addMember(line[0], line[2], properties=properties)
                 print("Usuario registrado exitosamente: "+line[0])
             except Exception as error:
