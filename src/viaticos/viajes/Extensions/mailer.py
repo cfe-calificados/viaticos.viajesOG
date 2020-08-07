@@ -25,6 +25,8 @@ def calc_saldo(trip):
         if concepto['anticipo'] == "reembolso":
             tupla_totales[1] += concepto['aprobado']
             continue
+        if concepto['anticipo'] == "empresa":
+            continue
         if concepto['importe'] <= concepto['aprobado']:
             tupla_totales[0] += concepto['importe']
             tupla_totales[1] += concepto['aprobado']-concepto['importe']
@@ -304,7 +306,7 @@ def comp_reg(self, state_change):
         print("se envia correo a angel redhuman")
         body_angel = u"Se solicita realizar el reembolso por un monto de $"+str("%.2f" % totales[1])+u" a favor de "+obj_owner.getProperty("fullname").decode('utf-8')+u"; lo anterior con motivo de la comprobación realizada del viaje a "+trip.ciudad.encode('utf-8').decode('utf-8')+u", "+trip.estado.encode('utf-8').decode('utf-8')+u", "+trip.pais.encode('utf-8').decode('utf-8')+u", de fecha "+trip.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u".\n\n"+u"Mucho agradeceremos que una vez realizada se marque copia a Zulema Osorio y Liliana Garcia para su conocimiento.\n\n"+u"Saludos."
         api.portal.send_email(
-            recipient="fanny_cruz@redhuman.com.mx",#"red.angel@foo.mx",#
+            recipient="fanny.cruz@redhuman.com.mx",#"red.angel@foo.mx",#
             sender="noreply@plone.org",
             subject=u"[Plataforma RH - Viáticos] Reembolso: "+comp.title.encode('utf-8').decode('utf-8'),
             body=body_angel,

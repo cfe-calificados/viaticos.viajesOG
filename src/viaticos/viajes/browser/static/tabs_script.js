@@ -46,7 +46,7 @@ $(window).load(function(){
     
     var tabs = document.getElementById('icetab-container').children;
     var tabcontents = document.getElementById('icetab-content').children;
-    $("#icetab-content").css("height",(($(".tab-active tr").length+4)*2)+"em");
+    $("#icetab-content").css("height","100%");//(($(".tab-active tr").length+4)*2)+"em");
 
     var myFunction = function() {
 	var tabchange = this.mynum;
@@ -56,7 +56,7 @@ $(window).load(function(){
 	}
 	tabcontents[tabchange].classList.add('tab-active');
 	this.classList.add('current-tab');
-	$("#icetab-content").css("height",(($(".tab-active tr").length+4)*2.2)+"em");
+	$("#icetab-content").css("height","100%");//(($(".tab-active tr").length+4)*2.2)+"em");
     }	
 
 

@@ -19,7 +19,7 @@ div {
 }
 
 #icetab-content {
-	overflow: hidden;
+	overflow: overlay;
 	position: relative;
 	border-top: 2px solid #fafafa;/*#007bb1;*/
 	/*height: 700px;*/
