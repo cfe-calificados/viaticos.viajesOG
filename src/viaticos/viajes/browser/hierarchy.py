@@ -167,7 +167,7 @@ def allowed_group(context):
     owner = context.getOwner().getUserName()
     auth_user = context.portal_membership.getAuthenticatedMember()
     if owner in context.grupo:
-        context.grupo.remove(owner)
+        context.grupo = tuple([x for x in context.grupo if owner != x])
     if auth_user.has_role("Manager"):        
         return context.grupo
 
