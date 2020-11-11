@@ -122,9 +122,10 @@
       position:relative;
       }
       .btn-bottom {
-      position:absolute;
-      bottom:0;
-      right:0;
+	  /* position: absolute; */
+	  bottom: 0;
+	  right: 0;
+	  margin: .3em;
       }
 
       .btn-edit-bottom{
