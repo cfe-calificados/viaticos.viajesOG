@@ -192,13 +192,17 @@ class VistaComprobacion(DefaultView):
         tupla_totales = []
         conceptos = self.context.grupo_comprobacion
         total = self.context.total_comprobar*-1
-        tupla_totales.append(total)
-        tupla_totales.append(0.0)
+        tupla_totales.append(total)#anticipo
+        tupla_totales.append(0.0)#reembolso
+        tupla_totales.append(0.0)#devolucion
         for concepto in conceptos:
             if concepto['anticipo'] == "reembolso":
                 tupla_totales[1] += concepto['aprobado']
                 continue
-            if concepto['anticipo'] == "empresa":
+            if concepto['anticipo'] == "devolucion":
+                tupla_totales[2] += concepto['aprobado']
+                continue
+            if concepto['anticipo'] == "ejercido":
                 continue
             if concepto['importe'] <= concepto['aprobado']:
                 tupla_totales[0] += concepto['importe']

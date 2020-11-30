@@ -32,18 +32,22 @@
 	</div>
 	<hr>
 	<div class="row">
-	  <div class="col-md-4">
+	  <div class="col-md-3">
 	    <p><b>Total de anticipo</b></p>
-            <p tal:content="python: tupla_totales[0]"></p>
+            <p tal:content="python: tupla_totales[0]+tupla_totales[1]+tupla_totales[2] if tupla_totales[0]+tupla_totales[1] < 0 else 0.0"></p>
 	  </div>
-	  <div class="col-md-4">
+	  <div class="col-md-3">
 	    <p><b>Total de reembolso</b></p>
-	    <p tal:content="python: tupla_totales[1]"></p>
+	    <p tal:content="python: tupla_totales[1] + tupla_totales[0] if tupla_totales[1] + tupla_totales[0] > 0 else 0.0"></p>
 	  </div>
-	  <div class="col-md-4">
-	    <p><b>Total General</b></p>
+	  <div tal:condition="python: [x['anticipo'] for x in context.grupo_comprobacion if x['anticipo'] == 'devolucion']" class="col-md-3">
+	    <p><b>Devolución</b></p>
 	    <p tal:content="python: tupla_totales[2]"></p>
 	  </div>
+	  <!--div class="col-md-3">
+	    <p><b>Total General</b></p>
+	    <p></p>
+	  </div-->
 	</div>
 
       </div>
@@ -131,7 +135,7 @@
 	    <td tal:content="python:concepto['importe']">importe</td>
 	    <td tal:content="python:concepto['comprobado']">comprobado</td>
 	    <td tal:content="python:concepto['aprobado']">aprobado</td>
-	    <td tal:content="python: 'Por reembolso' if concepto['anticipo'] == 'reembolso' else 'Por anticipo'">anticipo</td>
+	    <td tal:content="python: 'Por '+concepto['anticipo'] if concepto['anticipo'] in ('reembolso','anticipo') else concepto['anticipo'].capitalize() if concepto['anticipo'] == 'ejercido' else 'Devolución'">anticipo</td>
 	    <td tal:condition="concepto/archivo" tal:define="file nocall:concepto/archivo">	      
 	      <a tal:define="idx python:view.get_file_idx(concepto)" tal:attributes="href string:${context/absolute_url}/view/++widget++form.widgets.grupo_comprobacion.${idx}.widgets.archivo/@@download/${file/filename}">		
 		  ${python: file.filename} (${python: file.contentType})

@@ -107,7 +107,7 @@ class ITable(interface.Interface):
     
     #directives.omitted(IEditForm, 'anticipo')
     #directives.write_permission(anticipo='cmf.ManagePortal')
-    anticipo = schema.Choice(title=_(u"Tipo"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'anticipo', title=_(u'Por anticipo')), SimpleTerm(value=u'reembolso', title=_(u'Por reembolso')), SimpleTerm(value=u'empresa', title=_(u'Ejercido'))]), default=u'reembolso', required=True)
+    anticipo = schema.Choice(title=_(u"Tipo"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'anticipo', title=_(u'Por anticipo')), SimpleTerm(value=u'reembolso', title=_(u'Por reembolso')), SimpleTerm(value=u'ejercido', title=_(u'Ejercido')), SimpleTerm(value=u'devolucion', title=_(u'Devolución'))]), default=u'reembolso', required=True)
     origen = schema.Choice(title=_(u"Origen"), vocabulary=SimpleVocabulary([SimpleTerm(value=u'nacional', title=_(u'Nacional')), SimpleTerm(value=u'internacional', title=_(u'Internacional'))]), default=u'nacional', required=True)
     archivo = NamedFile(
         title=_(u'Archivo'),
