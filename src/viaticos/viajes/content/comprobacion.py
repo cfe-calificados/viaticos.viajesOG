@@ -435,7 +435,7 @@ class EditComprobacion(edit.DefaultEditForm):
                 messages.addStatusMessage(message+(u" Contenedor: ("+container+u")" if container else ""), type="error")
                 self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
-            if rfc == "MER180416CH0":
+            if rfc == "CCA160523QGA": #"MER180416CH0":
                 return message
             else:
                 message = u"Error: El RFC del receptor ("+rfc+") en el archivo "+filename+u" no es el correcto."

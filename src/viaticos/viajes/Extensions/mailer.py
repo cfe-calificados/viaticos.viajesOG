@@ -16,9 +16,11 @@ s.close()
 
 
 def calc_saldo(trip):
+    
     tupla_totales = []
     conceptos = trip.grupo_comprobacion
     total = trip.total_comprobar*-1
+    """
     tupla_totales.append(total)
     tupla_totales.append(0.0)
     for concepto in conceptos:
@@ -32,6 +34,26 @@ def calc_saldo(trip):
             tupla_totales[1] += concepto['aprobado']-concepto['importe']
         else:
             tupla_totales[0] += concepto['aprobado']            
+    return tupla_totales+['{:,}'.format(tupla_totales[0]+tupla_totales[1])]
+    """
+    tupla_totales.append(total)#anticipo
+    tupla_totales.append(0.0)#reembolso
+    tupla_totales.append(0.0)#devolucion
+    for concepto in conceptos:
+        if concepto['anticipo'] == "reembolso":
+            tupla_totales[1] += concepto['aprobado']
+            continue
+        if concepto['anticipo'] == "devolucion":
+            tupla_totales[2] += concepto['aprobado']
+            continue
+        if concepto['anticipo'] == "ejercido":
+            continue
+        if concepto['importe'] <= concepto['aprobado']:
+            tupla_totales[0] += concepto['importe']
+            tupla_totales[1] += concepto['aprobado']-concepto['importe']
+        else:
+            tupla_totales[0] += concepto['aprobado']
+        
     return tupla_totales+['{:,}'.format(tupla_totales[0]+tupla_totales[1])]
 
 def get_bosses(username, grupo):
@@ -139,7 +161,7 @@ def boss_mail(self, state_change):
     # Envio correo agencia
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx",   
+            recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",   
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
@@ -153,7 +175,7 @@ def agency_mail(self, state_change):
     agency_mail,boss_mail = build_body(state_change.object,obj_owner)
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx",   
+            recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
@@ -188,7 +210,7 @@ def return_to_draft(self, state_change):
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req and state_change.old_state.id != 'registro por verificar':
         agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.title+u" ("+str(IUUID(trip, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
-            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            recipient="administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",      
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
@@ -242,7 +264,7 @@ def rejected(self, state_change):
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req:
         agency_mail = u"Viajes Turísticos Arcoíris\nPresente\n\nPor medio del presente agradecemos se realice la cancelación de la cotización: "+trip.title+u" ("+str(IUUID(trip, None)).decode()+")"+u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
         api.portal.send_email(
-            recipient="diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"+";administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",   
+            recipient="administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",      
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
             body=agency_mail,
