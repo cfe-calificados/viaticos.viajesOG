@@ -348,7 +348,7 @@ class EditComprobacion(edit.DefaultEditForm):
         # utility function to add resource to rendered page
         current_user = self.context.portal_membership.getAuthenticatedMember()
         
-        if not current_user.has_role("Manager") and (DateTime().asdatetime()-self.context.created().asdatetime()).days >= 28:
+        if not current_user.has_role(["Manager", "Implant", "Finanzas"]) and (DateTime().asdatetime()-self.context.created().asdatetime()).days >= 28:
             return self.error_template()
         print("loading JS comprobacion")
         add_resource_on_request(self.request, 'comp_static')
