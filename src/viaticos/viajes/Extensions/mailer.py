@@ -439,8 +439,8 @@ def implant_comp(self, state_change):
     )
     viaje = comp.relacion.to_object
     if 'boleto_avion' in viaje.req and 2 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
-        comp.grupo_comprobacion.append({'descripcion': viaje.aerolinea, 'fecha': viaje.hora_salida.date(), 'concepto': u'Boleto avión: '+viaje.aerolinea, 'importe': viaje.tarifa, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'anticipo', 'clave':2, 'origen':'nacional', 'aprobado':0.0})
+        comp.grupo_comprobacion.append({'descripcion': viaje.aerolinea if viaje.aerolinea else "", 'fecha': viaje.hora_salida.date() if viaje.hora_salida else dt.datetime.now().date(), 'concepto': u'Boleto avión: '+(viaje.aerolinea if viaje.aerolinea else ""), 'importe': viaje.tarifa if viaje.tarifa else 0.0, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'ejercido', 'clave':2, 'origen':'nacional', 'aprobado':0.0})
 
     if 'hospedaje' in viaje.req and 7 not in [x['clave'] for x in state_change.object.grupo_comprobacion]:
-        comp.grupo_comprobacion.append({'descripcion': viaje.hotel_domicilio, 'fecha': viaje.fecha_salida.date(), 'concepto': u'Hospedaje: '+viaje.hotel_nombre, 'importe': 0.0, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'anticipo', 'clave':7, 'origen':'nacional', 'aprobado':0.0})
+        comp.grupo_comprobacion.append({'descripcion': viaje.hotel_domicilio if viaje.hotel_domicilio else "", 'fecha': viaje.fecha_salida.date(), 'concepto': u'Hospedaje: '+viaje.hotel_nombre if viaje.hotel_nombre else "", 'importe': 0.0, 'archivo': None, 'comprobado': 0.0, 'anticipo':u'ejercido', 'clave':7, 'origen':'nacional', 'aprobado':0.0})
     #fanny.cruz@redhuman.com.mx

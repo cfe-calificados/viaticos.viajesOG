@@ -7,6 +7,8 @@ from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 import socket
 import ast
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
 
 """ Get name of SERVER """
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -122,9 +124,10 @@ def create_comprobacion(self, state_change):
     trip = state_change.object
     obj = None
     #trip_ctx = trip.aq_base
-    #uuid = IUUID(trip_ctx)    
-    temp = TemporaryRelationValue(trip.absolute_url_path()) #Una relacion no formada completamente 
-    rel_full = temp.convert()
+    #uuid = IUUID(trip_ctx)
+    intids = getUtility(IIntIds)    
+    #temp = TemporaryRelationValue(trip.absolute_url_path()) #Una relacion no formada completamente 
+    rel_full = RelationValue(intids.getId(trip))#temp.convert()
     if trip.grupo:
         create_comprobaciones(portal, trip, rel_full)
         users_mail(self, state_change)
