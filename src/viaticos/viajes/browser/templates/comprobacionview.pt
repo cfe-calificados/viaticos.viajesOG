@@ -75,6 +75,11 @@
       <br>
       <legend>Conceptos</legend>
 
+      <dl tal:define="errores python: view.check_grupo_comprobacion()" tal:repeat="error python: errores" tal:condition="errores" class="portalMessage error">
+	<dt>Advertencia</dt>
+	<dd>${python: error}</dd>
+      </dl>
+
       <table class="datagridwidget-table-view" id="form-widgets-grupo_comprobacion">
 	<thead>
 	  <tr>
@@ -172,7 +177,7 @@
 	</li>
       </ul>
       </div>
-	
+
     </metal:content-core>
   </body>
 </html>

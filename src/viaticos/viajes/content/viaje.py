@@ -157,11 +157,14 @@ class IViaje(model.Schema):
         required = False
     )
 
+    directives.omitted(IAddForm, 'grupo')
+    directives.omitted(IEditForm, 'grupo')    
     directives.widget(grupo=AjaxSelectFieldWidget)
     grupo = schema.Tuple(title=_(u'Grupo'),
                          description=u"Solicitud de gastos de varios empleados. Advertencia: Una vez confirmado el borrador, solo la admón. y los superiores de los miembros del grupo podrán retirarlos de la solicitud.",
             value_type=schema.Choice(source=u"plone.app.vocabularies.Users"),
-            required=False,            
+            required=False,
+            default=(),             
             missing_value=()
     )
 
