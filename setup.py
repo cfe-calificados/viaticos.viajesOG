@@ -44,7 +44,7 @@ setup(
         # -*- Extra requirements: -*-
         'z3c.jbot',
         'plone.api>=1.8.4',
-        'plone.restapi',
+        'plone.restapi==6.2.2',
         'plone.app.dexterity',
         # My own requirements
         #'collective.wtf==1.0b9', probably not needed
@@ -53,7 +53,8 @@ setup(
         'plone.directives.form',
         'plone.formwidget.autocomplete',
         'collective.z3cform.datagridfield==1.5.0',
-        'eea.facetednavigation'
+        'eea.facetednavigation',
+        'PyJWT==1.7.1'
     ],
     extras_require={
         'test': [
