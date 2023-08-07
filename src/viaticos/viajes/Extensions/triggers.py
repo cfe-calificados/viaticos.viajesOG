@@ -74,14 +74,20 @@ def users_mail(self, state_change, comp=None):
         #bosses += ["ana.franco@calificados.cfe.mx"] #PREGUNTAR A ADMON SI DEBO INLCUIRLA PARA LOS COORDINADORES
         
     api.portal.send_email(
+<<<<<<< HEAD
         recipient=";".join(grup),   
+=======
+        #recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),
+        recipient = "carlos.acosta@calificados.cfe.mx", #DEBUG
+>>>>>>> b5d49f61ad38e7dc9952c7904d42743327c07361
         sender="noreply@plone.org",
         subject="Solicitud de gastos registrada",
         body=body,
     )
 
     api.portal.send_email(
-        recipient=";".join(bosses),   
+        #recipient=";".join(bosses),
+        recipient = "carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject="Solicitud de gastos supervisada registrada",
         body=body2,

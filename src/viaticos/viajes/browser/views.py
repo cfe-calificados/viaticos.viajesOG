@@ -14,6 +14,8 @@ from operator import itemgetter as get_item
 import ast
 
 from datetime import datetime
+from viaticos.viajes.content.comprobacion import EditComprobacion as edit_comp_form
+from Products.statusmessages.interfaces import IStatusMessage
 
 class VistaViaje(DefaultView):
     """ Vista por defecto para viajes/solicitud de gastos """
@@ -222,6 +224,23 @@ class VistaComprobacion(DefaultView):
         portal = api.portal.get()
         status = api.content.get_state(obj=portal["viaticos"][self.context.id])
         return status
+
+    def check_grupo_comprobacion(self):
+        print("loading edit form functions")
+        form = edit_comp_form(self.context, self.request)
+        form.update()
+        messages = IStatusMessage(self.request)
+        form.check_xml(self.context.grupo_comprobacion, messages, True)
+        #import pdb; pdb.set_trace()
+        errores = []
+        for idx,concepto in enumerate(self.context.grupo_comprobacion):            
+            if form.totales.has_key(idx):
+                msj_error = u"El monto comprobado en el concepto "+concepto['concepto']+u": $"+str(concepto['comprobado'])+u", no coincide con el total de la(s) factura(s) cargada(s): $"+str(form.totales[idx])
+                if form.totales[idx] != concepto['comprobado']:
+                    errores.append(msj_error)
+            elif concepto['comprobado'] and concepto['origen'] == "nacional":
+                errores.append(u"El monto comprobado en el concepto "+concepto['concepto']+u": $"+str(concepto['comprobado'])+u", no coincide con el total de la(s) factura(s) cargada(s).")
+        return errores
         
         
         

@@ -332,6 +332,7 @@ class EditComprobacion(edit.DefaultEditForm):
     label = u"Modificar comprobaciones"
     description = u"Agregar comprobaciones."
     error_template = ViewPageTemplateFile("../browser/templates/not_editable.pt")
+    totales = {} #totales comprobados por concepto dado el xml
 
     form.widget(
         'grupo_comprobacion',
@@ -409,7 +410,7 @@ class EditComprobacion(edit.DefaultEditForm):
             widgets['aprobado'].mode = 'hidden'
             widgets['aprobado'].required = False
 
-    def single_xml(self, idx, data, filename, messages, container=""):
+    def single_xml(self, idx, data, filename, messages, container="", suma=None):
         user_editor = self.context.portal_membership.getAuthenticatedMember()
         widget_idx = 4 if user_editor.has_role("Manager") else 1
         message = ""
@@ -446,6 +447,10 @@ class EditComprobacion(edit.DefaultEditForm):
                 self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
             if rfc == "CCA160523QGA": #"MER180416CH0":
+                if suma != None and data:                    
+                    if not suma.has_key(idx):
+                        suma[idx] = 0.0
+                    suma[idx] += float(root.get("Total"))
                 return message
             else:
                 message = u"Error: El RFC del receptor ("+rfc+") en el archivo "+filename+u" no es el correcto."
@@ -453,7 +458,7 @@ class EditComprobacion(edit.DefaultEditForm):
                 self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
             
-    def check_xml(self, grupo_comprobacion, messages):
+    def check_xml(self, grupo_comprobacion, messages, comprobado=False):
         #import pdb; pdb.set_trace()
         user_editor = self.context.portal_membership.getAuthenticatedMember()
         widget_idx = 4 if user_editor.has_role("Manager") else 1
@@ -461,7 +466,7 @@ class EditComprobacion(edit.DefaultEditForm):
         errors = False
         for idx,concepto in enumerate(grupo_comprobacion):            
             if concepto['archivo'] != None and concepto['archivo'].contentType == "text/xml" and concepto['origen'] == "nacional":
-                message = self.single_xml(idx, concepto['archivo'].data, concepto['archivo'].filename, messages)
+                message = self.single_xml(idx, concepto['archivo'].data, concepto['archivo'].filename, messages, suma=self.totales if comprobado else None)
                 if message:
                     errors = True
                     continue
@@ -480,7 +485,8 @@ class EditComprobacion(edit.DefaultEditForm):
                     continue
                 '''
                 for xml_file in xml_files:
-                    message = self.single_xml(idx, xml_file[1], xml_file[0], messages, container=concepto['archivo'].filename)
+                    message = self.single_xml(idx, xml_file[1], xml_file[0], messages, container=concepto['archivo'].filename, suma=self.totales if comprobado else None)
+
                     if message:
                         #message = message+u" (Contenedor: "++")"
                         #messages.addStatusMessage(message, type="error")
