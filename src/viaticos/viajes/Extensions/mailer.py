@@ -410,7 +410,7 @@ def registry_past(self, state_change):
     body += u"Por lo anterior, mucho agradeceremos la revisión de la información capturada por el colaborador en el siguiente enlace: "+URL+trip.virtual_url_path()
     api.portal.send_email(
         #recipient="administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx; fannym.cruz@calificados.cfe.mx",#"administracion@foo.com", #
-        recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
+        recipient="carlos.acosta@calificados.cfe.mx; orlando.apipilhuasco@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject=u"Solicitud de gastos pasada: "+trip.title.encode('utf-8').decode('utf-8'),
         body=body,

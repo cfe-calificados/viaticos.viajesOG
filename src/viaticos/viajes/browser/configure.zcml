@@ -195,4 +195,13 @@
         permission="zope2.View"
     />
 
+    <browser:page
+        name="export_comprobaciones"
+        for="*"
+        layer="zope.interface.Interface"
+        class=".downloader.ComprobacionesDownloader"
+        permission="zope2.View"
+    />
+
+
 </configure>
