@@ -49,6 +49,19 @@ def extract_info(obj_comp):
     transformer = ITransformer(viaje)    
     collected['objetivo'] = transformer(viaje.objetivo, 'text/plain') if viaje.objetivo else ""
 
+    ## Limpiando de caracteres que rompen latex 
+    collected['objetivo'] = collected['objetivo'].replace(u"""\r\n""", u"""\\\\""").replace(u'\xa0', u' ').replace("$", "\$").replace("&", "\&").replace("_", "\_")
+    collected['notas'] = collected['notas'].replace(u"$", u"\$")
+    #collected['notas'] = collected['notas'].replace(u"=", u"\=")
+    collected['notas'] = collected['notas'].replace(u"\n", u" \\ ")
+
+    collected['notas_finanzas'] = collected['notas_finanzas'].replace(u"$", u"\$")
+    collected['notas_finanzas'] = collected['notas_finanzas'].replace(u"\n", u" \\ ")
+    collected['notas_implant'] = collected['notas_implant'].replace(u"$", u"\$")
+    collected['notas_implant'] = collected['notas_implant'].replace(u"\n", u" \\ ")
+
+    collected['trip_title'] = collected['trip_title'].replace(u"°", u"$^\circ$")
+
     ### Nuevo desmadre para obtener al autorizador
     #import pdb; pdb.set_trace()
     upward_dic = {}    
