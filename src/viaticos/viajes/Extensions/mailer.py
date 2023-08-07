@@ -373,7 +373,6 @@ def comp_reg(self, state_change):
         mail_owner = "ana.franco@calificados.cfe.mx"
     
     api.portal.send_email(
-
         recipient=mail_owner,   
         #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
@@ -470,7 +469,7 @@ def implant_mail(self, state_change):
     body +=u"\nIntente visitar el siguiente enlace: "+URL+trip.virtual_url_path()+u" para continuar con el proceso de registro de la solicitud."
     body += u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
     api.portal.send_email(
-        recipient="fannym.cruz@calificados.cfe.mx",#"implant@implant.com.mx",#
+        recipient="zulema.osorio@calificados.cfe.mx;fannym.cruz@calificados.cfe.mx",#"implant@implant.com.mx",#
         #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+trip.title.encode('utf-8').decode('utf-8'),
