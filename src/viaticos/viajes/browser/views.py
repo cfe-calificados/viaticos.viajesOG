@@ -313,7 +313,7 @@ class VistaViaticos(BrowserView):
             return True
         return False
 
-    def viajes(self):        
+    def viajes(self):
         results = [[],[],[]]
         finances = []
         #brains = api.content.find(context=self.context, portal_type='viaje')#aqui haremos la query mediante el owner o creador.
@@ -351,6 +351,7 @@ class VistaViaticos(BrowserView):
             #portal = brain.portal_url.getPortalObject()
             is_owner = owner_username == viaje.getOwner().getUserName() or owner_username in viaje.grupo
             idx = 0 if is_owner else 1
+            #import pdb; pdb.set_trace()
             results[idx].append({
                 'title': brain.Title,#with url brain.getURL()
                 'creator': viaje.getOwner().getId(),
