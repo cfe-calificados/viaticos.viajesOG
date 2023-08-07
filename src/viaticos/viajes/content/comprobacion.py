@@ -128,6 +128,16 @@ class ITable(interface.Interface):
         'origen',
         RadioFieldWidget
     )
+
+
+#from zope.interface import implementer
+#from OFS.SimpleItem import Item
+#from z3c.form.object import registerFactoryAdapter
+#@implementer(ITable)
+#class GrupoComprobacionItem(Item):
+#    """
+#    """
+#registerFactoryAdapter(ITable, GrupoComprobacionItem)           
     
 
 class IComprobacion(model.Schema):
@@ -349,7 +359,7 @@ class EditComprobacion(edit.DefaultEditForm):
         # utility function to add resource to rendered page
         current_user = self.context.portal_membership.getAuthenticatedMember()
         
-        if not current_user.has_role(["Manager", "Implant", "Finanzas"]) and (DateTime().asdatetime()-self.context.created().asdatetime()).days >= 28:
+        if not current_user.has_role(["Manager", "Implant", "Finanzas"]) and False:# (DateTime().asdatetime()-self.context.created().asdatetime()).days >= 28:
             return self.error_template()
         print("loading JS comprobacion")
         add_resource_on_request(self.request, 'comp_static')

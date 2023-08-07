@@ -13,7 +13,7 @@ from zope.intid.interfaces import IIntIds
 """ Get name of SERVER """
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("8.8.8.8", 80))
-URL="http://viaticos.cfecalificados.mx:8080/"#"http://"+s.getsockname()[0]+":8080/"#
+URL="http://viaticos.cfecalificados.mx/"#"http://"+s.getsockname()[0]+":8080/"#
 s.close()
 
 def get_bosses(username, grupo):
@@ -60,20 +60,30 @@ def users_mail(self, state_change, comp=None):
     if grupo:        
         downward_dic = get_bosses(obj_owner.getUserName(), grupo)
     for boss in downward_dic:
+        if boss == 'marcoa.gonzalez': continue
         jefe = membership.getMemberById(boss)
         bosses.append(jefe.getProperty("email"))
-    
+
+    grup = [membership.getMemberById(x).getProperty("email") for x in receivers]
+    if 'marcoa.gonzalez@calificados.cfe.mx' in grup:
+        grup.remove("marcoa.gonzalez@calificados.cfe.mx")
+        grup += ["ana.franco@calificados.cfe.mx"]
+
+    if 'marcoa.gonzalez@calificados.cfe.mx' in bosses:
+        bosses.remove("marcoa.gonzalez@calificados.cfe.mx")
+        #bosses += ["ana.franco@calificados.cfe.mx"] #PREGUNTAR A ADMON SI DEBO INLCUIRLA PARA LOS COORDINADORES
+        
     api.portal.send_email(
-        #recipient=";".join([membership.getMemberById(x).getProperty("email") for x in receivers]),
-        recipient = "carlos.acosta@calificados.cfe.mx", #DEBUG
+        recipient=";".join(grup),   
+        #recipient = "carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject="Solicitud de gastos registrada",
         body=body,
     )
 
     api.portal.send_email(
-        #recipient=";".join(bosses),
-        recipient = "carlos.acosta@calificados.cfe.mx", #DEBUG
+        recipient=";".join(bosses),
+        #recipient = "carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject="Solicitud de gastos supervisada registrada",
         body=body2,
