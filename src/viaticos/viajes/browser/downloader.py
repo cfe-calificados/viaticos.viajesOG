@@ -90,7 +90,8 @@ class ComprobacionesDownloader(BrowserView):
         except Exception as error:
             print(error)
             pctl = getToolByName(self.context, 'portal_catalog')
-        brains = pctl(portal_type=['comprobacion'], Creator=search_params['user'].split("_"))
+        brains = pctl(portal_type=['comprobacion'], Creator=search_params['user'].split("_")) if search_params['user'] else pctl(portal_type=['comprobacion'])
+        #import pdb; pdb.set_trace()
         #filter brains by date 
         for brain in brains:
             obj = brain.getObject()
@@ -102,6 +103,8 @@ class ComprobacionesDownloader(BrowserView):
                         fecha_comprobacion = w['time']
                     elif w['time'] > fecha_comprobacion:
                         fecha_comprobacion = w['time']
+
+            if not fecha_comprobacion: continue # las comprobaciones que siguen en borrador
             mexico = pytz.timezone("America/Mexico_City")
             fecha_comprobacion_m = mexico.localize(fecha_comprobacion.utcdatetime())
             fecha_m = fecha_comprobacion_m.date()
@@ -115,14 +118,14 @@ class ComprobacionesDownloader(BrowserView):
         """
         Función para descarga de csv con encoding de windows
         """
-        params = {'user': None, 'date_ini': None, 'date_fin': None, 'coordinacion': None}
+        params = {'user': None, 'date_ini': None, 'date_fin': None}
         url_form = self.request.form
         if url_form:
             print(url_form)
             if url_form.has_key('user'): params['user'] = url_form['user']
             if url_form.has_key('date_ini'): params['date_ini'] = url_form['date_ini']
             if url_form.has_key('date_fin'): params['date_fin'] = url_form['date_fin']
-            if url_form.has_key('coordinacion'): params['coordinacion'] = url_form['coordinacion']
+            #if url_form.has_key('coordinacion'): params['coordinacion'] = url_form['coordinacion']
             
         comps_list = self.query_catalog(params)
         
