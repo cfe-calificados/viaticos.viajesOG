@@ -111,7 +111,7 @@
         for="*"
         layer="zope.interface.Interface"
         class=".export_view.VistaDescargas"
-        permission="zope2.View"
+        permission="cmf.ManagePortal"
     />
 
     <!-- Form test 2 -->
