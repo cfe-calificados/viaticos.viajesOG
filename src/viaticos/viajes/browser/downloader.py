@@ -26,7 +26,7 @@ class ComprobacionesDownloader(BrowserView):
         comprobacion: transformación de un objeto de comprobación a cadena para csv.
         POR TERMINAR
         """
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         hotel = 0
         avion = 0
         otros = 0
@@ -34,7 +34,7 @@ class ComprobacionesDownloader(BrowserView):
         monto = 0
         fecha_comprobacion = ""
         fecha_finanzas = ""
-        anticipo = comprobacion.total_comprobar*-1
+        anticipo = (comprobacion.total_comprobar if comprobacion.total_comprobar else 0) *-1
         rembolso = 0
         devolucion = 0
         for o in comprobacion.grupo_comprobacion:
@@ -106,9 +106,10 @@ class ComprobacionesDownloader(BrowserView):
         try:
             pctl = self.context.portal_catalog
         except Exception as error:
+            #import pdb; pdb.set_trace()
             print(error)
             pctl = getToolByName(self.context, 'portal_catalog')
-        brains = pctl(portal_type=['comprobacion'], Creator=search_params['user'].split("_")) if search_params['user'] else pctl(portal_type=['comprobacion'])
+        brains = pctl(portal_type=['comprobacion'], review_state=["bosquejo", "revision_finanzas", "revision_implant", "aprobado"], Creator=search_params['user'].split("_")) if search_params['user'] else pctl(portal_type=['comprobacion'])
         #filter brains by date 
         for brain in brains:
             obj = brain.getObject()
