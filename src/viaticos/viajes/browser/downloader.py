@@ -22,7 +22,7 @@ class ComprobacionesDownloader(BrowserView):
     
 
     def get_row(self, comprobacion):
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         """
         comprobacion: transformación de un objeto de comprobación a cadena para csv.
         POR TERMINAR
