@@ -46,13 +46,16 @@ class ComprobacionesDownloader(BrowserView):
                 comidas += o['importe']
             else:
                 otros+= o['importe']
-            if o['anticipo'] == "rembolso":
+            if o['anticipo'] == "rembolso": #reembolso
                 rembolso += o['aprobado']
-            elif o['anticipo'] == 'devolucion':
+            if o['anticipo'] == 'devolucion': #devolucion
                 devolucion += o['aprobado']
-            elif o['importe'] <= o['aprobado']:
+            if o['anticipo'] == "ejercido": #avion, hospedaje
+                continue
+            if o['importe'] <= o['aprobado']: #
                 anticipo += o['importe']
                 rembolso += o['aprobado'] - o['importe']
+            
             else:
                 anticipo += o['aprobado']
             monto += o['aprobado']
@@ -90,7 +93,7 @@ class ComprobacionesDownloader(BrowserView):
         if avion == 0:
             avion = viaje.tarifa
 
-        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(monto), str(comprobacion.total_comprobar), str(saldo) , str(fecha_finanzas_m)]
+        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(monto), str(comprobacion.total_comprobar), str(saldo) , str(fecha_finanzas_m), comprobacion.absolute_url().decode('utf-8')]
 
         return u",".join(row)
 
@@ -147,7 +150,7 @@ class ComprobacionesDownloader(BrowserView):
             
         comps_list = self.query_catalog(params)
         
-        header = u"Colaborador,Coordinación,Lugar,Fecha de salida, Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar, Saldo ,Fecha Autorización Finanzas,\n"
+        header = u"Colaborador,Coordinación,Lugar,Fecha de salida, Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar, Saldo ,Fecha Autorización Finanzas,URL\n"
         
         body = u""
         for comprobacion in map(self.get_row, comps_list):
