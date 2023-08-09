@@ -149,6 +149,8 @@ class ComprobacionesDownloader(BrowserView):
             #if url_form.has_key('coordinacion'): params['coordinacion'] = url_form['coordinacion']
             
         comps_list = self.query_catalog(params)
+        #import pdb; pdb.set_trace()
+        comps_list = sorted(comps_list, key=lambda comp: comp.relacion.to_object.fecha_salida)
         
         header = u"Colaborador,Coordinación,Lugar,Fecha de salida, Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar, Saldo ,Fecha Autorización Finanzas,URL\n"
         
