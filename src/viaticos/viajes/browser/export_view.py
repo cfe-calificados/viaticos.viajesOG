@@ -68,7 +68,7 @@ class VistaDescargas(form.SchemaForm):
             self.status = self.formErrorsMessage
             return
 
-        destination = self.context.portal_url()+"/@@export_comprobaciones?user={user}&date_ini={date_ini}&date_fin={date_fin}" if data.has_key('colaboradores') and data['colaboradores'] else "/@@export_comprobaciones?date_ini={date_ini}&date_fin={date_fin}" 
+        destination = self.context.portal_url()+"/@@export_comprobaciones?user={user}&date_ini={date_ini}&date_fin={date_fin}" if data.has_key('colaboradores') and data['colaboradores'] else self.context.portal_url()+"/@@export_comprobaciones?date_ini={date_ini}&date_fin={date_fin}" 
         return self.request.response.redirect(            
             destination.format(
                 user="_".join(data["colaboradores"]),

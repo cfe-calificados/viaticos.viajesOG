@@ -26,6 +26,7 @@ class ComprobacionesDownloader(BrowserView):
         comprobacion: transformación de un objeto de comprobación a cadena para csv.
         POR TERMINAR
         """
+        #import pdb; pdb.set_trace()
         hotel = 0
         avion = 0
         otros = 0
@@ -33,6 +34,9 @@ class ComprobacionesDownloader(BrowserView):
         monto = 0
         fecha_comprobacion = ""
         fecha_finanzas = ""
+        anticipo = (comprobacion.total_comprobar if comprobacion.total_comprobar else 0) *-1
+        rembolso = 0
+        devolucion = 0
         for o in comprobacion.grupo_comprobacion:
             if 7 == o['clave']:
                 hotel += o['importe']
@@ -42,8 +46,21 @@ class ComprobacionesDownloader(BrowserView):
                 comidas += o['importe']
             else:
                 otros+= o['importe']
+            if o['anticipo'] == "rembolso": #reembolso
+                rembolso += o['aprobado']
+            if o['anticipo'] == 'devolucion': #devolucion
+                devolucion += o['aprobado']
+            if o['anticipo'] == "ejercido": #avion, hospedaje
+                continue
+            if o['importe'] <= o['aprobado']: #
+                anticipo += o['importe']
+                rembolso += o['aprobado'] - o['importe']
+            
+            else:
+                anticipo += o['aprobado']
             monto += o['aprobado']
-            #Fecha de comprobacion y finanzas
+        saldo = anticipo + rembolso
+        #Fecha de comprobacion y finanzas
         for w in comprobacion.workflow_history['comprobacion_workflow']:
             if w['action'] == 'guardar':
                 if fecha_comprobacion == "":
@@ -72,8 +89,11 @@ class ComprobacionesDownloader(BrowserView):
         fecha_regreso = viaje.fecha_regreso
         colaborador = viaje.getOwner().getProperty('fullname').decode('utf-8')
         coordinacion = Coordinaciones.getTerm( viaje.getOwner().getProperty('coordinacion')).title
-    
-        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(monto), str(fecha_finanzas_m)]
+
+        if avion == 0:
+            avion = viaje.tarifa
+
+        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(monto), str(comprobacion.total_comprobar), str(saldo) , str(fecha_finanzas_m), comprobacion.absolute_url().decode('utf-8')]
 
         return u",".join(row)
 
@@ -85,13 +105,14 @@ class ComprobacionesDownloader(BrowserView):
         """
         print(search_params)
         comprobaciones = []
+        pctl = None
         try:
             pctl = self.context.portal_catalog
         except Exception as error:
+            #import pdb; pdb.set_trace()
             print(error)
             pctl = getToolByName(self.context, 'portal_catalog')
-        brains = pctl(portal_type=['comprobacion'], Creator=search_params['user'].split("_")) if search_params['user'] else pctl(portal_type=['comprobacion'])
-        #import pdb; pdb.set_trace()
+        brains = pctl(portal_type=['comprobacion'], review_state=["bosquejo", "revision_finanzas", "revision_implant", "aprobado"], Creator=search_params['user'].split("_")) if search_params['user'] else pctl(portal_type=['comprobacion'])
         #filter brains by date 
         for brain in brains:
             obj = brain.getObject()
@@ -129,7 +150,7 @@ class ComprobacionesDownloader(BrowserView):
             
         comps_list = self.query_catalog(params)
         
-        header = u"Colaborador,Coordinación,Lugar,Fecha de salida, Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Fecha Autorización Finanzas,\n"
+        header = u"Colaborador,Coordinación,Lugar,Fecha de salida, Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar, Saldo ,Fecha Autorización Finanzas,URL\n"
         
         body = u""
         for comprobacion in map(self.get_row, comps_list):
