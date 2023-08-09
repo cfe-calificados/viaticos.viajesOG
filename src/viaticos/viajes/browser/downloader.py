@@ -22,6 +22,7 @@ class ComprobacionesDownloader(BrowserView):
     
 
     def get_row(self, comprobacion):
+        #import pdb; pdb.set_trace()
         """
         comprobacion: transformación de un objeto de comprobación a cadena para csv.
         POR TERMINAR
@@ -39,11 +40,25 @@ class ComprobacionesDownloader(BrowserView):
         devolucion = 0
         for o in comprobacion.grupo_comprobacion:
             if 7 == o['clave']:
-                hotel += o['importe']
+                if o['aprobado'] <= 0:
+                    hotel += o['importe']
+                else:
+                    hotel += o['aprobado']
             elif 2 == o['clave']:
-                avion += o['importe']
+                if o['aprobado'] <= 0:
+                    avion += o['importe']
+                else:
+                    avion += o['aprobado']
             elif 8 == o['clave']:
-                comidas += o['importe']
+                if o['aprobado'] <= 0:
+                    comidas += o['importe']
+                else:
+                    comidas += o['aprobado']
+            elif 9 == o['clave'] and ('Hotel' in o['concepto'] or 'Hospedaje' in o['concepto']):
+                if o['aprobado'] <= 0:
+                    hotel += o['importe']
+                else:
+                    hotel += o['aprobado']
             else:
                 otros+= o['importe']
             if o['anticipo'] == "rembolso": #reembolso
@@ -149,6 +164,8 @@ class ComprobacionesDownloader(BrowserView):
             #if url_form.has_key('coordinacion'): params['coordinacion'] = url_form['coordinacion']
             
         comps_list = self.query_catalog(params)
+        #import pdb; pdb.set_trace()
+        comps_list = sorted(comps_list, key=lambda comp: comp.relacion.to_object.fecha_salida)
         
         header = u"Colaborador,Coordinación,Lugar,Fecha de salida, Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar, Saldo ,Fecha Autorización Finanzas,URL\n"
         
