@@ -108,7 +108,8 @@ class ComprobacionesDownloader(BrowserView):
         if avion == 0:
             avion = viaje.tarifa
 
-        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(monto), str(comprobacion.total_comprobar), str(saldo) , str(fecha_finanzas_m), comprobacion.absolute_url().decode('utf-8')]
+        estado = {'bosquejo': u"Pendiente de comprobación", 'revision finanzas': u"En Revisión Finanzas", 'revision implant': u"En Revisión Admón", 'aprobado': u"Aprobada"}
+        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(monto), str(comprobacion.total_comprobar), str(saldo) , str(fecha_finanzas_m), estado[api.content.get_state(comprobacion)],comprobacion.absolute_url().decode('utf-8')]
 
         return u",".join(row)
 
@@ -140,7 +141,8 @@ class ComprobacionesDownloader(BrowserView):
                     elif w['time'] > fecha_comprobacion:
                         fecha_comprobacion = w['time']
 
-            if not fecha_comprobacion: continue # las comprobaciones que siguen en borrador
+            if not fecha_comprobacion:
+                fecha_comprobacion = obj.modified()# las comprobaciones que siguen en borrador
             mexico = pytz.timezone("America/Mexico_City")
             fecha_comprobacion_m = mexico.localize(fecha_comprobacion.utcdatetime())
             fecha_m = fecha_comprobacion_m.date()
@@ -167,7 +169,7 @@ class ComprobacionesDownloader(BrowserView):
         #import pdb; pdb.set_trace()
         comps_list = sorted(comps_list, key=lambda comp: comp.relacion.to_object.fecha_salida)
         
-        header = u"Colaborador,Coordinación,Lugar,Fecha de salida, Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar, Saldo ,Fecha Autorización Finanzas,URL\n"
+        header = u"Colaborador,Coordinación,Lugar,Fecha de salida,Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar,Saldo,Fecha Autorización Finanzas,Estatus,URL\n"
         
         body = u""
         for comprobacion in map(self.get_row, comps_list):
