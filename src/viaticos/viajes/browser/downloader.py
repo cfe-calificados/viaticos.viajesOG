@@ -35,46 +35,45 @@ class ComprobacionesDownloader(BrowserView):
         monto = 0
         fecha_comprobacion = ""
         fecha_finanzas = ""
-        anticipo = (comprobacion.total_comprobar if comprobacion.total_comprobar else 0) *-1
-        rembolso = 0
+        anticipo = 0#(comprobacion.total_comprobar if comprobacion.total_comprobar else 0) *-1
+        reembolso = 0
         devolucion = 0
         for o in comprobacion.grupo_comprobacion:
             if 7 == o['clave']:
-                if o['aprobado'] <= 0:
+                if o['aprobado'] <= 0 or True: #forcing to take og amount
                     hotel += o['importe']
                 else:
                     hotel += o['aprobado']
             elif 2 == o['clave']:
-                if o['aprobado'] <= 0:
+                if o['aprobado'] <= 0 or True: #forcing to take og amount
                     avion += o['importe']
                 else:
                     avion += o['aprobado']
             elif 8 == o['clave']:
-                if o['aprobado'] <= 0:
+                if o['aprobado'] <= 0 or True: #forcing to take og amount
                     comidas += o['importe']
                 else:
                     comidas += o['aprobado']
             elif 9 == o['clave'] and ('Hotel' in o['concepto'] or 'Hospedaje' in o['concepto']):
-                if o['aprobado'] <= 0:
+                if o['aprobado'] <= 0 or True: #forcing to take og amount
                     hotel += o['importe']
                 else:
                     hotel += o['aprobado']
             else:
-                otros+= o['importe']
+                otros += o['importe']
             if o['anticipo'] == "rembolso": #reembolso
                 rembolso += o['aprobado']
             if o['anticipo'] == 'devolucion': #devolucion
                 devolucion += o['aprobado']
-            if o['anticipo'] == "ejercido": #avion, hospedaje
-                continue
-            if o['importe'] <= o['aprobado']: #
+            #if o['anticipo'] == "ejercido": #avion, hospedaje
+            #    continue #we used to skip this in the og calculation, right now it's needed for export tool total 
+            if o['importe'] <= o['aprobado']: #all the others
                 anticipo += o['importe']
-                rembolso += o['aprobado'] - o['importe']
-            
+                reembolso += o['aprobado'] - o['importe']            
             else:
-                anticipo += o['aprobado']
+                anticipo += o['importe']#o['aprobado']
             monto += o['aprobado']
-        saldo = anticipo + rembolso
+        saldo = -anticipo + reembolso + monto 
         #Fecha de comprobacion y finanzas
         for w in comprobacion.workflow_history['comprobacion_workflow']:
             if w['action'] == 'guardar':
@@ -109,7 +108,7 @@ class ComprobacionesDownloader(BrowserView):
             avion = viaje.tarifa
 
         estado = {'bosquejo': u"Pendiente de comprobación", 'revision finanzas': u"En Revisión Finanzas", 'revision implant': u"En Revisión Admón", 'aprobado': u"Aprobada"}
-        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(monto), str(comprobacion.total_comprobar), str(saldo) , str(fecha_finanzas_m), estado[api.content.get_state(comprobacion)],comprobacion.absolute_url().decode('utf-8')]
+        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(anticipo), str(monto), str(reembolso), str(saldo), str(fecha_finanzas_m), estado[api.content.get_state(comprobacion)],comprobacion.absolute_url().decode('utf-8')]
 
         return u",".join(row)
 
@@ -169,7 +168,7 @@ class ComprobacionesDownloader(BrowserView):
         #import pdb; pdb.set_trace()
         comps_list = sorted(comps_list, key=lambda comp: comp.relacion.to_object.fecha_salida)
         
-        header = u"Colaborador,Coordinación,Lugar,Fecha de salida,Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto Aprobado,Total A Comprobar,Saldo,Fecha Autorización Finanzas,Estatus,URL\n"
+        header = u"Colaborador,Coordinación,Lugar,Fecha de salida,Fecha de regreso,Monto Avión,Monto Hotel,Monto Alimentos,Monto Otros,Fecha de Comprobación,Monto a comprobar por colaborador,Monto aprobado por Finanzas, Monto total Reembolso, Saldo Final, Fecha Autorización Finanzas,Estatus,URL\n"
         
         body = u""
         for comprobacion in map(self.get_row, comps_list):
