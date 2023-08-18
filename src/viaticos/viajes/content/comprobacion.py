@@ -447,10 +447,16 @@ class EditComprobacion(edit.DefaultEditForm):
                 self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
             if rfc == "CCA160523QGA": #"MER180416CH0":
+                if not suma.has_key("leidos"):
+                    suma["leidos"] = {}
                 if suma != None and data:                    
                     if not suma.has_key(idx):
-                        suma[idx] = 0.0
-                    suma[idx] += float(root.get("Total"))
+                        suma[idx] = 0.0                            
+                    if not suma["leidos"].has_key(filename+str(idx)):
+                        suma["leidos"][filename+str(idx)] = 0
+                    else:
+                        suma["leidos"][filename+str(idx)] += 1
+                    suma[idx] += float(root.get("Total")) if suma["leidos"][filename+str(idx)] == 0 else 0
                 return message
             else:
                 message = u"Error: El RFC del receptor ("+rfc+") en el archivo "+filename+u" no es el correcto."
