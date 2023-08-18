@@ -230,13 +230,15 @@ class VistaComprobacion(DefaultView):
         form = edit_comp_form(self.context, self.request)
         form.update()
         messages = IStatusMessage(self.request)
+        form.totales = {}
         form.check_xml(self.context.grupo_comprobacion, messages, True)
         #import pdb; pdb.set_trace()
         errores = []
         for idx,concepto in enumerate(self.context.grupo_comprobacion):            
             if form.totales.has_key(idx):
                 msj_error = u"El monto comprobado en el concepto "+concepto['concepto']+u": $"+str(concepto['comprobado'])+u", no coincide con el total de la(s) factura(s) cargada(s): $"+str(form.totales[idx])
-                if form.totales[idx] != concepto['comprobado']:
+                if round(form.totales[idx], 2) != round(concepto['comprobado'], 2):
+                    #import pdb; pdb.set_trace()
                     errores.append(msj_error)
             elif concepto['comprobado'] and concepto['origen'] == "nacional":
                 errores.append(u"El monto comprobado en el concepto "+concepto['concepto']+u": $"+str(concepto['comprobado'])+u", no coincide con el total de la(s) factura(s) cargada(s).")
