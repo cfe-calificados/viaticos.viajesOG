@@ -447,7 +447,7 @@ class EditComprobacion(edit.DefaultEditForm):
                 self.widgets.values()[widget_idx].widgets[idx].subform.widgets.values()[-1].value = None
                 return message
             if rfc == "CCA160523QGA": #"MER180416CH0":
-                if not suma.has_key("leidos"):
+                if suma != None and not suma.has_key("leidos"):
                     suma["leidos"] = {}
                 if suma != None and data:                    
                     if not suma.has_key(idx):
