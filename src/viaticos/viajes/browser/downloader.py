@@ -40,17 +40,17 @@ class ComprobacionesDownloader(BrowserView):
         devolucion = 0
         for o in comprobacion.grupo_comprobacion:
             if 7 == o['clave']:
-                if o['aprobado'] <= 0 or True: #forcing to take og amount
+                if o['aprobado'] <= 0: #forcing to take og amount
                     hotel += o['importe']
                 else:
                     hotel += o['aprobado']
             elif 2 == o['clave']:
-                if o['aprobado'] <= 0 or True: #forcing to take og amount
+                if o['aprobado'] <= 0: #forcing to take og amount
                     avion += o['importe']
                 else:
                     avion += o['aprobado']
             elif 8 == o['clave']:
-                if o['aprobado'] <= 0 or True: #forcing to take og amount
+                if o['aprobado'] <= 0: #forcing to take og amount
                     comidas += o['importe']
                 else:
                     comidas += o['aprobado']
@@ -72,7 +72,7 @@ class ComprobacionesDownloader(BrowserView):
                 reembolso += o['aprobado'] - o['importe']            
             else:
                 anticipo += o['importe']#o['aprobado']
-            monto += o['aprobado']
+            monto += o['aprobado'] if o['anticipo'] != "reembolso" else 0
         saldo = -anticipo + reembolso + monto 
         #Fecha de comprobacion y finanzas
         for w in comprobacion.workflow_history['comprobacion_workflow']:
@@ -108,7 +108,7 @@ class ComprobacionesDownloader(BrowserView):
             avion = viaje.tarifa
 
         estado = {'bosquejo': u"Pendiente de comprobación", 'revision finanzas': u"En Revisión Finanzas", 'revision implant': u"En Revisión Admón", 'aprobado': u"Aprobada"}
-        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(anticipo), str(monto), str(reembolso), str(saldo), str(fecha_finanzas_m), estado[api.content.get_state(comprobacion)],comprobacion.absolute_url().decode('utf-8')]
+        row = [colaborador,coordinacion,lugar,str(fecha_salida), str(fecha_regreso), str(avion), str(hotel), str(comidas), str(otros) , str(fecha_comprobacion_m), str(anticipo), str(monto), str(reembolso), str(saldo), str(fecha_finanzas_m), estado[api.content.get_state(comprobacion)],comprobacion.absolute_url().replace("http://localhost:8080/CFE_Calificados", "https://viaticos.cfecalificados.mx").decode('utf-8')]
 
         return u",".join(row)
 
