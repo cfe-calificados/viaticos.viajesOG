@@ -144,7 +144,7 @@ def boss_mail(self, state_change):
         downward_dic = get_bosses(obj_owner.getUserName(), grupo)
     
     agency_mail,boss_mail = build_body(state_change.object,obj_owner)
-    receivers = []+["administracion@calificados.cfe.mx", "cesar.banos@calificados.cfe.mx", "zulema.osorio@calificados.cfe.mx", "fannym.cruz@calificados.cfe.mx"]
+    receivers = []+["administracion@calificados.cfe.mx", "cesar.banos@calificados.cfe.mx", "zulema.osorio@calificados.cfe.mx", "nancy.ramirez@redhuman.com.mx"]
      
     for boss in downward_dic:
         jefe = membership.getMemberById(boss)
@@ -165,7 +165,7 @@ def boss_mail(self, state_change):
     # Envio correo agencia
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx; fannym.cruz@calificados.cfe.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",
+            recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx; nancy.ramirez@redhuman.com.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",
             #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
@@ -180,7 +180,7 @@ def agency_mail(self, state_change):
     agency_mail,boss_mail = build_body(state_change.object,obj_owner)
     if 'boleto_avion' in state_change.object.req or 'hospedaje' in state_change.object.req: 
         api.portal.send_email(
-            recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx; fannym.cruz@calificados.cfe.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",
+            recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx;zulema.osorio@calificados.cfe.mx; nancy.ramirez@redhuman.com.mx",#+";diego.arredondo@vtatravel.mx;mariana.flores@vtatravel.mx;karina.escalante@vtatravel.mx"",
             #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
             sender="noreply@plone.org",
             subject=u"Solicitud de cotización",
@@ -360,7 +360,7 @@ def comp_reg(self, state_change):
         print("se envia correo a angel redhuman")
         body_angel = u"Se solicita realizar el reembolso por un monto de $"+str("%.2f" % totales[1])+u" a favor de "+obj_owner.getProperty("fullname").decode('utf-8')+u"; lo anterior con motivo de la comprobación realizada del viaje a "+trip.ciudad.encode('utf-8').decode('utf-8')+u", "+trip.estado.encode('utf-8').decode('utf-8')+u", "+trip.pais.encode('utf-8').decode('utf-8')+u", de fecha "+trip.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8').capitalize()+u".\n\n"+u"Mucho agradeceremos que una vez realizada se marque copia a Zulema Osorio y Liliana Garcia para su conocimiento.\n\n"+u"Saludos."
         api.portal.send_email(
-            recipient="fannym.cruz@calificados.cfe.mx",#"red.angel@foo.mx",#
+            recipient="nancy.ramirez@redhuman.com.mx",#"red.angel@foo.mx",#
             #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
             sender="noreply@plone.org",
             subject=u"[Plataforma RH - Viáticos] Reembolso: "+comp.title.encode('utf-8').decode('utf-8'),
@@ -422,7 +422,7 @@ def finances_rejected(self, state_change):
     obj_owner = membership.getMemberById(trip.owner_info()['id'])
     body = u"Coordinación de Administración\nPresente\n\nPor medio del presente le comunicamos que se rechazó la solicitud de anticipo por un monto de "+str(trip.anti_monto if trip.anti_monto else u"N/A")+u" con motivo de:\n\n"+trip.anti_desc if trip.anti_desc else u"N/A"+u"\n\nPara revisar la información de la solicitud, pruebe visitar el siguiente enlace: "+URL+state_change.object.virtual_url_path()+u"\n\nPara cualquier duda o comentario comunicarse con Liliana Garcia a la extensión 21411.\n\nAtentamente\n\nAdministración\ncfe_calificados"
     api.portal.send_email(
-        recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx; fannym.cruz@calificados.cfe.mx",#"finanzas@foo.com", #
+        recipient="administracion@calificados.cfe.mx;cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx; nancy.ramirez@redhuman.com.mx",#"finanzas@foo.com", #
         #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject=u"Anticipo rechazado: "+trip.title.encode('utf-8').decode('utf-8'),
@@ -440,7 +440,7 @@ def registry_past(self, state_change):
     body = u"Coordinación de Administración\nPresente\n\nPor medio del presente le comunicamos que "+obj_owner.getProperty("fullname").decode('utf-8')+u" ha solicitado el registro de una solicitud de gastos pasada del día "+trip.fecha_salida.strftime("%A %d de %B de %Y").decode('utf-8')+u" a la ciudad de "+trip.ciudad.encode('utf-8').decode('utf-8')+u", "+trip.pais.encode('utf-8').decode('utf-8')+u", para realizar "+complete_m(trip.motivo)+u". "+(u"Objetivo: "+transformer(trip.objetivo, 'text/plain') if trip.objetivo else "")+u"\n\n"
     body += u"Por lo anterior, mucho agradeceremos la revisión de la información capturada por el colaborador en el siguiente enlace: "+URL+trip.virtual_url_path()
     api.portal.send_email(
-        recipient="administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx; fannym.cruz@calificados.cfe.mx",#"administracion@foo.com", #
+        recipient="administracion@calificados.cfe.mx; cesar.banos@calificados.cfe.mx; zulema.osorio@calificados.cfe.mx; nancy.ramirez@redhuman.com.mx",#"administracion@foo.com", #
         #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject=u"Solicitud de gastos pasada: "+trip.title.encode('utf-8').decode('utf-8'),
@@ -454,7 +454,7 @@ def implant_registry(self, state_change):
     body +=u"\nIntente visitar el siguiente enlace: "+URL+trip.virtual_url_path()+u" para continuar con el proceso de registro de la solicitud."
     body += u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
     api.portal.send_email(
-        recipient="fannym.cruz@calificados.cfe.mx",#"implant@implant.com.mx",#
+        recipient="nancy.ramirez@redhuman.com.mx",#"implant@implant.com.mx",#
         #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+trip.title.encode('utf-8').decode('utf-8'),
@@ -469,7 +469,7 @@ def implant_mail(self, state_change):
     body +=u"\nIntente visitar el siguiente enlace: "+URL+trip.virtual_url_path()+u" para continuar con el proceso de registro de la solicitud."
     body += u".\n\nPara cualquier duda o comentario comunicarse con Zulema Osorio Amarillas a la extensión 21411.\n\n\nAtentamente\n\nAdministración cfe_calificados"
     api.portal.send_email(
-        recipient="zulema.osorio@calificados.cfe.mx;fannym.cruz@calificados.cfe.mx",#"implant@implant.com.mx",#
+        recipient="zulema.osorio@calificados.cfe.mx;nancy.ramirez@redhuman.com.mx",#"implant@implant.com.mx",#
         #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+trip.title.encode('utf-8').decode('utf-8'),
@@ -482,7 +482,7 @@ def implant_comp(self, state_change):
     obj_owner = comp.getOwner()
     body = u"Por medio del presente, se solicita la revisión de la "+comp.title.encode('utf-8').decode('utf-8')+u", del colaborador: "+obj_owner.getProperty("fullname").decode('utf-8')+u".\nAsimismo, de ser necesaria, la captura de las facturas de hospedaje y vuelo. Puede corroborar tal información en la siguiente liga: "+URL+comp.virtual_url_path()+u"\n"
     api.portal.send_email(
-        recipient="fannym.cruz@calificados.cfe.mx",#"implant@implant.com.mx",#
+        recipient="nancy.ramirez@redhuman.com.mx",#"implant@implant.com.mx",#
         #recipient="carlos.acosta@calificados.cfe.mx", #DEBUG
         sender="noreply@plone.org",
         subject=u"[Plataforma RH - Viáticos] Registro de información agencia de viajes: "+comp.title.encode('utf-8').decode('utf-8'),
